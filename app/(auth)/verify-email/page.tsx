@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { CheckCircle2, Loader2, MailQuestion, RefreshCw } from "lucide-react";
 
 type Status = "idle" | "verifying" | "success" | "error";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams?.get("token");
@@ -92,5 +92,27 @@ export default function VerifyEmailPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense
+      fallback={(
+        <div className="flex min-h-screen items-center justify-center p-4">
+          <Card className="w-full max-w-md text-center">
+            <CardHeader>
+              <CardTitle>E-Mail wird geprueft</CardTitle>
+              <CardDescription>Bitte warten...</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground">
+              Wir laden die noetigen Daten.
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    >
+      <VerifyEmailContent />
+    </Suspense>
   );
 }
