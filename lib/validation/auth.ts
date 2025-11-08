@@ -15,16 +15,39 @@ export const passwordSchema = z
  */
 export const emailSchema = z
   .string()
-  .email("Bitte eine gültige E-Mail-Adresse eingeben.");
+  .email("Bitte eine gueltige E-Mail-Adresse eingeben.");
+
+/**
+ * Username validation schema
+ */
+export const usernameSchema = z
+  .string()
+  .min(3, "Benutzername muss mindestens 3 Zeichen lang sein.")
+  .max(32, "Benutzername darf maximal 32 Zeichen lang sein.")
+  .regex(/^[a-zA-Z0-9._-]+$/, "Nur Buchstaben, Zahlen sowie . _ - sind erlaubt.");
 
 /**
  * Combined schema for registration
  */
-export const registerSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
-  name: z.string().optional(),
-});
+export const registerSchema = z
+  .object({
+    username: usernameSchema,
+    email: emailSchema,
+    password: passwordSchema,
+    confirmPassword: z.string(),
+    name: z
+      .string()
+      .max(64, "Name darf maximal 64 Zeichen lang sein.")
+      .optional()
+      .or(z.literal("").transform(() => undefined)),
+  })
+  .refine(
+    (data) => data.password === data.confirmPassword,
+    {
+      path: ["confirmPassword"],
+      message: "Passwoerter stimmen nicht ueberein.",
+    }
+  );
 
 /**
  * Combined schema for login
@@ -32,6 +55,10 @@ export const registerSchema = z.object({
 export const loginSchema = z.object({
   email: emailSchema,
   password: z.string(), // No length validation on login - validate hash instead
+});
+
+export const resendVerificationSchema = z.object({
+  email: emailSchema,
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

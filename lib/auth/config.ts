@@ -1,9 +1,9 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validation/auth";
+import { AccessDenied } from "@auth/core/errors";
 
 // Dummy hash for timing attack protection when user doesn't exist
 const DUMMY_HASH = "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyGPrY1FeVi2";
@@ -27,9 +27,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         const { email, password } = validationResult.data;
+        const normalizedEmail = email.trim().toLowerCase();
 
         const user = await prisma.user.findUnique({
-          where: { email },
+          where: { email: normalizedEmail },
         });
 
         // Check account lockout BEFORE password verification
@@ -69,6 +70,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
+        if (!user.emailVerified) {
+          throw new AccessDenied("E-Mail-Adresse wurde noch nicht bestaetigt.");
+        }
+
         // Successful login - reset failed login counter
         if (user.failedLogins > 0 || user.lockedUntil) {
           await prisma.user.update({
@@ -84,6 +89,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: user.id,
           email: user.email,
           name: user.name,
+          username: user.username,
         };
       },
     }),
@@ -97,6 +103,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
+        token.username = (user as any).username;
       }
       return token;
     },
@@ -105,6 +112,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
+        (session.user as any).username = token.username as string;
       }
       return session;
     },

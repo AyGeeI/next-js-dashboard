@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/lib/validation/auth";
-import { ZodError } from "zod";
+import { sendVerificationEmail } from "@/lib/email/send-verification-email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,17 +24,36 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email, password, name } = validationResult.data;
+    const { email, password, name, username } = validationResult.data;
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUsername = username.trim().toLowerCase();
 
-    // Check if user already exists
+    // Check for existing email
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
-      // Generic error to prevent user enumeration
       return NextResponse.json(
-        { error: "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut oder verwenden Sie eine andere E-Mail-Adresse." },
+        {
+          error: "Es existiert bereits ein Konto mit dieser E-Mail-Adresse.",
+          errors: [{ field: "email", message: "E-Mail wird bereits verwendet." }],
+        },
+        { status: 400 }
+      );
+    }
+
+    // Check for existing username
+    const existingUsername = await prisma.user.findUnique({
+      where: { username: normalizedUsername },
+    });
+
+    if (existingUsername) {
+      return NextResponse.json(
+        {
+          error: "Dieser Benutzername ist bereits vergeben.",
+          errors: [{ field: "username", message: "Benutzername wird bereits verwendet." }],
+        },
         { status: 400 }
       );
     }
@@ -45,18 +65,32 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.create({
       data: {
         name: name || null,
-        email,
+        email: normalizedEmail,
+        username: normalizedUsername,
         passwordHash,
+        emailVerified: null,
       },
     });
 
+    // Create verification token (valid for 24h)
+    const token = crypto.randomUUID();
+    await prisma.verificationToken.deleteMany({
+      where: { identifier: normalizedEmail },
+    });
+    await prisma.verificationToken.create({
+      data: {
+        identifier: normalizedEmail,
+        token,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      },
+    });
+
+    await sendVerificationEmail(normalizedEmail, token);
+
     return NextResponse.json(
       {
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-        },
+        message: "Registrierung erfolgreich. Bitte bestaetige deine E-Mail-Adresse.",
+        pendingEmail: user.email,
       },
       { status: 201 }
     );
