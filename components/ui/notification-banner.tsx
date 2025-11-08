@@ -55,15 +55,16 @@ export function NotificationBanner({
   children,
   ...props
 }: NotificationBannerProps) {
-  const Icon = iconMap[variant];
-  const accent = accentMap[variant];
-  const resolvedRole = role ?? (variant === "error" ? "alert" : "status");
+  const resolvedVariant: NotificationVariant = variant ?? "info";
+  const Icon = iconMap[resolvedVariant];
+  const accent = accentMap[resolvedVariant];
+  const resolvedRole = role ?? (resolvedVariant === "error" ? "alert" : "status");
 
   return (
     <section
-      className={cn(variants({ variant }), className)}
+      className={cn(variants({ variant: resolvedVariant }), className)}
       role={resolvedRole}
-      aria-live={variant === "error" ? "assertive" : "polite"}
+      aria-live={resolvedVariant === "error" ? "assertive" : "polite"}
       {...props}
     >
       <span
