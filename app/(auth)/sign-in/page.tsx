@@ -155,7 +155,6 @@ function SignInContent() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={loading}
-                  minLength={12}
                   className="pr-10"
                 />
                 <button

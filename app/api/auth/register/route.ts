@@ -86,7 +86,17 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    await sendVerificationEmail(normalizedEmail, token);
+    try {
+      await sendVerificationEmail(normalizedEmail, token);
+    } catch (emailError) {
+      await prisma.verificationToken.deleteMany({
+        where: { identifier: normalizedEmail },
+      });
+      await prisma.user.delete({
+        where: { id: user.id },
+      });
+      throw emailError;
+    }
 
     return NextResponse.json(
       {

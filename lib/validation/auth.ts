@@ -8,7 +8,11 @@ import { z } from "zod";
 export const passwordSchema = z
   .string()
   .min(12, "Passwort muss mindestens 12 Zeichen lang sein.")
-  .max(72, "Passwort darf maximal 72 Zeichen lang sein.");
+  .max(72, "Passwort darf maximal 72 Zeichen lang sein.")
+  .regex(/[a-z]/, "Mindestens ein Kleinbuchstabe erforderlich.")
+  .regex(/[A-Z]/, "Mindestens ein Großbuchstabe erforderlich.")
+  .regex(/\d/, "Mindestens eine Zahl erforderlich.")
+  .regex(/[^A-Za-z0-9]/, "Mindestens ein Sonderzeichen erforderlich.");
 
 /**
  * Email validation schema

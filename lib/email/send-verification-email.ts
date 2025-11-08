@@ -31,12 +31,19 @@ export async function sendVerificationEmail(email: string, token: string) {
 
   const resend = new Resend(resendApiKey);
 
-  await resend.emails.send({
+  const result = await resend.emails.send({
     from: emailFrom,
     to: email,
     subject: "Bitte bestätige deine E-Mail-Adresse",
     html: getEmailHtml(verifyUrl),
   });
+
+  if (result.error) {
+    console.error(
+      `[Email Verification] Versand fehlgeschlagen (${email}): ${result.error.message}`
+    );
+    throw new Error("Verifizierungs-E-Mail konnte nicht gesendet werden.");
+  }
 }
 
 function getEmailHtml(verifyUrl: string) {
