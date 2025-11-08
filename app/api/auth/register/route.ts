@@ -69,6 +69,7 @@ export async function POST(req: NextRequest) {
         username: normalizedUsername,
         passwordHash,
         emailVerified: null,
+        role: "STANDARD",
       },
     });
 

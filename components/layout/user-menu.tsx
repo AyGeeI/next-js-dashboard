@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -10,11 +10,12 @@ type UserInfo = {
   name?: string | null;
   email?: string | null;
   username?: string | null;
+  role?: "ADMIN" | "STANDARD" | null;
 };
 
 interface UserMenuProps {
   user?: UserInfo | null;
-  logoutAction: () => Promise<void>;
+  logoutAction: (formData: FormData) => Promise<void>;
 }
 
 export function UserMenu({ user, logoutAction }: UserMenuProps) {
@@ -47,6 +48,7 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
 
   const initials = getInitials(user);
   const subtitle = user?.email ?? "Profil verwalten";
+  const roleLabel = formatRole(user?.role);
 
   return (
     <div className="relative" ref={rootRef}>
@@ -62,7 +64,7 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
         <span className="flex h-full w-full items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
           {initials}
         </span>
-        <span className="sr-only">Benutzermenü öffnen</span>
+        <span className="sr-only">Benutzermenue oeffnen</span>
       </Button>
 
       {isOpen ? (
@@ -87,9 +89,9 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
           <div className="px-4 py-3">
             <div className="rounded-xl border border-dashed border-border bg-background px-3 py-2">
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Status
+                Rolle
               </p>
-              <p className="text-sm font-semibold">Dashboard Zugriff aktiv</p>
+              <p className="text-sm font-semibold">{roleLabel}</p>
             </div>
           </div>
 
@@ -99,7 +101,7 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
             <MenuLink
               href="/dashboard/account"
               title="Konto"
-              description="Persönliche Daten & Sicherheit"
+              description="PersÃ¶nliche Daten & Sicherheit"
               icon={UserRound}
               onNavigate={() => setIsOpen(false)}
             />
@@ -181,4 +183,11 @@ function getInitials(user?: UserInfo | null) {
     .join("");
 
   return initials || "DU";
+}
+
+function formatRole(role?: "ADMIN" | "STANDARD" | null) {
+  if (role === "ADMIN") {
+    return "Administrator";
+  }
+  return "Standard";
 }

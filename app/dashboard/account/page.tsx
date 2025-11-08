@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 export default async function AccountPage() {
   const session = await auth();
   const user = session?.user;
+  const roleLabel = user?.role === "ADMIN" ? "Administrator" : "Standard";
 
   return (
     <div className="space-y-8">
@@ -72,6 +73,10 @@ export default async function AccountPage() {
               Verwalte die Sichtbarkeit deines Profils im Dashboard.
             </p>
             <dl className="mt-4 space-y-3 text-sm">
+              <div className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2">
+                <dt className="text-muted-foreground">Rolle</dt>
+                <dd className="font-medium">{roleLabel}</dd>
+              </div>
               <div className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2">
                 <dt className="text-muted-foreground">Status</dt>
                 <dd className="font-medium text-emerald-500">Aktiv</dd>

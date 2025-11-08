@@ -5,7 +5,7 @@ import { UserMenu } from "@/components/layout/user-menu";
 export async function Header() {
   const session = await auth();
 
-  async function handleSignOut() {
+  async function handleSignOut(_formData: FormData) {
     "use server";
     await signOut({ redirectTo: "/sign-in" });
   }
@@ -14,7 +14,7 @@ export async function Header() {
     <header className="flex flex-col gap-4 border-b bg-card px-4 py-4 sm:px-6 sm:py-4 md:flex-row md:items-center md:justify-between">
       <div>
         <h1 className="text-xl font-semibold">
-          Willkommen zurück{session?.user?.name ? `, ${session.user.name}` : ""}
+          Willkommen zurueck{session?.user?.name ? `, ${session.user.name}` : ""}
         </h1>
         <p className="text-sm text-muted-foreground">
           {new Date().toLocaleDateString("de-DE", {

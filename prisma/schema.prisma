@@ -10,6 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  STANDARD
+}
+
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -17,7 +22,7 @@ model User {
   name          String?
   passwordHash  String
   emailVerified DateTime?
-  role          String    @default("user")
+  role          Role      @default(STANDARD)
 
   // Account lockout fields for brute-force protection
   failedLogins  Int       @default(0)
