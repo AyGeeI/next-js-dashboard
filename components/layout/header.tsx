@@ -1,10 +1,14 @@
-﻿import { auth, signOut } from "@/lib/auth/config";
+import { auth, signOut } from "@/lib/auth/config";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
-import { LogOut, User } from "lucide-react";
+import { UserMenu } from "@/components/layout/user-menu";
 
 export async function Header() {
   const session = await auth();
+
+  async function handleSignOut() {
+    "use server";
+    await signOut({ redirectTo: "/sign-in" });
+  }
 
   return (
     <header className="flex flex-col gap-4 border-b bg-card px-4 py-4 sm:px-6 sm:py-4 md:flex-row md:items-center md:justify-between">
@@ -23,22 +27,7 @@ export async function Header() {
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <ThemeToggle />
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <User className="h-5 w-5" />
-          </div>
-          <form
-            action={async () => {
-              "use server";
-              await signOut({ redirectTo: "/sign-in" });
-            }}
-          >
-            <Button variant="ghost" size="icon" type="submit">
-              <LogOut className="h-5 w-5" />
-              <span className="sr-only">Abmelden</span>
-            </Button>
-          </form>
-        </div>
+        <UserMenu user={session?.user} logoutAction={handleSignOut} />
       </div>
     </header>
   );

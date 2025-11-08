@@ -20,9 +20,9 @@ const passwordRequirements = [
 ];
 
 const passwordStrengthMap = {
-  weak: { label: "Schwach", bar: "bg-destructive", text: "text-destructive" },
-  medium: { label: "Solide", bar: "bg-secondary", text: "text-foreground" },
-  strong: { label: "Stark", bar: "bg-primary", text: "text-primary" },
+  weak: { label: "Schwach", bar: "bg-red-500", text: "text-red-500" },
+  medium: { label: "Solide", bar: "bg-amber-400", text: "text-amber-600" },
+  strong: { label: "Stark", bar: "bg-emerald-500", text: "text-emerald-600" },
 } as const;
 
 function evaluatePasswordStrength(password: string) {
@@ -208,7 +208,6 @@ export default function SignUpPage() {
                     disabled={loading}
                     required
                   />
-                  <p className="text-xs text-muted-foreground">Wird für das Login und in Links verwendet.</p>
                   {fieldErrors.username && <p className="text-xs text-destructive">{fieldErrors.username}</p>}
                 </div>
                 <div className="space-y-2">
@@ -219,7 +218,6 @@ export default function SignUpPage() {
                     onChange={(e) => setName(e.target.value)}
                     disabled={loading}
                   />
-                  <p className="text-xs text-muted-foreground">Anzeigename im Dashboard.</p>
                 </div>
               </div>
 
@@ -234,7 +232,6 @@ export default function SignUpPage() {
                   required
                   disabled={loading}
                 />
-                <p className="text-xs text-muted-foreground">Wir schicken alle Bestätigungen an diese Adresse.</p>
                 {fieldErrors.email && <p className="text-xs text-destructive">{fieldErrors.email}</p>}
               </div>
 
@@ -322,7 +319,6 @@ export default function SignUpPage() {
                     {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground">Zur Sicherheit erneut eingeben.</p>
                 {fieldErrors.confirmPassword && (
                   <p className="text-xs text-destructive">{fieldErrors.confirmPassword}</p>
                 )}

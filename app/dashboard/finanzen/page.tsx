@@ -26,18 +26,21 @@ export default function FinanzenPage() {
           value={currency.format(balance)}
           icon={Wallet}
           description="Aktueller Kontostand"
+          valueClassName={balance >= 0 ? "text-emerald-500" : "text-red-500"}
         />
         <CardMetric
           title="Einnahmen"
           value={currency.format(income)}
           icon={TrendingUp}
           description="Diesen Monat"
+          valueClassName="text-emerald-500"
         />
         <CardMetric
           title="Ausgaben"
           value={currency.format(expenses)}
           icon={TrendingDown}
           description="Diesen Monat"
+          valueClassName="text-red-500"
         />
         <CardMetric
           title="Sparziel"
@@ -67,7 +70,7 @@ export default function FinanzenPage() {
                       {new Date(transaction.date).toLocaleDateString("de-DE")}
                     </p>
                   </div>
-                  <p className={`text-lg font-semibold ${isIncome ? "text-primary" : "text-foreground"}`}>
+                  <p className={`text-lg font-semibold ${isIncome ? "text-emerald-500" : "text-red-500"}`}>
                     {isIncome ? "+" : "-"}
                     {formattedAmount}
                   </p>
