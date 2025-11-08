@@ -33,12 +33,18 @@ export default function SignUpPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Registrierung fehlgeschlagen");
+        // Display validation errors if available
+        if (data.errors && Array.isArray(data.errors)) {
+          const errorMessages = data.errors.map((e: any) => e.message).join(", ");
+          setError(errorMessages);
+        } else {
+          setError(data.error || "Registrierung fehlgeschlagen");
+        }
       } else {
         router.push("/sign-in?registered=true");
       }
     } catch (error) {
-      setError("Ein Fehler ist aufgetreten");
+      setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
     } finally {
       setLoading(false);
     }
@@ -83,13 +89,17 @@ export default function SignUpPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="Mindestens 8 Zeichen"
+                placeholder="Mindestens 12 Zeichen"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                minLength={8}
+                minLength={12}
+                maxLength={72}
                 disabled={loading}
               />
+              <p className="text-xs text-muted-foreground">
+                12-72 Zeichen (OWASP-Empfehlung)
+              </p>
             </div>
             {error && (
               <div className="text-sm text-destructive">{error}</div>

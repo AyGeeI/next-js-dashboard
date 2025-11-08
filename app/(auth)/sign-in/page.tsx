@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { loginAction } from "@/app/actions/auth";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,20 +22,25 @@ export default function SignInPage() {
     setLoading(true);
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
+      // Use server action with rate limiting
+      const result = await loginAction(email, password);
 
-      if (result?.error) {
-        setError("Ungültige Anmeldedaten");
-      } else {
-        router.push("/dashboard");
+      if (result.error) {
+        setError(result.error);
+      } else if (result.success) {
+        // Check if there's a return URL from proxy redirect
+        const searchParams = new URLSearchParams(window.location.search);
+        const from = searchParams.get("from");
+
+        if (from) {
+          router.push(from);
+        } else {
+          router.push("/dashboard");
+        }
         router.refresh();
       }
     } catch (error) {
-      setError("Ein Fehler ist aufgetreten");
+      setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
     } finally {
       setLoading(false);
     }
@@ -73,7 +78,11 @@ export default function SignInPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
+                minLength={12}
               />
+              <p className="text-xs text-muted-foreground">
+                Mindestens 12 Zeichen erforderlich
+              </p>
             </div>
             {error && (
               <div className="text-sm text-destructive">{error}</div>

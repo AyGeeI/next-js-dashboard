@@ -2,16 +2,27 @@ import { auth } from "@/lib/auth/config";
 import { NextResponse } from "next/server";
 
 export default auth((req) => {
-  const isAuthenticated = !!req.auth;
-  const isAuthPage = req.nextUrl.pathname.startsWith("/sign-in") ||
-                     req.nextUrl.pathname.startsWith("/sign-up");
-  const isDashboard = req.nextUrl.pathname.startsWith("/dashboard");
+  const { pathname } = req.nextUrl;
+  const method = req.method;
 
-  if (isDashboard && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/sign-in", req.url));
+  // Don't block OPTIONS (preflight) or HEAD requests
+  if (method === "OPTIONS" || method === "HEAD") {
+    return NextResponse.next();
   }
 
-  if (isAuthPage && isAuthenticated) {
+  const isAuthenticated = !!req.auth;
+  const isAuthPage = pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up");
+  const isDashboard = pathname.startsWith("/dashboard");
+
+  // Protect dashboard routes - redirect to sign-in with return URL
+  if (isDashboard && !isAuthenticated) {
+    const url = new URL("/sign-in", req.url);
+    url.searchParams.set("from", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect authenticated users away from auth pages (only for GET requests)
+  if (isAuthPage && isAuthenticated && method === "GET") {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 

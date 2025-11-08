@@ -1,24 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { registerSchema } from "@/lib/validation/auth";
+import { ZodError } from "zod";
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password } = await req.json();
+    const body = await req.json();
 
-    if (!email || !password) {
+    // Validate input with Zod schema
+    const validationResult = registerSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      const errors = validationResult.error.issues.map((err) => ({
+        field: err.path.join("."),
+        message: err.message,
+      }));
+
       return NextResponse.json(
-        { error: "E-Mail und Passwort sind erforderlich" },
+        { error: "Validierung fehlgeschlagen", errors },
         { status: 400 }
       );
     }
 
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: "Passwort muss mindestens 8 Zeichen lang sein" },
-        { status: 400 }
-      );
-    }
+    const { email, password, name } = validationResult.data;
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -26,13 +31,14 @@ export async function POST(req: NextRequest) {
     });
 
     if (existingUser) {
+      // Generic error to prevent user enumeration
       return NextResponse.json(
-        { error: "Benutzer existiert bereits" },
-        { status: 409 }
+        { error: "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut oder verwenden Sie eine andere E-Mail-Adresse." },
+        { status: 400 }
       );
     }
 
-    // Hash password
+    // Hash password with bcrypt (cost factor 12 for good security/performance balance)
     const passwordHash = await hash(password, 12);
 
     // Create user
