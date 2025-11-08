@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MailCheck, RefreshCw, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { NotificationBanner } from "@/components/ui/notification-banner";
+import { RefreshCw, Eye, EyeOff } from "lucide-react";
 
 function SignInContent() {
   const router = useRouter();
@@ -98,8 +99,8 @@ function SignInContent() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
+      <Card className="w-full max-w-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
         <CardHeader>
           <CardTitle>Anmelden</CardTitle>
           <CardDescription>Melde dich mit deinen Zugangsdaten an.</CardDescription>
@@ -107,32 +108,31 @@ function SignInContent() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {info && (
-              <div className="flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-sm text-foreground">
-                <MailCheck className="mt-0.5 h-4 w-4 text-primary" />
-                <div>
-                  <p>{info}</p>
-                  {(pendingEmail || email) && (
-                    <p className="text-xs text-muted-foreground">E-Mail: {pendingEmail || email}</p>
-                  )}
+              <NotificationBanner
+                variant="info"
+                title="Bestätigung erforderlich"
+                description={info}
+                action={
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="mt-2"
                     onClick={handleResendVerification}
                     disabled={resending || (!pendingEmail && !email)}
                   >
                     {resending ? (
                       <span className="flex items-center gap-2">
                         <RefreshCw className="h-4 w-4 animate-spin" />
-                        Wird gesendet…
+                        Wird gesendet ...
                       </span>
                     ) : (
                       "E-Mail erneut senden"
                     )}
                   </Button>
-                </div>
-              </div>
+                }
+              >
+                {(pendingEmail || email) && <>E-Mail: {pendingEmail || email}</>}
+              </NotificationBanner>
             )}
             <div className="space-y-2">
               <Label htmlFor="email">E-Mail</Label>
@@ -159,19 +159,21 @@ function SignInContent() {
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground"
+                  className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                   onClick={() => setShowPassword((prev) => !prev)}
                   aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+                  aria-pressed={showPassword}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
             {error && (
-              <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-                <AlertCircle className="h-4 w-4" />
-                <span>{error}</span>
-              </div>
+              <NotificationBanner
+                variant="error"
+                title="Anmeldung fehlgeschlagen"
+                description={error}
+              />
             )}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Wird angemeldet..." : "Anmelden"}
@@ -193,8 +195,8 @@ export default function SignInPage() {
   return (
     <Suspense
       fallback={(
-        <div className="flex min-h-screen items-center justify-center p-4">
-          <Card className="w-full max-w-md">
+        <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
+          <Card className="w-full max-w-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
             <CardHeader>
               <CardTitle>Anmelden</CardTitle>
               <CardDescription>Bitte warten...</CardDescription>

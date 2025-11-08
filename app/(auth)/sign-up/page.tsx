@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { NotificationBanner } from "@/components/ui/notification-banner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Eye, EyeOff, Info, MailCheck, RefreshCw, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, Info, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type FieldErrors = Record<string, string>;
@@ -20,9 +21,9 @@ const passwordRequirements = [
 ];
 
 const passwordStrengthMap = {
-  weak: { label: "Schwach", bar: "bg-red-500", text: "text-red-500" },
-  medium: { label: "Solide", bar: "bg-amber-400", text: "text-amber-600" },
-  strong: { label: "Stark", bar: "bg-emerald-500", text: "text-emerald-600" },
+  weak: { label: "Schwach", bar: "bg-destructive", text: "text-destructive" },
+  medium: { label: "Solide", bar: "bg-warning", text: "text-warning" },
+  strong: { label: "Stark", bar: "bg-success", text: "text-success" },
 } as const;
 
 function evaluatePasswordStrength(password: string) {
@@ -152,8 +153,8 @@ export default function SignUpPage() {
 
   return (
     <TooltipProvider delayDuration={120}>
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <Card className="w-full max-w-lg">
+      <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
+        <Card className="w-full max-w-lg border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
           <CardHeader className="space-y-1">
             <CardTitle>Registrieren</CardTitle>
             <CardDescription>Erstelle dein Konto in wenigen Schritten.</CardDescription>
@@ -161,42 +162,36 @@ export default function SignUpPage() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {success && (
-                <div className="rounded-md border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
-                  <div className="flex items-start gap-2">
-                    <MailCheck className="mt-0.5 h-5 w-5 text-primary" />
-                    <div>
-                      <p className="font-medium">Bitte bestätige deine E-Mail-Adresse.</p>
-                      <p className="mt-1 text-muted-foreground">
-                        {success}
-                        {pendingEmail && (
-                          <span className="block">Wir haben an {pendingEmail} gesendet.</span>
+                <NotificationBanner
+                  variant="success"
+                  title="Registrierung erfolgreich"
+                  description={success}
+                  action={
+                    <div className="flex flex-col gap-2 text-right sm:flex-row sm:text-left">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleResendVerification}
+                        disabled={resending || !pendingEmail}
+                      >
+                        {resending ? (
+                          <span className="flex items-center gap-2">
+                            <RefreshCw className="h-4 w-4 animate-spin" />
+                            Wird gesendet ...
+                          </span>
+                        ) : (
+                          "E-Mail erneut senden"
                         )}
-                      </p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={handleResendVerification}
-                          disabled={resending || !pendingEmail}
-                        >
-                          {resending ? (
-                            <span className="flex items-center gap-2">
-                              <RefreshCw className="h-4 w-4 animate-spin" />
-                              Wird gesendet…
-                            </span>
-                          ) : (
-                            "E-Mail erneut senden"
-                          )}
-                        </Button>
-                        <Button type="button" variant="link" asChild>
-                          <Link href="/sign-in">Zur Anmeldung</Link>
-                        </Button>
-                      </div>
+                      </Button>
+                      <Button type="button" variant="link" asChild>
+                        <Link href="/sign-in">Zur Anmeldung</Link>
+                      </Button>
                     </div>
-                  </div>
-                </div>
+                  }
+                >
+                  {pendingEmail && <>Wir haben an {pendingEmail} gesendet.</>}
+                </NotificationBanner>
               )}
-
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="username">Benutzername</Label>
@@ -269,9 +264,10 @@ export default function SignUpPage() {
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground"
+                    className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     onClick={() => setShowPassword((prev) => !prev)}
                     aria-label={showPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+                    aria-pressed={showPassword}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -312,9 +308,10 @@ export default function SignUpPage() {
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground"
+                    className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
                     aria-label={showConfirmPassword ? "Passwort verbergen" : "Passwort anzeigen"}
+                    aria-pressed={showConfirmPassword}
                   >
                     {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -325,12 +322,12 @@ export default function SignUpPage() {
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
-                  <AlertCircle className="h-4 w-4" />
-                  <span>{error}</span>
-                </div>
+                <NotificationBanner
+                  variant="error"
+                  title="Registrierung fehlgeschlagen"
+                  description={error}
+                />
               )}
-
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Wird registriert..." : "Registrieren"}
               </Button>

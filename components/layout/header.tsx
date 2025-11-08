@@ -11,7 +11,7 @@ export async function Header() {
   }
 
   return (
-    <header className="flex flex-col gap-4 border-b bg-card px-4 py-4 sm:px-6 sm:py-4 md:flex-row md:items-center md:justify-between">
+    <header className="flex flex-col gap-4 border-b border-border/70 bg-card/80 px-4 py-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-card/60 sm:px-6 sm:py-4 md:flex-row md:items-center md:justify-between">
       <div>
         <h1 className="text-xl font-semibold">
           Willkommen zurück{session?.user?.name ? `, ${session.user.name}` : ""}

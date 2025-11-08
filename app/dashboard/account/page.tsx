@@ -75,7 +75,7 @@ export default async function AccountPage() {
               </div>
               <div className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2">
                 <dt className="text-muted-foreground">Status</dt>
-                <dd className="font-medium text-emerald-500">Aktiv</dd>
+                <dd className="font-medium text-success">Aktiv</dd>
               </div>
               <div className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2">
                 <dt className="text-muted-foreground">Registriert am</dt>
