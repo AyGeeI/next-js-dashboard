@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { loginAction } from "@/app/actions/auth";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MailCheck, RefreshCw, AlertCircle, Eye, EyeOff } from "lucide-react";
 
-export default function SignInPage() {
+function SignInContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -195,5 +195,27 @@ export default function SignInPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense
+      fallback={(
+        <div className="flex min-h-screen items-center justify-center p-4">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle>Anmelden</CardTitle>
+              <CardDescription>Bitte warten...</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground">
+              Wir laden die noetigen Daten.
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    >
+      <SignInContent />
+    </Suspense>
   );
 }
