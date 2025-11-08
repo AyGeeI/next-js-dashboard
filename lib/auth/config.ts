@@ -71,7 +71,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         if (!user.emailVerified) {
-          throw new AccessDenied("E-Mail-Adresse wurde noch nicht bestaetigt.");
+          throw new AccessDenied("E-Mail-Adresse wurde noch nicht bestätigt.");
         }
 
         // Successful login - reset failed login counter

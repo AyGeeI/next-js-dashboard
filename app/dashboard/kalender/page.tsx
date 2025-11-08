@@ -1,7 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+﻿import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CardMetric } from "@/components/widgets/card-metric";
 import { mockCalendarEvents } from "@/lib/mocks";
 import { Calendar, Clock, Users, AlertCircle } from "lucide-react";
+
+const eventTypeLabel: Record<string, string> = {
+  meeting: "Meeting",
+  personal: "Privat",
+  deadline: "Deadline",
+};
 
 export default function KalenderPage() {
   const upcomingEvents = mockCalendarEvents.slice(0, 3);
@@ -9,35 +15,9 @@ export default function KalenderPage() {
   const meetings = mockCalendarEvents.filter((e) => e.type === "meeting").length;
   const deadlines = mockCalendarEvents.filter((e) => e.type === "deadline").length;
 
-  const getEventTypeColor = (type: string) => {
-    switch (type) {
-      case "meeting":
-        return "border-l-blue-500";
-      case "personal":
-        return "border-l-green-500";
-      case "deadline":
-        return "border-l-red-500";
-      default:
-        return "border-l-gray-500";
-    }
-  };
-
-  const getEventTypeBadge = (type: string) => {
-    switch (type) {
-      case "meeting":
-        return <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-700">Meeting</span>;
-      case "personal":
-        return <span className="rounded-full bg-green-100 px-2 py-1 text-xs text-green-700">Privat</span>;
-      case "deadline":
-        return <span className="rounded-full bg-red-100 px-2 py-1 text-xs text-red-700">Deadline</span>;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="space-y-6">
-      <div>
+      <div className="space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Kalender</h2>
         <p className="text-muted-foreground">
           Ihre anstehenden Termine und Events (Dummy-Daten)
@@ -61,7 +41,7 @@ export default function KalenderPage() {
           title="Deadlines"
           value={deadlines}
           icon={AlertCircle}
-          description="Wichtige Termine"
+          description="Wichtige Fälligkeiten"
         />
         <CardMetric
           title="Nächster Termin"
@@ -78,19 +58,18 @@ export default function KalenderPage() {
         <CardContent>
           <div className="space-y-3">
             {mockCalendarEvents.map((event) => (
-              <div
-                key={event.id}
-                className={`rounded-lg border-l-4 bg-card p-4 ${getEventTypeColor(
-                  event.type
-                )}`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
+              <div key={event.id} className="rounded-lg border bg-card p-4">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
                     <div className="flex items-center gap-2">
                       <h4 className="font-semibold">{event.title}</h4>
-                      {getEventTypeBadge(event.type)}
+                      {eventTypeLabel[event.type] && (
+                        <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-foreground">
+                          {eventTypeLabel[event.type]}
+                        </span>
+                      )}
                     </div>
-                    <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="mt-2 flex flex-wrap gap-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
                         {new Date(event.date).toLocaleDateString("de-DE", {
@@ -119,9 +98,8 @@ export default function KalenderPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            Dies sind Dummy-Daten. In einer produktiven Umgebung würden hier echte
-            Kalendereinträge aus einer Datenbank oder Kalender-API (z.B. Google
-            Calendar) angezeigt werden.
+            Dies sind Dummy-Daten. In einer produktiven Umgebung würden hier echte Kalendereinträge aus einer Datenbank
+            oder einer API wie Google Calendar erscheinen.
           </p>
         </CardContent>
       </Card>

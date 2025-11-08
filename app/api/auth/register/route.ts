@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        message: "Registrierung erfolgreich. Bitte bestaetige deine E-Mail-Adresse.",
+        message: "Registrierung erfolgreich. Bitte bestätige deine E-Mail-Adresse.",
         pendingEmail: user.email,
       },
       { status: 201 }

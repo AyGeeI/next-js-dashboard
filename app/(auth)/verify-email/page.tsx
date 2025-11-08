@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -14,7 +14,7 @@ function VerifyEmailContent() {
   const token = searchParams?.get("token");
   const [status, setStatus] = useState<Status>(token ? "verifying" : "idle");
   const [message, setMessage] = useState(
-    token ? "Wir pruefen deine Bestaetigung..." : "Kein Token gefunden. Bitte pruefe deine E-Mail-Bestaetigung."
+    token ? "Wir prüfen deine Bestätigung..." : "Kein Token gefunden. Bitte prüfe deine E-Mail-Bestätigung."
   );
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function VerifyEmailContent() {
 
     const verify = async () => {
       setStatus("verifying");
-      setMessage("Wir pruefen deine Bestaetigung...");
+      setMessage("Wir prüfen deine Bestätigung...");
 
       try {
         const response = await fetch("/api/auth/verify-email", {
@@ -44,10 +44,10 @@ function VerifyEmailContent() {
         }
 
         setStatus("success");
-        setMessage(data.message || "E-Mail erfolgreich bestaetigt.");
+        setMessage(data.message || "E-Mail erfolgreich bestätigt.");
       } catch (err) {
         setStatus("error");
-        setMessage("Verifizierung fehlgeschlagen. Bitte versuche es spaeter erneut.");
+        setMessage("Verifizierung fehlgeschlagen. Bitte versuche es später erneut.");
       }
     };
 
@@ -59,9 +59,9 @@ function VerifyEmailContent() {
       case "verifying":
         return <Loader2 className="h-10 w-10 animate-spin text-primary" />;
       case "success":
-        return <CheckCircle2 className="h-10 w-10 text-emerald-500" />;
+        return <CheckCircle2 className="h-10 w-10 text-primary" />;
       case "error":
-        return <MailQuestion className="h-10 w-10 text-amber-500" />;
+        return <MailQuestion className="h-10 w-10 text-destructive" />;
       default:
         return <MailQuestion className="h-10 w-10 text-muted-foreground" />;
     }
@@ -71,8 +71,8 @@ function VerifyEmailContent() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md text-center">
         <CardHeader>
-          <CardTitle>E-Mail bestaetigen</CardTitle>
-          <CardDescription>Wir muessen deine Adresse verifizieren, bevor du dich anmelden kannst.</CardDescription>
+          <CardTitle>E-Mail bestätigen</CardTitle>
+          <CardDescription>Wir müssen deine Adresse verifizieren, bevor du dich anmelden kannst.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="flex flex-col items-center gap-4">
@@ -102,11 +102,11 @@ export default function VerifyEmailPage() {
         <div className="flex min-h-screen items-center justify-center p-4">
           <Card className="w-full max-w-md text-center">
             <CardHeader>
-              <CardTitle>E-Mail wird geprueft</CardTitle>
+              <CardTitle>E-Mail wird geprüft</CardTitle>
               <CardDescription>Bitte warten...</CardDescription>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
-              Wir laden die noetigen Daten.
+              Wir laden die nötigen Daten.
             </CardContent>
           </Card>
         </div>

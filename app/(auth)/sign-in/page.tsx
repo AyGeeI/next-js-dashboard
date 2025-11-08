@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -24,7 +24,7 @@ function SignInContent() {
 
   useEffect(() => {
     if (searchParams?.get("registered")) {
-      setInfo("Registrierung erfolgreich. Bitte bestaetige deine E-Mail-Adresse, bevor du dich anmeldest.");
+      setInfo("Registrierung erfolgreich. Bitte bestätige deine E-Mail-Adresse, bevor du dich anmeldest.");
     }
   }, [searchParams]);
 
@@ -35,19 +35,17 @@ function SignInContent() {
     setLoading(true);
 
     try {
-      // Use server action with rate limiting
       const result = await loginAction(email, password);
 
       if (result.error) {
         setError(result.error);
         if (result.errorCode === "EMAIL_NOT_VERIFIED") {
-          setInfo("Bitte bestaetige deine E-Mail-Adresse, um dich anzumelden.");
+          setInfo("Bitte bestätige deine E-Mail-Adresse, um dich anzumelden.");
           setPendingEmail(result.pendingEmail || email);
         }
       } else if (result.success) {
-        // Check if there's a return URL from proxy redirect
-        const searchParams = new URLSearchParams(window.location.search);
-        const from = searchParams.get("from");
+        const params = new URLSearchParams(window.location.search);
+        const from = params.get("from");
 
         if (from) {
           router.push(from);
@@ -57,7 +55,7 @@ function SignInContent() {
         router.refresh();
       }
     } catch (error) {
-      setError("Ein Fehler ist aufgetreten. Bitte versuche es spaeter erneut.");
+      setError("Ein Fehler ist aufgetreten. Bitte versuche es später erneut.");
     } finally {
       setLoading(false);
     }
@@ -93,7 +91,7 @@ function SignInContent() {
       setInfo(data.message || "Wir haben dir eine neue E-Mail gesendet.");
       setPendingEmail(targetEmail);
     } catch (err) {
-      setError("Versand fehlgeschlagen. Bitte versuche es spaeter erneut.");
+      setError("Versand fehlgeschlagen. Bitte versuche es später erneut.");
     } finally {
       setResending(false);
     }
@@ -104,15 +102,13 @@ function SignInContent() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Anmelden</CardTitle>
-          <CardDescription>
-            Melden Sie sich mit Ihren Zugangsdaten an
-          </CardDescription>
+          <CardDescription>Melde dich mit deinen Zugangsdaten an.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             {info && (
-              <div className="flex items-start gap-2 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
-                <MailCheck className="mt-0.5 h-4 w-4" />
+              <div className="flex items-start gap-2 rounded-md border border-primary/30 bg-primary/5 p-3 text-sm text-foreground">
+                <MailCheck className="mt-0.5 h-4 w-4 text-primary" />
                 <div>
                   <p>{info}</p>
                   {(pendingEmail || email) && (
@@ -129,7 +125,7 @@ function SignInContent() {
                     {resending ? (
                       <span className="flex items-center gap-2">
                         <RefreshCw className="h-4 w-4 animate-spin" />
-                        Wird gesendet...
+                        Wird gesendet…
                       </span>
                     ) : (
                       "E-Mail erneut senden"
@@ -143,7 +139,6 @@ function SignInContent() {
               <Input
                 id="email"
                 type="email"
-                placeholder="mail@beispiel.de"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -172,9 +167,6 @@ function SignInContent() {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Mindestens 12 Zeichen erforderlich
-              </p>
             </div>
             {error && (
               <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
@@ -209,7 +201,7 @@ export default function SignInPage() {
               <CardDescription>Bitte warten...</CardDescription>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
-              Wir laden die noetigen Daten.
+              Wir laden die nötigen Daten.
             </CardContent>
           </Card>
         </div>

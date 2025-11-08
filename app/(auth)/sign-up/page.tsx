@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -14,15 +14,15 @@ type FieldErrors = Record<string, string>;
 
 const passwordRequirements = [
   "Mindestens 12 Zeichen",
-  "Gross- und Kleinbuchstaben",
+  "Groß- und Kleinbuchstaben",
   "Mindestens eine Zahl",
   "Mindestens ein Sonderzeichen",
 ];
 
 const passwordStrengthMap = {
   weak: { label: "Schwach", bar: "bg-destructive", text: "text-destructive" },
-  medium: { label: "Mittel", bar: "bg-amber-500", text: "text-amber-600" },
-  strong: { label: "Stark", bar: "bg-emerald-500", text: "text-emerald-600" },
+  medium: { label: "Solide", bar: "bg-secondary", text: "text-foreground" },
+  strong: { label: "Stark", bar: "bg-primary", text: "text-primary" },
 } as const;
 
 function evaluatePasswordStrength(password: string) {
@@ -104,7 +104,7 @@ export default function SignUpPage() {
         return;
       }
 
-      setSuccess(data.message || "Registrierung erfolgreich. Bitte bestaetige deine E-Mail-Adresse.");
+      setSuccess(data.message || "Registrierung erfolgreich. Bitte bestätige deine E-Mail-Adresse.");
       setPendingEmail(data.pendingEmail || email);
       setName("");
       setUsername("");
@@ -112,7 +112,7 @@ export default function SignUpPage() {
       setPassword("");
       setConfirmPassword("");
     } catch (err) {
-      setError("Ein Fehler ist aufgetreten. Bitte versuche es spaeter erneut.");
+      setError("Ein Fehler ist aufgetreten. Bitte versuche es später erneut.");
     } finally {
       setLoading(false);
     }
@@ -144,28 +144,28 @@ export default function SignUpPage() {
 
       setSuccess(data.message || "Wir haben dir eine neue E-Mail gesendet.");
     } catch (err) {
-      setError("Versand fehlgeschlagen. Bitte versuche es spaeter erneut.");
+      setError("Versand fehlgeschlagen. Bitte versuche es später erneut.");
     } finally {
       setResending(false);
     }
   };
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={120}>
       <div className="flex min-h-screen items-center justify-center p-4">
         <Card className="w-full max-w-lg">
-          <CardHeader>
+          <CardHeader className="space-y-1">
             <CardTitle>Registrieren</CardTitle>
             <CardDescription>Erstelle dein Konto in wenigen Schritten.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {success && (
-                <div className="rounded-md border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+                <div className="rounded-md border border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
                   <div className="flex items-start gap-2">
-                    <MailCheck className="mt-0.5 h-5 w-5" />
+                    <MailCheck className="mt-0.5 h-5 w-5 text-primary" />
                     <div>
-                      <p className="font-medium">Bitte bestaetige deine E-Mail-Adresse.</p>
+                      <p className="font-medium">Bitte bestätige deine E-Mail-Adresse.</p>
                       <p className="mt-1 text-muted-foreground">
                         {success}
                         {pendingEmail && (
@@ -173,11 +173,16 @@ export default function SignUpPage() {
                         )}
                       </p>
                       <div className="mt-3 flex flex-wrap gap-2">
-                        <Button type="button" variant="outline" onClick={handleResendVerification} disabled={resending}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handleResendVerification}
+                          disabled={resending || !pendingEmail}
+                        >
                           {resending ? (
                             <span className="flex items-center gap-2">
                               <RefreshCw className="h-4 w-4 animate-spin" />
-                              Wird gesendet...
+                              Wird gesendet…
                             </span>
                           ) : (
                             "E-Mail erneut senden"
@@ -198,23 +203,23 @@ export default function SignUpPage() {
                   <Input
                     id="username"
                     autoComplete="username"
-                    placeholder="dein.name"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     disabled={loading}
                     required
                   />
+                  <p className="text-xs text-muted-foreground">Wird für das Login und in Links verwendet.</p>
                   {fieldErrors.username && <p className="text-xs text-destructive">{fieldErrors.username}</p>}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name (optional)</Label>
+                  <Label htmlFor="name">Name</Label>
                   <Input
                     id="name"
-                    placeholder="Max Mustermann"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     disabled={loading}
                   />
+                  <p className="text-xs text-muted-foreground">Anzeigename im Dashboard.</p>
                 </div>
               </div>
 
@@ -224,12 +229,12 @@ export default function SignUpPage() {
                   id="email"
                   type="email"
                   autoComplete="email"
-                  placeholder="mail@beispiel.de"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={loading}
                 />
+                <p className="text-xs text-muted-foreground">Wir schicken alle Bestätigungen an diese Adresse.</p>
                 {fieldErrors.email && <p className="text-xs text-destructive">{fieldErrors.email}</p>}
               </div>
 
@@ -240,11 +245,12 @@ export default function SignUpPage() {
                     <Tooltip>
                       <TooltipTrigger type="button" className="rounded-full p-1 text-muted-foreground">
                         <Info className="h-4 w-4" aria-hidden="true" />
+                        <span className="sr-only">Passwortanforderungen anzeigen</span>
                       </TooltipTrigger>
                       <TooltipContent>
                         <ul className="space-y-1 text-xs">
                           {passwordRequirements.map((req) => (
-                            <li key={req}>- {req}</li>
+                            <li key={req}>• {req}</li>
                           ))}
                         </ul>
                       </TooltipContent>
@@ -256,7 +262,6 @@ export default function SignUpPage() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
-                    placeholder="Mindestens 12 Zeichen"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -276,7 +281,7 @@ export default function SignUpPage() {
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">Passwortstaerke</span>
+                    <span className="text-muted-foreground">Passwortstärke</span>
                     <span className={cn("font-medium", password ? passwordStrength.text : "text-muted-foreground")}>
                       {passwordStrength.label}
                     </span>
@@ -296,7 +301,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Passwort bestaetigen</Label>
+                <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
@@ -317,6 +322,7 @@ export default function SignUpPage() {
                     {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
+                <p className="text-xs text-muted-foreground">Zur Sicherheit erneut eingeben.</p>
                 {fieldErrors.confirmPassword && (
                   <p className="text-xs text-destructive">{fieldErrors.confirmPassword}</p>
                 )}
@@ -346,6 +352,3 @@ export default function SignUpPage() {
     </TooltipProvider>
   );
 }
-
-
-

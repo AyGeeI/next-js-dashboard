@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
 
     if (!token || typeof token !== "string") {
       return NextResponse.json(
-        { error: "Ungueltiger oder fehlender Token." },
+        { error: "Ungültiger oder fehlender Token." },
         { status: 400 }
       );
     }
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       });
 
       return NextResponse.json(
-        { error: "Token ist abgelaufen. Bitte fordere eine neue Bestaetigung an." },
+        { error: "Token ist abgelaufen. Bitte fordere eine neue Bestätigung an." },
         { status: 400 }
       );
     }
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       });
 
       return NextResponse.json(
-        { error: "Zuordnung fuer dieses Token konnte nicht gefunden werden." },
+        { error: "Zuordnung für dieses Token konnte nicht gefunden werden." },
         { status: 400 }
       );
     }
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
       where: { identifier: verificationToken.identifier },
     });
 
-    return NextResponse.json({ message: "E-Mail erfolgreich bestaetigt." });
+    return NextResponse.json({ message: "E-Mail erfolgreich bestätigt." });
   } catch (error) {
     console.error("Verify email error:", error);
     return NextResponse.json(

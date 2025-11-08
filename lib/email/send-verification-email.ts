@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+﻿import { Resend } from "resend";
 
 const DEFAULT_FROM = "no-reply@example.com";
 const APP_URL_FALLBACK = "http://localhost:3000";
@@ -34,7 +34,7 @@ export async function sendVerificationEmail(email: string, token: string) {
   await resend.emails.send({
     from: emailFrom,
     to: email,
-    subject: "Bitte bestaetige deine E-Mail-Adresse",
+    subject: "Bitte bestätige deine E-Mail-Adresse",
     html: getEmailHtml(verifyUrl),
   });
 }
@@ -47,13 +47,13 @@ function getEmailHtml(verifyUrl: string) {
           <table cellpadding="0" cellspacing="0" width="600" role="presentation" style="max-width:600px;width:100%;border:1px solid #e5e7eb;border-radius:12px;padding:32px;">
             <tr>
               <td>
-                <h1 style="font-size:20px;margin-bottom:16px;color:#0f172a;">E-Mail-Adresse bestaetigen</h1>
+                <h1 style="font-size:20px;margin-bottom:16px;color:#0f172a;">E-Mail-Adresse bestätigen</h1>
                 <p style="font-size:14px;line-height:1.6;color:#1e293b;margin-bottom:24px;">
-                  Danke fuer deine Registrierung. Bitte bestaetige deine E-Mail-Adresse, um dein Konto freizuschalten.
+                  Danke für deine Registrierung. Bitte bestätige deine E-Mail-Adresse, um dein Konto freizuschalten.
                 </p>
                 <p style="text-align:center;margin-bottom:24px;">
                   <a href="${verifyUrl}" style="background-color:#2563eb;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block;">
-                    E-Mail bestaetigen
+                    E-Mail bestätigen
                   </a>
                 </p>
                 <p style="font-size:12px;line-height:1.6;color:#475569;">

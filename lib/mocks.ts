@@ -1,7 +1,7 @@
-// Zentralisierte Mock-Daten für das Dashboard
+﻿// Zentralisierte Mock-Daten für das Dashboard
 
 export const mockDashboardMetrics = [
-  { title: "Heute", value: "Alles läuft 🎯" },
+  { title: "Erledigte Aufgaben", value: 18 },
   { title: "Aktive Projekte", value: 12 },
   { title: "Nächster Termin", value: "10:30 Uhr" },
   { title: "Offene Aufgaben", value: 24 },
@@ -25,14 +25,14 @@ export const mockWeatherData = {
 };
 
 export const mockFinanceData = {
-  balance: 15420.50,
-  income: 4250.00,
+  balance: 15420.5,
+  income: 4250.0,
   expenses: 1890.25,
   transactions: [
-    { id: 1, date: "2025-11-07", description: "Gehalt", amount: 4250.00, type: "income" },
-    { id: 2, date: "2025-11-06", description: "Miete", amount: -950.00, type: "expense" },
-    { id: 3, date: "2025-11-05", description: "Supermarkt", amount: -125.50, type: "expense" },
-    { id: 4, date: "2025-11-04", description: "Freelance Projekt", amount: 800.00, type: "income" },
+    { id: 1, date: "2025-11-07", description: "Gehalt", amount: 4250.0, type: "income" },
+    { id: 2, date: "2025-11-06", description: "Miete", amount: -950.0, type: "expense" },
+    { id: 3, date: "2025-11-05", description: "Supermarkt", amount: -125.5, type: "expense" },
+    { id: 4, date: "2025-11-04", description: "Freelance-Projekt", amount: 800.0, type: "income" },
     { id: 5, date: "2025-11-03", description: "Tankstelle", amount: -65.75, type: "expense" },
   ],
   savingsGoal: {
@@ -45,18 +45,18 @@ export const mockFinanceData = {
 export const mockCalendarEvents = [
   {
     id: 1,
-    title: "Team Meeting",
+    title: "Team-Meeting",
     date: "2025-11-08",
     time: "10:00",
-    duration: "1h",
+    duration: "60 Min",
     type: "meeting",
   },
   {
     id: 2,
-    title: "Projekt Review",
+    title: "Projekt-Review",
     date: "2025-11-08",
     time: "14:30",
-    duration: "2h",
+    duration: "120 Min",
     type: "meeting",
   },
   {
@@ -64,7 +64,7 @@ export const mockCalendarEvents = [
     title: "Arzttermin",
     date: "2025-11-09",
     time: "09:00",
-    duration: "30min",
+    duration: "30 Min",
     type: "personal",
   },
   {
@@ -80,7 +80,7 @@ export const mockCalendarEvents = [
     title: "Kundengespräch",
     date: "2025-11-11",
     time: "11:00",
-    duration: "1h",
+    duration: "60 Min",
     type: "meeting",
   },
 ];

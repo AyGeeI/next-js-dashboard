@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         {
-          error: "Bitte gib eine gueltige E-Mail-Adresse an.",
+          error: "Bitte gib eine gültige E-Mail-Adresse an.",
           errors: validation.error.issues.map((issue) => ({
             field: "email",
             message: issue.message,
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     if (user.emailVerified) {
       return NextResponse.json({
-        message: "Deine E-Mail-Adresse ist bereits bestaetigt. Du kannst dich anmelden.",
+        message: "Deine E-Mail-Adresse ist bereits bestätigt. Du kannst dich anmelden.",
         alreadyVerified: true,
       });
     }
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     await sendVerificationEmail(normalizedEmail, token);
 
     return NextResponse.json({
-      message: "Wir haben dir eine neue E-Mail zur Bestaetigung gesendet.",
+      message: "Wir haben dir eine neue E-Mail zur Bestätigung gesendet.",
     });
   } catch (error) {
     console.error("Resend verification error:", error);

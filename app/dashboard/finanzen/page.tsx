@@ -1,14 +1,19 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+﻿import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CardMetric } from "@/components/widgets/card-metric";
 import { mockFinanceData } from "@/lib/mocks";
 import { Wallet, TrendingUp, TrendingDown, Target } from "lucide-react";
+
+const currency = new Intl.NumberFormat("de-DE", {
+  style: "currency",
+  currency: "EUR",
+});
 
 export default function FinanzenPage() {
   const { balance, income, expenses, transactions, savingsGoal } = mockFinanceData;
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Finanzen</h2>
         <p className="text-muted-foreground">
           Ihre finanzielle Übersicht und Transaktionen (Dummy-Daten)
@@ -18,19 +23,19 @@ export default function FinanzenPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <CardMetric
           title="Kontostand"
-          value={`${balance.toFixed(2)} €`}
+          value={currency.format(balance)}
           icon={Wallet}
           description="Aktueller Kontostand"
         />
         <CardMetric
           title="Einnahmen"
-          value={`${income.toFixed(2)} €`}
+          value={currency.format(income)}
           icon={TrendingUp}
           description="Diesen Monat"
         />
         <CardMetric
           title="Ausgaben"
-          value={`${expenses.toFixed(2)} €`}
+          value={currency.format(expenses)}
           icon={TrendingDown}
           description="Diesen Monat"
         />
@@ -38,7 +43,7 @@ export default function FinanzenPage() {
           title="Sparziel"
           value={`${savingsGoal.percentage}%`}
           icon={Target}
-          description={`${savingsGoal.current} / ${savingsGoal.target} €`}
+          description={`${currency.format(savingsGoal.current)} / ${currency.format(savingsGoal.target)}`}
         />
       </div>
 
@@ -47,30 +52,28 @@ export default function FinanzenPage() {
           <CardTitle>Letzte Transaktionen</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            {transactions.map((transaction) => (
-              <div
-                key={transaction.id}
-                className="flex items-center justify-between rounded-lg border p-4"
-              >
-                <div className="flex-1">
-                  <p className="font-medium">{transaction.description}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(transaction.date).toLocaleDateString("de-DE")}
+          <div className="space-y-3">
+            {transactions.map((transaction) => {
+              const isIncome = transaction.type === "income";
+              const formattedAmount = currency.format(Math.abs(transaction.amount));
+              return (
+                <div
+                  key={transaction.id}
+                  className="flex flex-col gap-2 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div>
+                    <p className="font-medium">{transaction.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {new Date(transaction.date).toLocaleDateString("de-DE")}
+                    </p>
+                  </div>
+                  <p className={`text-lg font-semibold ${isIncome ? "text-primary" : "text-foreground"}`}>
+                    {isIncome ? "+" : "-"}
+                    {formattedAmount}
                   </p>
                 </div>
-                <p
-                  className={`text-lg font-bold ${
-                    transaction.type === "income"
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {transaction.amount > 0 ? "+" : ""}
-                  {transaction.amount.toFixed(2)} €
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </CardContent>
       </Card>
@@ -81,11 +84,11 @@ export default function FinanzenPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">
-                {savingsGoal.current.toFixed(2)} € von {savingsGoal.target.toFixed(2)} €
+            <div className="flex flex-col gap-1 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+              <span>
+                {currency.format(savingsGoal.current)} von {currency.format(savingsGoal.target)}
               </span>
-              <span className="font-medium">{savingsGoal.percentage}%</span>
+              <span className="font-medium text-foreground">{savingsGoal.percentage}%</span>
             </div>
             <div className="h-4 w-full rounded-full bg-muted">
               <div
@@ -103,8 +106,8 @@ export default function FinanzenPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            Dies sind Dummy-Daten. In einer produktiven Umgebung würden hier echte
-            Finanzdaten aus einer Datenbank oder Banking-API angezeigt werden.
+            Dies sind Dummy-Daten. In einer produktiven Umgebung würden hier echte Finanzdaten aus einer Datenbank
+            oder einer Banking-API dargestellt.
           </p>
         </CardContent>
       </Card>

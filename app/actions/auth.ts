@@ -37,7 +37,7 @@ export async function loginAction(email: string, password: string) {
 
       if (passwordsMatch) {
         return {
-          error: "Bitte bestaetige zuerst deine E-Mail-Adresse.",
+          error: "Bitte bestätige zuerst deine E-Mail-Adresse.",
           errorCode: "EMAIL_NOT_VERIFIED",
           pendingEmail: normalizedEmail,
           rateLimited: false,
@@ -68,7 +68,7 @@ export async function loginAction(email: string, password: string) {
     if (error instanceof AuthError) {
       if (error.type === "AccessDenied") {
         return {
-          error: "Bitte bestaetige zuerst deine E-Mail-Adresse.",
+          error: "Bitte bestätige zuerst deine E-Mail-Adresse.",
           errorCode: "EMAIL_NOT_VERIFIED",
           pendingEmail: email.trim().toLowerCase(),
           rateLimited: false,
@@ -82,7 +82,7 @@ export async function loginAction(email: string, password: string) {
     }
 
     return {
-      error: "Ein Fehler ist aufgetreten. Bitte versuche es spaeter erneut.",
+      error: "Ein Fehler ist aufgetreten. Bitte versuche es später erneut.",
       rateLimited: false,
     };
   }

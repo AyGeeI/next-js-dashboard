@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+﻿import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CardMetric } from "@/components/widgets/card-metric";
 import { mockWeatherData } from "@/lib/mocks";
 import { Cloud, Droplets, Wind, MapPin } from "lucide-react";
@@ -8,10 +8,10 @@ export default function WetterPage() {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Wetter</h2>
         <p className="text-muted-foreground">
-          Aktuelle Wetterinformationen und Vorhersage (Dummy-Daten)
+          Aktuelle Wetterinformationen und Vorhersagen (Dummy-Daten)
         </p>
       </div>
 
@@ -46,9 +46,9 @@ export default function WetterPage() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-5">
-            {forecast.map((day, index) => (
+            {forecast.map((day) => (
               <div
-                key={index}
+                key={day.day}
                 className="flex flex-col items-center rounded-lg border p-4"
               >
                 <p className="text-sm font-medium">{day.day}</p>
@@ -70,8 +70,8 @@ export default function WetterPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            Dies sind Dummy-Daten. In einer produktiven Umgebung würden hier echte
-            Wetterdaten von einer API (z.B. OpenWeatherMap) angezeigt werden.
+            Dies sind Dummy-Daten. In einer produktiven Umgebung würden hier echte Wetterdaten, zum Beispiel über
+            OpenWeatherMap, angezeigt.
           </p>
         </CardContent>
       </Card>

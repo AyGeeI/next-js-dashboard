@@ -15,7 +15,7 @@ export const passwordSchema = z
  */
 export const emailSchema = z
   .string()
-  .email("Bitte eine gueltige E-Mail-Adresse eingeben.");
+  .email("Bitte eine gültige E-Mail-Adresse eingeben.");
 
 /**
  * Username validation schema
@@ -45,7 +45,7 @@ export const registerSchema = z
     (data) => data.password === data.confirmPassword,
     {
       path: ["confirmPassword"],
-      message: "Passwoerter stimmen nicht ueberein.",
+      message: "Passwörter stimmen nicht überein.",
     }
   );
 
