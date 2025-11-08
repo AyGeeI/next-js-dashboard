@@ -16,14 +16,18 @@ export default auth((req) => {
 
   // Protect dashboard routes - redirect to sign-in with return URL
   if (isDashboard && !isAuthenticated) {
-    const url = new URL("/sign-in", req.url);
+    const url = req.nextUrl.clone();
+    url.pathname = "/sign-in";
     url.searchParams.set("from", pathname);
     return NextResponse.redirect(url);
   }
 
   // Redirect authenticated users away from auth pages (only for GET requests)
   if (isAuthPage && isAuthenticated && method === "GET") {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    const url = req.nextUrl.clone();
+    url.pathname = "/dashboard";
+    url.searchParams.delete("from");
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
