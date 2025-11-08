@@ -21,6 +21,7 @@ model User {
   username      String    @unique
   name          String?
   passwordHash  String
+  passwordChangedAt DateTime @default(now())
   emailVerified DateTime?
   role          Role      @default(STANDARD)
 
