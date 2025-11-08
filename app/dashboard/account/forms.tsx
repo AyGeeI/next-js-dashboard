@@ -63,7 +63,8 @@ export function ProfileForm({ initialName, initialUsername, email }: ProfileForm
 
       if (!response.ok) {
         if (Array.isArray(data.errors)) {
-          const errors = data.errors.reduce<ProfileFieldErrors>((acc, issue: ApiIssue) => {
+          const issues = data.errors as ApiIssue[];
+          const errors = issues.reduce<ProfileFieldErrors>((acc, issue) => {
             if (issue?.field) {
               acc[issue.field as keyof ProfileFieldErrors] = issue.message;
             }
@@ -214,7 +215,8 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
 
       if (!response.ok) {
         if (Array.isArray(data.errors)) {
-          const errors = data.errors.reduce<PasswordFieldErrors>((acc, issue: ApiIssue) => {
+          const issues = data.errors as ApiIssue[];
+          const errors = issues.reduce<PasswordFieldErrors>((acc, issue) => {
             if (issue?.field) {
               acc[issue.field as keyof PasswordFieldErrors] = issue.message;
             }
