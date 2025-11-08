@@ -7,6 +7,7 @@ import { AccessDenied } from "@auth/core/errors";
 
 // Dummy hash for timing attack protection when user doesn't exist
 const DUMMY_HASH = "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyGPrY1FeVi2";
+const ROLE_SYNC_INTERVAL_MS = 5 * 1000;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   // Note: PrismaAdapter is NOT compatible with Credentials provider
@@ -106,7 +107,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.name = user.name;
         token.username = (user as any).username;
         token.role = (user as any).role;
+        token.roleSyncedAt = Date.now();
+        return token;
       }
+
+      const lastSync = typeof token.roleSyncedAt === "number" ? token.roleSyncedAt : 0;
+      const shouldRefresh = Date.now() - lastSync > ROLE_SYNC_INTERVAL_MS;
+
+      if (shouldRefresh && token.id) {
+        const freshUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: {
+            email: true,
+            name: true,
+            username: true,
+            role: true,
+          },
+        });
+
+        if (freshUser) {
+          token.email = freshUser.email;
+          token.name = freshUser.name;
+          token.username = freshUser.username;
+          token.role = freshUser.role;
+          token.roleSyncedAt = Date.now();
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {

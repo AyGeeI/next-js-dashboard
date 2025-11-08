@@ -64,13 +64,13 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
         <span className="flex h-full w-full items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
           {initials}
         </span>
-        <span className="sr-only">Benutzermenue oeffnen</span>
+        <span className="sr-only">{"Benutzermen\u00FC \u00F6ffnen"}</span>
       </Button>
 
       {isOpen ? (
         <div
           role="menu"
-          className="absolute right-0 z-50 mt-3 w-72 overflow-hidden rounded-2xl border border-border bg-popover text-sm shadow-2xl ring-1 ring-black/5"
+          className="absolute top-12 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-sm -translate-x-1/2 overflow-hidden rounded-2xl border border-border bg-popover text-sm shadow-2xl ring-1 ring-black/5 sm:left-auto sm:right-0 sm:w-72 sm:max-w-none sm:translate-x-0"
         >
           <div className="bg-primary/5 px-4 py-3">
             <div className="flex items-center gap-3">
@@ -101,7 +101,7 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
             <MenuLink
               href="/dashboard/account"
               title="Konto"
-              description="PersÃ¶nliche Daten & Sicherheit"
+              description={"Pers\u00F6nliche Daten & Sicherheit"}
               icon={UserRound}
               onNavigate={() => setIsOpen(false)}
             />
@@ -191,3 +191,5 @@ function formatRole(role?: "ADMIN" | "STANDARD" | null) {
   }
   return "Standard";
 }
+
+
