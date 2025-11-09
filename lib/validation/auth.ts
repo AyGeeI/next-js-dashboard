@@ -53,12 +53,24 @@ export const registerSchema = z
     }
   );
 
+export const loginIdentifierSchema = z
+  .string()
+  .min(3, "Bitte gib deine E-Mail-Adresse oder deinen Benutzernamen ein.")
+  .max(254, "Bitte gib einen kürzeren Wert ein.")
+  .refine(
+    (value) => emailSchema.safeParse(value).success || usernameSchema.safeParse(value).success,
+    {
+      message: "Nutze eine gültige E-Mail-Adresse oder deinen Benutzernamen.",
+    },
+  );
+
 /**
  * Combined schema for login
  */
 export const loginSchema = z.object({
-  email: emailSchema,
+  identifier: loginIdentifierSchema,
   password: z.string(), // No length validation on login - validate hash instead
+  rememberMe: z.boolean().optional().default(false),
 });
 
 export const resendVerificationSchema = z.object({

@@ -36,6 +36,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   weatherPreference WeatherPreference?
+  passwordResetTokens PasswordResetToken[]
 
   @@map("users")
 }
@@ -92,4 +93,17 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expires   DateTime
+  createdAt DateTime @default(now())
+  usedAt    DateTime?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
 }
