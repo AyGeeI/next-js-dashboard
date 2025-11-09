@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -48,7 +48,7 @@ interface FieldErrors {
   token?: string;
 }
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialToken = searchParams?.get("token") ?? "";
@@ -92,13 +92,14 @@ export default function ResetPasswordPage() {
 
       if (!response.ok) {
         if (Array.isArray(data.errors)) {
+          const issues = data.errors as Array<{ field?: string; message: string }>;
           setFieldErrors(
-            data.errors.reduce<FieldErrors>((acc, issue: { field?: string; message: string }) => {
+            issues.reduce((acc, issue) => {
               if (issue.field && issue.message) {
                 acc[issue.field as keyof FieldErrors] = issue.message;
               }
               return acc;
-            }, {}),
+            }, {} as FieldErrors),
           );
         }
 
@@ -248,5 +249,27 @@ export default function ResetPasswordPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={(
+        <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
+          <Card className="w-full max-w-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
+            <CardHeader>
+              <CardTitle>Passwort zurücksetzen</CardTitle>
+              <CardDescription>Bitte warten...</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground">
+              Wir bereiten das Formular vor.
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    >
+      <ResetPasswordContent />
+    </Suspense>
   );
 }

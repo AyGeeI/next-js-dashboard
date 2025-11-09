@@ -41,7 +41,6 @@
 
 ## Motion & Mikrointeraktionen
 - Bewegungen erfolgen subtil, performant und respektieren `prefers-reduced-motion` (Tailwind `motion-safe`/`motion-reduce` Klassen).
-- Karten, Schnellzugriffe und Sidebar-Links reagieren mit `hover:-translate-y-0.5`, Border- und Schattenanimationen (`transition-all duration-300`).
 - Diagramme animieren nur Höhe/Opacity der Balken (`transition-[height,opacity] duration-500`). Keine aufwendigen Keyframes nötig.
 - Fokus- und Hover-Zustände bleiben immer sichtbar, Animationen dürfen nie alleinige Informationsträger sein.
 
