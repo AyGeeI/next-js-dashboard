@@ -23,6 +23,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("credentials payload", credentials);
         // Validate input with Zod
         const validationResult = loginSchema.safeParse(credentials);
 

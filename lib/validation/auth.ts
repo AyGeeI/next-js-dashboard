@@ -1,5 +1,29 @@
 import { z } from "zod";
 
+const rememberMeSchema = z.preprocess((value) => {
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+
+    if (["1", "true", "on"].includes(normalized)) {
+      return true;
+    }
+
+    if (["0", "false", "off"].includes(normalized)) {
+      return false;
+    }
+  }
+
+  if (typeof value === "number") {
+    return value === 1;
+  }
+
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  return false;
+}, z.boolean());
+
 /**
  * Password validation schema following OWASP guidelines
  * - Minimum 12 characters for security
@@ -70,7 +94,7 @@ export const loginIdentifierSchema = z
 export const loginSchema = z.object({
   identifier: loginIdentifierSchema,
   password: z.string(), // No length validation on login - validate hash instead
-  rememberMe: z.boolean().optional().default(false),
+  rememberMe: rememberMeSchema,
 });
 
 export const resendVerificationSchema = z.object({
