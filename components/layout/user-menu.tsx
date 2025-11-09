@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Settings, LogOut, UserRound } from "lucide-react";
+import { Settings, LogOut, UserRound, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
@@ -110,6 +110,15 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
               icon={Settings}
               onNavigate={() => setIsOpen(false)}
             />
+            {user?.role === "ADMIN" ? (
+              <MenuLink
+                href="/dashboard/admin"
+                title="Adminbereich"
+                description="Benutzerverwaltung & Rollen"
+                icon={ShieldCheck}
+                onNavigate={() => setIsOpen(false)}
+              />
+            ) : null}
           </nav>
 
           <Separator className="bg-border/60" />
