@@ -24,11 +24,6 @@ function SignInContent() {
   const [resending, setResending] = useState(false);
   const [pendingEmail, setPendingEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [forgotOpen, setForgotOpen] = useState(false);
-  const [forgotIdentifier, setForgotIdentifier] = useState("");
-  const [forgotLoading, setForgotLoading] = useState(false);
-  const [forgotStatus, setForgotStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
-  const [forgotFieldError, setForgotFieldError] = useState("");
   const verificationEmail = pendingEmail || (identifier.includes("@") ? identifier : "");
 
   useEffect(() => {
@@ -36,12 +31,6 @@ function SignInContent() {
       setInfo("Registrierung erfolgreich. Bitte bestätige deine E-Mail-Adresse, bevor du dich anmeldest.");
     }
   }, [searchParams]);
-
-  useEffect(() => {
-    if (forgotOpen && identifier && !forgotIdentifier) {
-      setForgotIdentifier(identifier);
-    }
-  }, [forgotOpen, identifier, forgotIdentifier]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -106,62 +95,6 @@ function SignInContent() {
       setError("Versand fehlgeschlagen. Bitte versuche es später erneut.");
     } finally {
       setResending(false);
-    }
-  };
-
-  const handleForgotPassword = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (forgotLoading) {
-      return;
-    }
-
-    const value = forgotIdentifier.trim() || identifier.trim();
-
-    if (!value) {
-      setForgotFieldError("Bitte gib deine E-Mail-Adresse oder deinen Benutzernamen ein.");
-      return;
-    }
-
-    setForgotFieldError("");
-    setForgotStatus(null);
-    setForgotLoading(true);
-
-    try {
-      const response = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ identifier: value }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (Array.isArray(data.errors) && data.errors[0]?.message) {
-          setForgotFieldError(data.errors[0].message);
-        }
-        setForgotStatus({
-          type: "error",
-          message: data.error || "Anfrage konnte nicht verarbeitet werden.",
-        });
-        return;
-      }
-
-      setForgotStatus({
-        type: "success",
-        message: data.message || "Wir haben dir eine E-Mail mit weiteren Schritten gesendet.",
-      });
-      setForgotIdentifier(value);
-    } catch (err) {
-      console.error("Forgot password error:", err);
-      setForgotStatus({
-        type: "error",
-        message: "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
-      });
-    } finally {
-      setForgotLoading(false);
     }
   };
 
@@ -237,7 +170,7 @@ function SignInContent() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-4 rounded-2xl border border-border/60 bg-muted/10 p-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <Switch
                   id="rememberMe"
@@ -245,28 +178,16 @@ function SignInContent() {
                   onCheckedChange={(checked) => setRememberMe(Boolean(checked))}
                   disabled={loading}
                 />
-                <div className="leading-tight">
-                  <Label htmlFor="rememberMe" className="cursor-pointer text-base font-medium">
-                    Angemeldet bleiben
-                  </Label>
-                  <p className="text-xs text-muted-foreground">
-                    Ohne Aktivität 30 Min. online, mit dieser Option 24 Stunden.
-                  </p>
-                </div>
+                <Label htmlFor="rememberMe" className="cursor-pointer text-base font-medium">
+                  Angemeldet bleiben
+                </Label>
               </div>
-              <button
-                type="button"
+              <Link
+                href="/forgot-password"
                 className="text-sm font-medium text-primary transition hover:text-primary/80"
-                onClick={() => {
-                  setForgotOpen((prev) => !prev);
-                  setForgotStatus(null);
-                  setForgotFieldError("");
-                }}
-                aria-expanded={forgotOpen}
-                aria-controls="forgot-password-panel"
               >
                 Passwort vergessen?
-              </button>
+              </Link>
             </div>
 
             {error && (
@@ -287,49 +208,6 @@ function SignInContent() {
               </Link>
             </div>
           </form>
-          {forgotOpen && (
-            <form
-              id="forgot-password-panel"
-              className="mt-4 space-y-3 rounded-2xl border border-dashed border-border/60 bg-accent/10 p-4"
-              onSubmit={handleForgotPassword}
-            >
-              <p className="text-sm text-muted-foreground">
-                Wir schicken dir einen Link zum Zurücksetzen. Der Link ist 30 Minuten gültig.
-              </p>
-              <div className="space-y-2">
-                <Label htmlFor="forgotIdentifier">E-Mail oder Benutzername</Label>
-                <Input
-                  id="forgotIdentifier"
-                  value={forgotIdentifier}
-                  onChange={(event) => setForgotIdentifier(event.target.value)}
-                  placeholder="z. B. maria@beispiel.de"
-                  disabled={forgotLoading}
-                />
-                {forgotFieldError && <p className="text-xs text-destructive">{forgotFieldError}</p>}
-              </div>
-              {forgotStatus && (
-                <NotificationBanner
-                  variant={forgotStatus.type === "success" ? "success" : "error"}
-                  title={forgotStatus.type === "success" ? "E-Mail unterwegs" : "Anfrage fehlgeschlagen"}
-                  description={forgotStatus.message}
-                />
-              )}
-              <div className="flex items-center justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setForgotOpen(false)}
-                  disabled={forgotLoading}
-                >
-                  Schließen
-                </Button>
-                <Button type="submit" size="sm" disabled={forgotLoading}>
-                  {forgotLoading ? "Wird gesendet ..." : "Link anfordern"}
-                </Button>
-              </div>
-            </form>
-          )}
         </CardContent>
       </Card>
     </div>

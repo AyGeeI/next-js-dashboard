@@ -2,13 +2,14 @@
 
 import { Suspense, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { NotificationBanner } from "@/components/ui/notification-banner";
-import { Eye, EyeOff } from "lucide-react";
-import Link from "next/link";
+import { Eye, EyeOff, Info } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const passwordStrengthMap = {
   weak: { label: "Schwach", bar: "bg-destructive", text: "text-destructive" },
@@ -45,15 +46,14 @@ function evaluatePasswordStrength(password: string) {
 interface FieldErrors {
   password?: string;
   confirmPassword?: string;
-  token?: string;
 }
 
 function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialToken = searchParams?.get("token") ?? "";
+  const token = searchParams?.get("token") ?? "";
+  const tokenMissing = token.length === 0;
 
-  const [token, setToken] = useState(initialToken);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -68,6 +68,14 @@ function ResetPasswordContent() {
     event.preventDefault();
 
     if (submitting) {
+      return;
+    }
+
+    if (!token) {
+      setStatus({
+        type: "error",
+        message: "Der Reset-Link ist ungültig oder abgelaufen.",
+      });
       return;
     }
 
@@ -119,7 +127,7 @@ function ResetPasswordContent() {
 
       setTimeout(() => {
         router.push("/sign-in");
-      }, 2500);
+      }, 2400);
     } catch (error) {
       console.error("Reset password error:", error);
       setStatus({
@@ -150,24 +158,32 @@ function ResetPasswordContent() {
               />
             )}
 
-            <div className="space-y-2">
-              <Label htmlFor="token">Reset-Token</Label>
-              <Input
-                id="token"
-                value={token}
-                onChange={(event) => setToken(event.target.value)}
-                autoComplete="off"
-                required
-                disabled={submitting}
+            {tokenMissing && (
+              <NotificationBanner
+                variant="warning"
+                title="Token fehlt"
+                description="Bitte öffne den Link direkt aus der E-Mail zum Zurücksetzen."
               />
-              {fieldErrors.token && <p className="text-sm text-destructive">{fieldErrors.token}</p>}
-              <p className="text-xs text-muted-foreground">
-                Den Token findest du in der E-Mail zum Zurücksetzen.
-              </p>
-            </div>
+            )}
 
             <div className="space-y-2">
-              <Label htmlFor="password">Neues Passwort</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Neues Passwort</Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger
+                      type="button"
+                      className="text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      aria-label="Passwortanforderungen anzeigen"
+                    >
+                      <Info className="h-4 w-4" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-xs text-xs">
+                      Mindestens 12 Zeichen, Groß- und Kleinbuchstaben, eine Zahl und ein Sonderzeichen.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <div className="relative">
                 <Input
                   id="password"
@@ -236,7 +252,7 @@ function ResetPasswordContent() {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={submitting}>
+            <Button type="submit" className="w-full" disabled={submitting || tokenMissing}>
               {submitting ? "Wird gespeichert ..." : "Passwort aktualisieren"}
             </Button>
             <div className="text-center text-sm text-muted-foreground">

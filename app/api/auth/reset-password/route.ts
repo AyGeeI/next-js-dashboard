@@ -54,6 +54,8 @@ export async function POST(req: NextRequest) {
         data: {
           passwordHash,
           passwordChangedAt: new Date(),
+          failedLogins: 0,
+          lockedUntil: null,
         },
       }),
       prisma.passwordResetToken.update({

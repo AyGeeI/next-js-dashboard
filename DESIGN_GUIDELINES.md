@@ -3,7 +3,7 @@
 ## Sprache & Inhalte
 - Alle Texte, Fehlermeldungen und E-Mails werden auf Deutsch mit korrekten Umlauten (ä, ö, ü, ß) und klarer Nutzeransprache verfasst.
 - Hinweise sind kurz, beschreiben den konkreten nächsten Schritt und verwenden aktive Verben (z. B. „Bestätige deine E-Mail-Adresse“).
-- Hilfetexte werden als Tooltips oder Klartext neben dem Label eingebunden, nicht als Platzhalter im Feld.
+- Hilfetexte werden als Tooltips neben dem Label eingebunden, nicht als Platzhalter im Feld.
 
 ## Farb- & Themekonzept (WCAG 2.2 AA)
 - Light Theme basiert auf neutralen Grautönen; Primärfarbe ist `hsl(222 85% 45%)`. Dark Theme nutzt tiefe Grautöne und `hsl(174 84% 45%)` als Akzent.
@@ -28,7 +28,7 @@
 - Im Fehlerfall `role="alert"`, sonst `role="status"`; Buttons im Banner schließen oder lösen direkt die empfohlene Handlung aus (z. B. „E-Mail erneut senden“).
 
 ## Formulare & Interaktion
-- Inputs nutzen `Label` und optional `Description/Tooltip`. Feldbeschreibungen erscheinen nur, wenn ein echter Mehrwert besteht; Fehlertexte stehen jeweils direkt unter dem Feld.
+- Inputs nutzen `Label` und optional `Description/Tooltip`. Feldbeschreibungen erscheinen nur, wenn ein echter Mehrwert besteht und diese keine offensichtliche Funktionen beschreiben; Fehlertexte stehen jeweils direkt unter dem Feld.
 - Auswahlfelder werden mit dem shadcn `Select` umgesetzt. Native `<select>` kommen nur zum Einsatz, wenn Barrierefreiheit dadurch verbessert wird.
 - Passwortstärke nutzt Balken + Klartext. Farbzuordnung: schwach = `text-destructive`, solide = `text-warning`, stark = `text-success`.
 - Buttons signalisieren Status: „Wird gesendet …“, „Aktualisieren“, „Speichern“. Fortlaufende Aktionen (z. B. Resend) kombinieren Icon + Spinner.
