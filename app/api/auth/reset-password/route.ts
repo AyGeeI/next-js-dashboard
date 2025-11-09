@@ -46,6 +46,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const currentUser = await prisma.user.findUnique({
+      where: { id: tokenRecord.userId },
+      select: { emailVerified: true },
+    });
+
     const passwordHash = await hash(password, 12);
 
     await prisma.$transaction([
@@ -56,6 +61,7 @@ export async function POST(req: NextRequest) {
           passwordChangedAt: new Date(),
           failedLogins: 0,
           lockedUntil: null,
+          emailVerified: currentUser?.emailVerified ?? new Date(),
         },
       }),
       prisma.passwordResetToken.update({
