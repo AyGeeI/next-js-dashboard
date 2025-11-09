@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const variants = cva(
-  "flex w-full gap-3 rounded-2xl border px-4 py-3 text-sm shadow-sm transition-colors duration-300 backdrop-blur motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-top-1",
+  "flex w-full flex-col gap-4 rounded-2xl border px-4 py-3 text-sm shadow-sm transition-colors duration-300 backdrop-blur motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-top-1 sm:flex-row sm:items-start",
   {
     variants: {
       variant: {
@@ -67,25 +67,29 @@ export function NotificationBanner({
       aria-live={resolvedVariant === "error" ? "assertive" : "polite"}
       {...props}
     >
-      <span
-        className={cn(
-          "flex h-8 w-8 items-center justify-center rounded-xl border border-current/20 bg-background/80 text-base",
-          accent
-        )}
-        aria-hidden="true"
-      >
-        <Icon className="h-4 w-4" />
-      </span>
-      <div className="flex flex-1 flex-col gap-1">
-        {title && <p className={cn("text-sm font-semibold leading-tight", accent)}>{title}</p>}
-        {description && (
-          <p className="text-sm text-foreground/80 dark:text-foreground/80">{description}</p>
-        )}
-        {children ? (
-          <div className="text-xs text-muted-foreground">{children}</div>
-        ) : null}
+      <div className="flex w-full items-start gap-3 sm:flex-1 sm:items-center">
+        <span
+          className={cn(
+            "flex h-10 w-10 items-center justify-center rounded-xl border border-current/20 bg-background/80 text-base",
+            accent
+          )}
+          aria-hidden="true"
+        >
+          <Icon className="h-5 w-5" />
+        </span>
+        <div className="flex flex-1 flex-col gap-1">
+          {title && <p className={cn("text-sm font-semibold leading-tight", accent)}>{title}</p>}
+          {description && (
+            <p className="text-sm text-foreground/80 dark:text-foreground/80">{description}</p>
+          )}
+          {children ? (
+            <div className="text-xs text-muted-foreground">{children}</div>
+          ) : null}
+        </div>
       </div>
-      {action ? <div className="shrink-0">{action}</div> : null}
+      {action ? (
+        <div className="flex w-full items-center justify-start sm:w-auto sm:justify-end">{action}</div>
+      ) : null}
     </section>
   );
 }

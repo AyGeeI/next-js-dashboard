@@ -152,12 +152,16 @@ export function ProfileForm({ initialName, initialUsername, email }: ProfileForm
         <div className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Vollständiger Name</Label>
+              <div className="space-y-1">
+                <Label htmlFor="fullName">Vollständiger Name</Label>
+                <p className="text-xs text-muted-foreground">
+                  So sprichst du Nutzer:innen in Einladungen und E-Mails an.
+                </p>
+              </div>
               <Input
                 id="fullName"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
-                placeholder="Vor- und Nachname"
                 autoComplete="name"
                 disabled={submitting}
                 className="h-11"
@@ -182,11 +186,11 @@ export function ProfileForm({ initialName, initialUsername, email }: ProfileForm
                   </TooltipContent>
                 </Tooltip>
               </div>
+              <p className="text-xs text-muted-foreground">Wird für dein öffentliches Profil verwendet.</p>
               <Input
                 id="username"
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
-                placeholder="z. B. max.mustermann"
                 autoComplete="username"
                 disabled={submitting}
                 className="h-11"
@@ -325,14 +329,18 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
 
           <div className="grid gap-4">
             <div className="space-y-2">
-              <Label htmlFor="currentPassword">Aktuelles Passwort</Label>
+              <div className="space-y-1">
+                <Label htmlFor="currentPassword">Aktuelles Passwort</Label>
+                <p className="text-xs text-muted-foreground">
+                  Wir benötigen dein bestehendes Passwort, um Änderungen zu bestätigen.
+                </p>
+              </div>
               <div className="relative">
                 <Input
                   id="currentPassword"
                   type={showCurrentPassword ? "text" : "password"}
                   value={currentPassword}
                   onChange={(event) => setCurrentPassword(event.target.value)}
-                  placeholder="Aktuelles Passwort"
                   autoComplete="current-password"
                   minLength={12}
                   disabled={submitting}
@@ -373,13 +381,15 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
                   </TooltipContent>
                 </Tooltip>
               </div>
+              <p className="text-xs text-muted-foreground">
+                Mindestens 12 Zeichen sowie Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen.
+              </p>
               <div className="relative">
                 <Input
                   id="newPassword"
                   type={showNewPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(event) => setNewPassword(event.target.value)}
-                  placeholder="Neues Passwort"
                   autoComplete="new-password"
                   minLength={12}
                   disabled={submitting}
@@ -419,14 +429,18 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Neues Passwort bestätigen</Label>
+              <div className="space-y-1">
+                <Label htmlFor="confirmPassword">Neues Passwort bestätigen</Label>
+                <p className="text-xs text-muted-foreground">
+                  Bitte wiederhole dein neues Passwort exakt, um Tippfehler zu vermeiden.
+                </p>
+              </div>
               <div className="relative">
                 <Input
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(event) => setConfirmPassword(event.target.value)}
-                  placeholder="Neues Passwort bestätigen"
                   autoComplete="new-password"
                   minLength={12}
                   disabled={submitting}

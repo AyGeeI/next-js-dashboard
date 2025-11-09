@@ -4,20 +4,41 @@ import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
 
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted ? resolvedTheme === "dark" : false;
 
   return (
-    <Button variant="ghost" size="icon" onClick={toggleTheme}>
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      <span className="sr-only">Ansicht wechseln</span>
-    </Button>
+    <div className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card/80 px-3 py-2 shadow-sm">
+      <Sun
+        className={cn(
+          "h-4 w-4 transition-colors",
+          isDark ? "text-muted-foreground" : "text-primary"
+        )}
+        aria-hidden="true"
+      />
+      <Switch
+        checked={isDark}
+        onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+        aria-label="Theme zwischen Hell und Dunkel wechseln"
+        className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-muted"
+      />
+      <Moon
+        className={cn(
+          "h-4 w-4 transition-colors",
+          isDark ? "text-primary" : "text-muted-foreground"
+        )}
+        aria-hidden="true"
+      />
+    </div>
   );
 }

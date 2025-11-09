@@ -56,14 +56,12 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
         type="button"
         variant="ghost"
         size="icon"
-        className="h-10 w-10 rounded-full border border-border bg-muted/60 hover:bg-muted"
+        className="h-12 w-12 rounded-2xl bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring"
         aria-haspopup="menu"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        <span className="flex h-full w-full items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-          {initials}
-        </span>
+        <span className="text-sm font-semibold uppercase tracking-wide">{initials}</span>
         <span className="sr-only">{"Benutzermen\u00FC \u00F6ffnen"}</span>
       </Button>
 

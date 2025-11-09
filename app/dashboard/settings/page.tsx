@@ -336,26 +336,34 @@ export default function SettingsPage() {
               <form className="space-y-6" onSubmit={handleWeatherSave}>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="weather-zip">Postleitzahl</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="weather-zip">Postleitzahl</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Verwende eine fünfstellige Postleitzahl des gewünschten Standorts.
+                      </p>
+                    </div>
                     <Input
                       id="weather-zip"
                       name="zip"
                       value={weatherSettings.zip}
                       onChange={handleWeatherChange("zip")}
-                      placeholder="27798"
                       required
                       inputMode="numeric"
                       disabled={weatherFormDisabled}
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="weather-country">Ländercode</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="weather-country">Ländercode</Label>
+                      <p className="text-xs text-muted-foreground">
+                        ISO-3166 Code mit zwei Buchstaben, z. B. DE oder AT.
+                      </p>
+                    </div>
                     <Input
                       id="weather-country"
                       name="countryCode"
                       value={weatherSettings.countryCode}
                       onChange={handleWeatherChange("countryCode")}
-                      placeholder="de"
                       required
                       className="uppercase"
                       disabled={weatherFormDisabled}
@@ -364,7 +372,12 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="weather-api-key">OpenWeatherMap API-Key</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="weather-api-key">OpenWeatherMap API-Key</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Den Schlüssel findest du im OpenWeather Dashboard unter „API Keys“.
+                    </p>
+                  </div>
                   <div className="relative">
                     <Input
                       id="weather-api-key"
@@ -372,7 +385,6 @@ export default function SettingsPage() {
                       type={showWeatherKey ? "text" : "password"}
                       value={weatherSettings.apiKey}
                       onChange={handleWeatherChange("apiKey")}
-                      placeholder="xxxxxxxxxxxxxxxxxxxx"
                       required
                       disabled={weatherFormDisabled}
                       className="pr-12"

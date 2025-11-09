@@ -88,12 +88,16 @@ function ForgotPasswordContent() {
         <CardContent>
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <Label htmlFor="identifier">E-Mail oder Benutzername</Label>
+              <div className="space-y-1">
+                <Label htmlFor="identifier">E-Mail oder Benutzername</Label>
+                <p className="text-xs text-muted-foreground">
+                  Wir akzeptieren deine Login-E-Mail oder deinen eindeutigen Nutzernamen.
+                </p>
+              </div>
               <Input
                 id="identifier"
                 value={identifier}
                 onChange={(event) => setIdentifier(event.target.value)}
-                placeholder="z. B. maria@beispiel.de"
                 autoComplete="username"
                 disabled={loading}
                 required
