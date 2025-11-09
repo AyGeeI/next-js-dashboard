@@ -20,7 +20,10 @@ function serializeUser(user: { id: string; name: string | null; username: string
   };
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { userId: string } }) {
+export async function PATCH(
+  req: NextRequest,
+  context: { params: Promise<{ userId: string }> }
+) {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -31,7 +34,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { userId: st
     return NextResponse.json({ error: "Zugriff verweigert." }, { status: 403 });
   }
 
-  const userId = params.userId;
+  const { userId } = await context.params;
 
   if (!userId) {
     return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
