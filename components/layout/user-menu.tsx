@@ -68,7 +68,7 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
       {isOpen ? (
         <div
           role="menu"
-          className="absolute top-12 left-1/2 z-50 w-[calc(100vw-2rem)] max-w-sm -translate-x-1/2 overflow-hidden rounded-2xl border border-border bg-popover text-sm shadow-2xl ring-1 ring-black/5 sm:left-auto sm:right-0 sm:w-72 sm:max-w-none sm:translate-x-0"
+          className="absolute left-1/2 top-full z-50 mt-3 w-[calc(100vw-2rem)] max-w-sm -translate-x-1/2 overflow-hidden rounded-2xl border border-border bg-popover text-sm shadow-2xl ring-1 ring-black/5 sm:left-auto sm:right-0 sm:w-72 sm:max-w-none sm:translate-x-0"
         >
           <div className="bg-primary/5 px-4 py-3">
             <div className="flex items-center gap-3">
@@ -153,10 +153,10 @@ function MenuLink({ href, title, description, icon: Icon, onNavigate }: MenuLink
     <Link
       href={href}
       role="menuitem"
-      className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-muted"
+      className="group flex items-center gap-3 rounded-xl px-4 py-2.5 transition-colors hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       onClick={onNavigate}
     >
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors group-hover:bg-primary/15 group-hover:text-primary">
         <Icon className="h-4 w-4" aria-hidden="true" />
       </span>
       <span>

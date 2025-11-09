@@ -55,12 +55,14 @@ export default async function AccountPage() {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
-        <ProfileForm
-          initialName={user.name ?? ""}
-          initialUsername={user.username ?? ""}
-          email={user.email}
-        />
+      <div className="grid gap-6 lg:grid-cols-[2fr,1fr] lg:items-start">
+        <div className="lg:self-start">
+          <ProfileForm
+            initialName={user.name ?? ""}
+            initialUsername={user.username ?? ""}
+            email={user.email}
+          />
+        </div>
 
         <div className="space-y-6">
           <div className="rounded-2xl border bg-card p-6 shadow-sm">
