@@ -49,7 +49,7 @@ export default function DashboardPage() {
           ].map((item) => (
             <article
               key={item.title}
-              className="group rounded-2xl border p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-accent motion-reduce:transition-none"
+              className="group rounded-2xl border p-4 transition-all duration-300 hover:border-primary/40 hover:bg-accent motion-reduce:transition-none"
             >
               <h4 className="font-medium">{item.title}</h4>
               <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>

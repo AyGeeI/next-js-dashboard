@@ -12,7 +12,7 @@ interface CardMetricProps {
 
 export function CardMetric({ title, value, icon: Icon, description, valueClassName }: CardMetricProps) {
   return (
-    <Card className="group overflow-hidden rounded-2xl border bg-card/95 p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-xl motion-reduce:transition-none">
+    <Card className="group overflow-hidden rounded-2xl border bg-card/95 p-6 shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-xl motion-reduce:transition-none">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 space-y-1.5">
           <p className="text-sm font-medium text-muted-foreground">{title}</p>
