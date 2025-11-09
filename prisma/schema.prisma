@@ -35,6 +35,7 @@ model User {
   // Relations for Auth.js database sessions
   accounts      Account[]
   sessions      Session[]
+  weatherPreference WeatherPreference?
 
   @@map("users")
 }
@@ -68,6 +69,20 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+model WeatherPreference {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  zip         String
+  countryCode String
+  apiKey      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("weather_preferences")
 }
 
 model VerificationToken {

@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -53,10 +54,7 @@ const dashboardPreferences = [
   },
 ];
 
-const WEATHER_STORAGE_KEY = "dashboard.weather-settings";
-
 type WeatherSettings = {
-  serviceUrl: string;
   zip: string;
   countryCode: string;
   apiKey: string;
@@ -69,7 +67,6 @@ type WeatherStatus = {
 };
 
 const WEATHER_DEFAULTS: WeatherSettings = {
-  serviceUrl: "https://n8n.vyrnix.net/webhook/weather-by-zip",
   zip: "",
   countryCode: "de",
   apiKey: "",
@@ -79,38 +76,68 @@ function createWeatherDefaults(): WeatherSettings {
   return { ...WEATHER_DEFAULTS };
 }
 
-function getInitialWeatherState(): { value: WeatherSettings; status: WeatherStatus | null } {
-  if (typeof window === "undefined") {
-    return { value: createWeatherDefaults(), status: null };
-  }
-
-  try {
-    const stored = window.localStorage.getItem(WEATHER_STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored) as Partial<WeatherSettings>;
-      const merged = { ...createWeatherDefaults(), ...parsed };
-      return { value: merged, status: null };
-    }
-  } catch (error) {
-    console.error("Wetter-Einstellungen konnten nicht geladen werden.", error);
-    return {
-      value: createWeatherDefaults(),
-      status: {
-        type: "error",
-        title: "Wetter-Einstellungen konnten nicht geladen werden.",
-        description: "Bitte prüfe deinen Browser-Speicher oder versuche es erneut.",
-      },
-    };
-  }
-
-  return { value: createWeatherDefaults(), status: null };
-}
-
 export default function SettingsPage() {
-  const initialWeatherState = useMemo(() => getInitialWeatherState(), []);
-  const [weatherSettings, setWeatherSettings] = useState<WeatherSettings>(initialWeatherState.value);
-  const [savedWeatherSettings, setSavedWeatherSettings] = useState<WeatherSettings>(initialWeatherState.value);
-  const [weatherStatus, setWeatherStatus] = useState<WeatherStatus | null>(initialWeatherState.status);
+  const [weatherSettings, setWeatherSettings] = useState<WeatherSettings>(createWeatherDefaults());
+  const [savedWeatherSettings, setSavedWeatherSettings] = useState<WeatherSettings>(createWeatherDefaults());
+  const [weatherStatus, setWeatherStatus] = useState<WeatherStatus | null>(null);
+  const [loadingWeatherSettings, setLoadingWeatherSettings] = useState(true);
+  const [savingWeatherSettings, setSavingWeatherSettings] = useState(false);
+  const [showWeatherKey, setShowWeatherKey] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadWeatherSettings() {
+      try {
+        const response = await fetch("/api/weather/settings", { cache: "no-store" });
+        if (!active) {
+          return;
+        }
+
+        if (response.status === 404) {
+          const defaults = createWeatherDefaults();
+          setWeatherSettings(defaults);
+          setSavedWeatherSettings(defaults);
+          return;
+        }
+
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          setWeatherStatus({
+            type: "error",
+            title: payload?.error ?? "Wetter-Einstellungen konnten nicht geladen werden.",
+            description: "Bitte versuche es später erneut.",
+          });
+          return;
+        }
+
+        const data = (await response.json()) as WeatherSettings;
+        setWeatherSettings(data);
+        setSavedWeatherSettings(data);
+        setWeatherStatus(null);
+      } catch (error) {
+        if (!active) {
+          return;
+        }
+        console.error("Wetter-Einstellungen konnten nicht geladen werden.", error);
+        setWeatherStatus({
+          type: "error",
+          title: "Wetter-Einstellungen konnten nicht geladen werden.",
+          description: "Bitte versuche es später erneut.",
+        });
+      } finally {
+        if (active) {
+          setLoadingWeatherSettings(false);
+        }
+      }
+    }
+
+    loadWeatherSettings();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const isWeatherDirty = useMemo(
     () => JSON.stringify(weatherSettings) !== JSON.stringify(savedWeatherSettings),
@@ -119,12 +146,13 @@ export default function SettingsPage() {
 
   const isWeatherValid = useMemo(
     () =>
-      weatherSettings.serviceUrl.trim() !== "" &&
       weatherSettings.zip.trim() !== "" &&
       weatherSettings.countryCode.trim() !== "" &&
       weatherSettings.apiKey.trim() !== "",
     [weatherSettings]
   );
+
+  const weatherFormDisabled = loadingWeatherSettings || savingWeatherSettings;
 
   const handleWeatherChange =
     (field: keyof WeatherSettings) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,28 +168,60 @@ export default function SettingsPage() {
     setWeatherStatus(null);
   };
 
-  const handleWeatherSave = (event: FormEvent<HTMLFormElement>) => {
+  const handleWeatherSave = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!isWeatherDirty || !isWeatherValid) {
       return;
     }
 
+    setSavingWeatherSettings(true);
+    setWeatherStatus(null);
+
     try {
-      window.localStorage.setItem(WEATHER_STORAGE_KEY, JSON.stringify(weatherSettings));
-      setSavedWeatherSettings({ ...weatherSettings });
+      const response = await fetch("/api/weather/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          zip: weatherSettings.zip.trim(),
+          countryCode: weatherSettings.countryCode.trim(),
+          apiKey: weatherSettings.apiKey.trim(),
+        }),
+      });
+
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const description =
+          Array.isArray(payload?.errors) && payload.errors.length > 0
+            ? payload.errors.map((err: { message: string }) => err.message).join(" ")
+            : payload?.description ?? "Bitte überprüfe deine Eingaben und versuche es erneut.";
+
+        setWeatherStatus({
+          type: "error",
+          title: payload?.error ?? "Speichern nicht möglich.",
+          description,
+        });
+        return;
+      }
+
+      const updatedSettings = (payload?.settings as WeatherSettings) ?? createWeatherDefaults();
+      setWeatherSettings(updatedSettings);
+      setSavedWeatherSettings(updatedSettings);
       setWeatherStatus({
         type: "success",
         title: "Wetter-Einstellungen gespeichert.",
-        description: "Die Angaben werden für den nächsten Abruf verwendet.",
+        description: "Wir nutzen den OpenWeatherMap Schlüssel bei der nächsten Abfrage.",
       });
     } catch (error) {
       console.error("Wetter-Einstellungen konnten nicht gespeichert werden.", error);
       setWeatherStatus({
         type: "error",
         title: "Speichern nicht möglich.",
-        description: "Bitte erlaube lokale Speicherung oder versuche es erneut.",
+        description: "Bitte prüfe deine Netzwerkverbindung und versuche es erneut.",
       });
+    } finally {
+      setSavingWeatherSettings(false);
     }
   };
 
@@ -259,11 +319,8 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="text-lg">Wetter</CardTitle>
               <CardDescription>
-                Hinterlege die Angaben für den API-Call (
-                <code className="rounded bg-muted px-1 py-0.5 text-xs">
-                  /webhook/weather-by-zip?zip=&country-code=&api=
-                </code>
-                ).
+                Hinterlege Postleitzahl, Ländercode und deinen OpenWeatherMap API-Key. Wir speichern die Angaben sicher
+                in deinem Konto.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -277,22 +334,6 @@ export default function SettingsPage() {
               ) : null}
 
               <form className="space-y-6" onSubmit={handleWeatherSave}>
-                <div className="space-y-2">
-                  <Label htmlFor="weather-url">Endpoint-URL</Label>
-                  <Input
-                    id="weather-url"
-                    name="serviceUrl"
-                    type="url"
-                    value={weatherSettings.serviceUrl}
-                    onChange={handleWeatherChange("serviceUrl")}
-                    placeholder="https://n8n.vyrnix.net/webhook/weather-by-zip"
-                    required
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Basis des Requests (HTTPS). Der Query-String wird automatisch ergänzt.
-                  </p>
-                </div>
-
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="weather-zip">Postleitzahl</Label>
@@ -304,6 +345,7 @@ export default function SettingsPage() {
                       placeholder="27798"
                       required
                       inputMode="numeric"
+                      disabled={weatherFormDisabled}
                     />
                   </div>
                   <div className="space-y-2">
@@ -316,35 +358,56 @@ export default function SettingsPage() {
                       placeholder="de"
                       required
                       className="uppercase"
+                      disabled={weatherFormDisabled}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="weather-api-key">API-Schlüssel</Label>
-                  <Input
-                    id="weather-api-key"
-                    name="apiKey"
-                    value={weatherSettings.apiKey}
-                    onChange={handleWeatherChange("apiKey")}
-                    placeholder="****************"
-                    required
-                  />
+                  <Label htmlFor="weather-api-key">OpenWeatherMap API-Key</Label>
+                  <div className="relative">
+                    <Input
+                      id="weather-api-key"
+                      name="apiKey"
+                      type={showWeatherKey ? "text" : "password"}
+                      value={weatherSettings.apiKey}
+                      onChange={handleWeatherChange("apiKey")}
+                      placeholder="xxxxxxxxxxxxxxxxxxxx"
+                      required
+                      disabled={weatherFormDisabled}
+                      className="pr-12"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onClick={() => setShowWeatherKey((prev) => !prev)}
+                      aria-label={showWeatherKey ? "API-Key verbergen" : "API-Key anzeigen"}
+                      aria-pressed={showWeatherKey}
+                      disabled={weatherFormDisabled}
+                    >
+                      {showWeatherKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                   <p className="text-xs text-muted-foreground">
-                    Wird ausschließlich im Browser gespeichert und für den Fetch-Aufruf genutzt.
+                    Wir nutzen diesen OpenWeatherMap Schlüssel, um wetter-by-zip Anfragen serverseitig auszuführen.
                   </p>
                 </div>
 
                 <div className="flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-sm text-muted-foreground">
-                    Die Angaben werden verschlüsselt im Browser gespeichert und beim Seitenaufruf geladen.
+                    Die Angaben werden verschlüsselt in der Datenbank gespeichert und nicht im Browser zwischengespeichert.
                   </p>
                   <div className="flex gap-2">
-                    <Button type="button" variant="outline" onClick={handleWeatherReset} disabled={!isWeatherDirty}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleWeatherReset}
+                      disabled={!isWeatherDirty || weatherFormDisabled}
+                    >
                       Zurücksetzen
                     </Button>
-                    <Button type="submit" disabled={!isWeatherDirty || !isWeatherValid}>
-                      Einstellungen speichern
+                    <Button type="submit" disabled={!isWeatherDirty || !isWeatherValid || weatherFormDisabled}>
+                      {savingWeatherSettings ? "Speichere..." : "Einstellungen speichern"}
                     </Button>
                   </div>
                 </div>
