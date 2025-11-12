@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { hash } from "bcryptjs";
 
 import { auth } from "@/lib/auth/config";
 import { prisma } from "@/lib/prisma";
-import { adminUserUpdateSchema } from "@/lib/validation/admin";
+import { adminUserUpdateSchema, adminUserUpdateWithPasswordSchema } from "@/lib/validation/admin";
+
+type AdminRole = "ADMIN" | "STANDARD";
 
 const ADMIN_SELECT = {
   id: true,
@@ -42,7 +45,12 @@ export async function PATCH(
 
   try {
     const body = await req.json();
-    const validationResult = adminUserUpdateSchema.safeParse(body);
+
+    // Prüfen ob Passwort geändert werden soll
+    const usePasswordSchema = body.changePassword === true;
+    const validationResult = usePasswordSchema
+      ? adminUserUpdateWithPasswordSchema.safeParse(body)
+      : adminUserUpdateSchema.safeParse(body);
 
     if (!validationResult.success) {
       const errors = validationResult.error.issues.map((issue) => ({
@@ -103,14 +111,26 @@ export async function PATCH(
       );
     }
 
+    // Prepare update data
+    const updateData: Record<string, unknown> = {
+      name: safeName,
+      email: normalizedEmail,
+      username: normalizedUsername,
+      role,
+    };
+
+    // Passwort hashen, wenn es geändert werden soll
+    if (usePasswordSchema && 'password' in validationResult.data) {
+      const passwordData = validationResult.data as { password?: string };
+      if (passwordData.password) {
+        const hashedPassword = await hash(passwordData.password, 12);
+        updateData.passwordHash = hashedPassword;
+      }
+    }
+
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: {
-        name: safeName,
-        email: normalizedEmail,
-        username: normalizedUsername,
-        role,
-      },
+      data: updateData,
       select: ADMIN_SELECT,
     });
 
@@ -120,6 +140,57 @@ export async function PATCH(
     });
   } catch (error) {
     console.error("Admin user update failed:", error);
+    return NextResponse.json({ error: "Interner Serverfehler." }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  context: { params: Promise<{ userId: string }> }
+) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
+  }
+
+  if (session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Zugriff verweigert." }, { status: 403 });
+  }
+
+  const { userId } = await context.params;
+
+  if (!userId) {
+    return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
+  }
+
+  // Verhindere, dass sich ein Admin selbst löscht
+  if (userId === session.user.id) {
+    return NextResponse.json(
+      { error: "Sie können sich nicht selbst löschen." },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const targetUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, username: true },
+    });
+
+    if (!targetUser) {
+      return NextResponse.json({ error: "Benutzer wurde nicht gefunden." }, { status: 404 });
+    }
+
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    return NextResponse.json({
+      message: `Benutzer ${targetUser.username} wurde gelöscht.`,
+    });
+  } catch (error) {
+    console.error("Admin user delete failed:", error);
     return NextResponse.json({ error: "Interner Serverfehler." }, { status: 500 });
   }
 }

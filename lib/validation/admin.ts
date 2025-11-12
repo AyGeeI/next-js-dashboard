@@ -17,6 +17,37 @@ export const adminUserUpdateSchema = z.object({
   role: roleSchema,
 });
 
+// Schema für Passwort-Änderung (optional im Edit-Form)
+export const adminUserUpdateWithPasswordSchema = adminUserUpdateSchema.extend({
+  changePassword: z.boolean().optional(),
+  password: passwordSchema.optional(),
+  confirmPassword: z.string().optional(),
+}).refine(
+  (data) => {
+    // Wenn changePassword aktiviert ist, müssen beide Passwortfelder ausgefüllt sein
+    if (data.changePassword && (!data.password || !data.confirmPassword)) {
+      return false;
+    }
+    return true;
+  },
+  {
+    path: ["password"],
+    message: "Passwort ist erforderlich.",
+  }
+).refine(
+  (data) => {
+    // Wenn changePassword aktiviert ist, müssen die Passwörter übereinstimmen
+    if (data.changePassword && data.password !== data.confirmPassword) {
+      return false;
+    }
+    return true;
+  },
+  {
+    path: ["confirmPassword"],
+    message: "Passwörter stimmen nicht überein.",
+  }
+);
+
 export const adminUserCreateSchema = adminUserUpdateSchema
   .extend({
     password: passwordSchema,
@@ -28,4 +59,5 @@ export const adminUserCreateSchema = adminUserUpdateSchema
   });
 
 export type AdminUserUpdateInput = z.infer<typeof adminUserUpdateSchema>;
+export type AdminUserUpdateWithPasswordInput = z.infer<typeof adminUserUpdateWithPasswordSchema>;
 export type AdminUserCreateInput = z.infer<typeof adminUserCreateSchema>;
