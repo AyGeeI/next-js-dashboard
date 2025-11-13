@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { spotifyApiRequest } from "@/lib/spotify/token";
 import { spotifyTimeRangeSchema } from "@/lib/validation/spotify";
+import { getCacheData, setCacheData, createCacheKey, clearCacheData } from "@/lib/spotify/cache";
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,9 +15,23 @@ export async function GET(request: NextRequest) {
     // Hole den Zeitraum-Parameter
     const searchParams = request.nextUrl.searchParams;
     const timeRangeParam = searchParams.get("time_range") || "medium_term";
+    const forceRefresh = searchParams.get("refresh") === "true";
 
     const timeRangeResult = spotifyTimeRangeSchema.safeParse(timeRangeParam);
     const timeRange = timeRangeResult.success ? timeRangeResult.data : "medium_term";
+
+    const cacheKey = createCacheKey(session.user.id, "top-artists", timeRange);
+
+    // Wenn forceRefresh, lösche den Cache
+    if (forceRefresh) {
+      clearCacheData(cacheKey);
+    }
+
+    // Prüfe Cache
+    const cachedData = getCacheData<any>(cacheKey);
+    if (cachedData && !forceRefresh) {
+      return NextResponse.json(cachedData);
+    }
 
     const { data, error } = await spotifyApiRequest<any>(
       session.user.id,
@@ -40,7 +55,12 @@ export async function GET(request: NextRequest) {
       external_urls: item.external_urls,
     }));
 
-    return NextResponse.json({ artists: artists || [] });
+    const result = { artists: artists || [] };
+
+    // Speichere im Cache
+    setCacheData(cacheKey, result);
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Top artists fetch failed:", error);
     return NextResponse.json({ error: "Interner Serverfehler." }, { status: 500 });

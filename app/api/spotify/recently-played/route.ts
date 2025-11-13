@@ -1,13 +1,30 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth/config";
 import { spotifyApiRequest } from "@/lib/spotify/token";
+import { getCacheData, setCacheData, createCacheKey, clearCacheData } from "@/lib/spotify/cache";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Nicht autorisiert." }, { status: 401 });
+    }
+
+    const searchParams = request.nextUrl.searchParams;
+    const forceRefresh = searchParams.get("refresh") === "true";
+
+    const cacheKey = createCacheKey(session.user.id, "recently-played");
+
+    // Wenn forceRefresh, lösche den Cache
+    if (forceRefresh) {
+      clearCacheData(cacheKey);
+    }
+
+    // Prüfe Cache
+    const cachedData = getCacheData<any>(cacheKey);
+    if (cachedData && !forceRefresh) {
+      return NextResponse.json(cachedData);
     }
 
     const { data, error } = await spotifyApiRequest<any>(
@@ -43,7 +60,12 @@ export async function GET() {
       },
     }));
 
-    return NextResponse.json({ tracks: tracks || [] });
+    const result = { tracks: tracks || [] };
+
+    // Speichere im Cache
+    setCacheData(cacheKey, result);
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Recently played fetch failed:", error);
     return NextResponse.json({ error: "Interner Serverfehler." }, { status: 500 });

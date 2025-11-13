@@ -26,7 +26,8 @@
       "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_ybd7Y9vPcpkh@ep-fragrant-poetry-ag3493n4-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require\" npx prisma db push:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(del D:ProgrammierungGitHubnext-js-dashboardmiddleware.ts)"
     ],
     "deny": [],
     "ask": []

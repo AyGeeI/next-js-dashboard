@@ -50,7 +50,7 @@ type RecentlyPlayedTrack = {
   track: SpotifyTrack;
 };
 
-const REFRESH_INTERVAL = 10_000; // 10 Sekunden
+const CURRENTLY_PLAYING_REFRESH_INTERVAL = 10_000; // 10 Sekunden für Currently Playing
 
 export default function MusikPage() {
   const [currentlyPlaying, setCurrentlyPlaying] = useState<CurrentlyPlaying | null>(null);
@@ -60,11 +60,16 @@ export default function MusikPage() {
   const [recentlyPlayed, setRecentlyPlayed] = useState<RecentlyPlayedTrack[]>([]);
   const [timeRange, setTimeRange] = useState<"short_term" | "medium_term" | "long_term">("medium_term");
 
-  const [isFetching, setIsFetching] = useState(false);
+  const [fetchingCurrentlyPlaying, setFetchingCurrentlyPlaying] = useState(false);
+  const [fetchingTopTracks, setFetchingTopTracks] = useState(false);
+  const [fetchingTopArtists, setFetchingTopArtists] = useState(false);
+  const [fetchingPlaylists, setFetchingPlaylists] = useState(false);
+  const [fetchingRecentlyPlayed, setFetchingRecentlyPlayed] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
   const [settingsMissing, setSettingsMissing] = useState(false);
 
-  // Fetch currently playing track
+  // Fetch currently playing track (auto-refresh alle 10 Sekunden)
   useEffect(() => {
     let active = true;
     let controller: AbortController | null = null;
@@ -73,7 +78,7 @@ export default function MusikPage() {
       if (!active) return;
 
       if (!isBackground) {
-        setIsFetching(true);
+        setFetchingCurrentlyPlaying(true);
       }
 
       try {
@@ -111,16 +116,18 @@ export default function MusikPage() {
         if ((err as Error).name === "AbortError") return;
 
         console.error("Currently playing konnte nicht geladen werden.", err);
-        setError("Spotify-Daten konnten nicht geladen werden.");
       } finally {
         if (!isBackground) {
-          setIsFetching(false);
+          setFetchingCurrentlyPlaying(false);
         }
       }
     };
 
     fetchCurrentlyPlaying();
-    const intervalId = window.setInterval(() => fetchCurrentlyPlaying(true), REFRESH_INTERVAL);
+    const intervalId = window.setInterval(
+      () => fetchCurrentlyPlaying(true),
+      CURRENTLY_PLAYING_REFRESH_INTERVAL
+    );
 
     const handleVisibility = () => {
       if (document.visibilityState === "visible") {
@@ -138,52 +145,101 @@ export default function MusikPage() {
     };
   }, []);
 
-  // Fetch top tracks and artists based on time range
+  // Initial load für andere Daten
   useEffect(() => {
-    let active = true;
+    fetchTopTracks();
+    fetchTopArtists();
+    fetchPlaylists();
+    fetchRecentlyPlayed();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    const fetchTopData = async () => {
-      try {
-        const [tracksRes, artistsRes, playlistsRes, recentRes] = await Promise.all([
-          fetch(`/api/spotify/top-tracks?time_range=${timeRange}`, { cache: "no-store" }),
-          fetch(`/api/spotify/top-artists?time_range=${timeRange}`, { cache: "no-store" }),
-          fetch("/api/spotify/playlists", { cache: "no-store" }),
-          fetch("/api/spotify/recently-played", { cache: "no-store" }),
-        ]);
-
-        if (!active) return;
-
-        if (tracksRes.ok) {
-          const tracksData = await tracksRes.json();
-          setTopTracks(tracksData.tracks || []);
-        }
-
-        if (artistsRes.ok) {
-          const artistsData = await artistsRes.json();
-          setTopArtists(artistsData.artists || []);
-        }
-
-        if (playlistsRes.ok) {
-          const playlistsData = await playlistsRes.json();
-          setPlaylists(playlistsData.playlists || []);
-        }
-
-        if (recentRes.ok) {
-          const recentData = await recentRes.json();
-          setRecentlyPlayed(recentData.tracks || []);
-        }
-      } catch (err) {
-        if (!active) return;
-        console.error("Spotify-Daten konnten nicht geladen werden.", err);
-      }
-    };
-
-    fetchTopData();
-
-    return () => {
-      active = false;
-    };
+  // Wenn sich der Zeitraum ändert, lade Top Tracks und Artists neu
+  useEffect(() => {
+    if (timeRange) {
+      fetchTopTracks();
+      fetchTopArtists();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeRange]);
+
+  const fetchTopTracks = async (forceRefresh = false) => {
+    setFetchingTopTracks(true);
+    try {
+      const url = forceRefresh
+        ? `/api/spotify/top-tracks?time_range=${timeRange}&refresh=true`
+        : `/api/spotify/top-tracks?time_range=${timeRange}`;
+
+      const response = await fetch(url, { cache: "no-store" });
+
+      if (response.ok) {
+        const data = await response.json();
+        setTopTracks(data.tracks || []);
+      }
+    } catch (err) {
+      console.error("Top tracks fetch failed:", err);
+    } finally {
+      setFetchingTopTracks(false);
+    }
+  };
+
+  const fetchTopArtists = async (forceRefresh = false) => {
+    setFetchingTopArtists(true);
+    try {
+      const url = forceRefresh
+        ? `/api/spotify/top-artists?time_range=${timeRange}&refresh=true`
+        : `/api/spotify/top-artists?time_range=${timeRange}`;
+
+      const response = await fetch(url, { cache: "no-store" });
+
+      if (response.ok) {
+        const data = await response.json();
+        setTopArtists(data.artists || []);
+      }
+    } catch (err) {
+      console.error("Top artists fetch failed:", err);
+    } finally {
+      setFetchingTopArtists(false);
+    }
+  };
+
+  const fetchPlaylists = async (forceRefresh = false) => {
+    setFetchingPlaylists(true);
+    try {
+      const url = forceRefresh ? `/api/spotify/playlists?refresh=true` : `/api/spotify/playlists`;
+
+      const response = await fetch(url, { cache: "no-store" });
+
+      if (response.ok) {
+        const data = await response.json();
+        setPlaylists(data.playlists || []);
+      }
+    } catch (err) {
+      console.error("Playlists fetch failed:", err);
+    } finally {
+      setFetchingPlaylists(false);
+    }
+  };
+
+  const fetchRecentlyPlayed = async (forceRefresh = false) => {
+    setFetchingRecentlyPlayed(true);
+    try {
+      const url = forceRefresh
+        ? `/api/spotify/recently-played?refresh=true`
+        : `/api/spotify/recently-played`;
+
+      const response = await fetch(url, { cache: "no-store" });
+
+      if (response.ok) {
+        const data = await response.json();
+        setRecentlyPlayed(data.tracks || []);
+      }
+    } catch (err) {
+      console.error("Recently played fetch failed:", err);
+    } finally {
+      setFetchingRecentlyPlayed(false);
+    }
+  };
 
   if (settingsMissing) {
     return (
@@ -210,22 +266,10 @@ export default function MusikPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-wide text-primary">Musik</p>
-          <h2 className="text-3xl font-bold tracking-tight">Spotify Dashboard</h2>
-          <p className="text-muted-foreground">Deine Musik-Statistiken und aktuell abgespielte Tracks</p>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => window.location.reload()}
-          disabled={isFetching}
-          className="w-full sm:w-auto"
-        >
-          <RefreshCcw className={`mr-2 h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
-          Aktualisieren
-        </Button>
+      <div className="space-y-2">
+        <p className="text-sm font-semibold uppercase tracking-wide text-primary">Musik</p>
+        <h2 className="text-3xl font-bold tracking-tight">Spotify Dashboard</h2>
+        <p className="text-muted-foreground">Deine Musik-Statistiken und aktuell abgespielte Tracks</p>
       </div>
 
       {error ? (
@@ -239,6 +283,9 @@ export default function MusikPage() {
             <CardTitle className="flex items-center gap-2">
               <Music className="h-5 w-5 text-primary" />
               Wird gerade abgespielt
+              <span className="ml-auto text-xs font-normal text-muted-foreground">
+                Aktualisiert sich alle 10 Sekunden
+              </span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -297,9 +344,21 @@ export default function MusikPage() {
 
       {/* Top Tracks */}
       <Card className="rounded-2xl border bg-card shadow-sm">
-        <CardHeader>
-          <CardTitle>Top Tracks</CardTitle>
-          <CardDescription>Deine meist gehörten Songs</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Top Tracks</CardTitle>
+            <CardDescription>Deine meist gehörten Songs</CardDescription>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fetchTopTracks(true)}
+            disabled={fetchingTopTracks}
+            className="shrink-0"
+          >
+            <RefreshCcw className={`mr-2 h-4 w-4 ${fetchingTopTracks ? "animate-spin" : ""}`} />
+            Aktualisieren
+          </Button>
         </CardHeader>
         <CardContent>
           {topTracks.length === 0 ? (
@@ -336,9 +395,21 @@ export default function MusikPage() {
 
       {/* Top Artists */}
       <Card className="rounded-2xl border bg-card shadow-sm">
-        <CardHeader>
-          <CardTitle>Top Artists</CardTitle>
-          <CardDescription>Deine meist gehörten Künstler</CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Top Artists</CardTitle>
+            <CardDescription>Deine meist gehörten Künstler</CardDescription>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fetchTopArtists(true)}
+            disabled={fetchingTopArtists}
+            className="shrink-0"
+          >
+            <RefreshCcw className={`mr-2 h-4 w-4 ${fetchingTopArtists ? "animate-spin" : ""}`} />
+            Aktualisieren
+          </Button>
         </CardHeader>
         <CardContent>
           {topArtists.length === 0 ? (
@@ -377,9 +448,21 @@ export default function MusikPage() {
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Playlists */}
         <Card className="rounded-2xl border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle>Playlists</CardTitle>
-            <CardDescription>Deine gespeicherten Playlists</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Playlists</CardTitle>
+              <CardDescription>Deine gespeicherten Playlists</CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fetchPlaylists(true)}
+              disabled={fetchingPlaylists}
+              className="shrink-0"
+            >
+              <RefreshCcw className={`mr-2 h-4 w-4 ${fetchingPlaylists ? "animate-spin" : ""}`} />
+              Aktualisieren
+            </Button>
           </CardHeader>
           <CardContent>
             {playlists.length === 0 ? (
@@ -417,9 +500,21 @@ export default function MusikPage() {
 
         {/* Recently Played */}
         <Card className="rounded-2xl border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle>Zuletzt gespielt</CardTitle>
-            <CardDescription>Deine kürzlich gehörten Songs</CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Zuletzt gespielt</CardTitle>
+              <CardDescription>Deine kürzlich gehörten Songs</CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fetchRecentlyPlayed(true)}
+              disabled={fetchingRecentlyPlayed}
+              className="shrink-0"
+            >
+              <RefreshCcw className={`mr-2 h-4 w-4 ${fetchingRecentlyPlayed ? "animate-spin" : ""}`} />
+              Aktualisieren
+            </Button>
           </CardHeader>
           <CardContent>
             {recentlyPlayed.length === 0 ? (

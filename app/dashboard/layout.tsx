@@ -1,6 +1,7 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { SidebarProvider } from "@/components/layout/sidebar-context";
+import { AutoLogout } from "@/components/auth/auto-logout";
 
 export default function DashboardLayout({
   children,
@@ -9,6 +10,7 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
+      <AutoLogout />
       <div className="flex min-h-screen flex-col bg-background lg:flex-row">
         <Sidebar />
         <div className="flex flex-1 flex-col">
