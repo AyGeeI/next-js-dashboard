@@ -26,6 +26,8 @@ export async function GET(request: NextRequest) {
     const scopes = [
       "user-read-currently-playing",
       "user-read-playback-state",
+      "user-modify-playback-state",
+      "user-read-playback-position",
       "user-top-read",
       "user-read-recently-played",
       "playlist-read-private",
