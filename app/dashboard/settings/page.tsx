@@ -66,14 +66,36 @@ type WeatherStatus = {
   description?: string;
 };
 
+type SpotifySettings = {
+  clientId: string;
+  clientSecret: string;
+  isConnected: boolean;
+};
+
+type SpotifyStatus = {
+  type: "success" | "error" | "info";
+  title: string;
+  description?: string;
+};
+
 const WEATHER_DEFAULTS: WeatherSettings = {
   zip: "",
   countryCode: "de",
   apiKey: "",
 };
 
+const SPOTIFY_DEFAULTS: SpotifySettings = {
+  clientId: "",
+  clientSecret: "",
+  isConnected: false,
+};
+
 function createWeatherDefaults(): WeatherSettings {
   return { ...WEATHER_DEFAULTS };
+}
+
+function createSpotifyDefaults(): SpotifySettings {
+  return { ...SPOTIFY_DEFAULTS };
 }
 
 export default function SettingsPage() {
@@ -83,6 +105,15 @@ export default function SettingsPage() {
   const [loadingWeatherSettings, setLoadingWeatherSettings] = useState(true);
   const [savingWeatherSettings, setSavingWeatherSettings] = useState(false);
   const [showWeatherKey, setShowWeatherKey] = useState(false);
+
+  const [spotifySettings, setSpotifySettings] = useState<SpotifySettings>(createSpotifyDefaults());
+  const [savedSpotifySettings, setSavedSpotifySettings] = useState<SpotifySettings>(createSpotifyDefaults());
+  const [spotifyStatus, setSpotifyStatus] = useState<SpotifyStatus | null>(null);
+  const [loadingSpotifySettings, setLoadingSpotifySettings] = useState(true);
+  const [savingSpotifySettings, setSavingSpotifySettings] = useState(false);
+  const [connectingSpotify, setConnectingSpotify] = useState(false);
+  const [showSpotifyClientId, setShowSpotifyClientId] = useState(false);
+  const [showSpotifyClientSecret, setShowSpotifyClientSecret] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -139,6 +170,89 @@ export default function SettingsPage() {
     };
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    async function loadSpotifySettings() {
+      try {
+        const response = await fetch("/api/spotify/settings", { cache: "no-store" });
+        if (!active) {
+          return;
+        }
+
+        if (response.status === 404) {
+          const defaults = createSpotifyDefaults();
+          setSpotifySettings(defaults);
+          setSavedSpotifySettings(defaults);
+          return;
+        }
+
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({}));
+          setSpotifyStatus({
+            type: "error",
+            title: payload?.error ?? "Spotify-Einstellungen konnten nicht geladen werden.",
+            description: "Bitte versuche es später erneut.",
+          });
+          return;
+        }
+
+        const data = (await response.json()) as SpotifySettings;
+        setSpotifySettings(data);
+        setSavedSpotifySettings(data);
+        setSpotifyStatus(null);
+      } catch (error) {
+        if (!active) {
+          return;
+        }
+        console.error("Spotify-Einstellungen konnten nicht geladen werden.", error);
+        setSpotifyStatus({
+          type: "error",
+          title: "Spotify-Einstellungen konnten nicht geladen werden.",
+          description: "Bitte versuche es später erneut.",
+        });
+      } finally {
+        if (active) {
+          setLoadingSpotifySettings(false);
+        }
+      }
+    }
+
+    loadSpotifySettings();
+
+    // Prüfe URL-Parameter für Spotify OAuth Callback
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("success") === "spotify_connected") {
+      setSpotifyStatus({
+        type: "success",
+        title: "Spotify erfolgreich verbunden!",
+        description: "Du kannst jetzt die Spotify-Funktionen nutzen.",
+      });
+      // Entferne Parameter aus URL
+      window.history.replaceState({}, "", "/dashboard/settings");
+      // Lade Einstellungen neu, um den aktualisierten Verbindungsstatus zu erhalten
+      loadSpotifySettings();
+    } else if (urlParams.get("error")) {
+      const errorParam = urlParams.get("error");
+      let errorMessage = "Die Verbindung zu Spotify ist fehlgeschlagen.";
+      if (errorParam === "spotify_auth_denied") {
+        errorMessage = "Die Autorisierung wurde abgebrochen.";
+      } else if (errorParam === "spotify_no_settings") {
+        errorMessage = "Bitte konfiguriere zuerst deine Client-Credentials.";
+      }
+      setSpotifyStatus({
+        type: "error",
+        title: "Spotify-Verbindung fehlgeschlagen",
+        description: errorMessage,
+      });
+      window.history.replaceState({}, "", "/dashboard/settings");
+    }
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const isWeatherDirty = useMemo(
     () => JSON.stringify(weatherSettings) !== JSON.stringify(savedWeatherSettings),
     [weatherSettings, savedWeatherSettings]
@@ -154,6 +268,20 @@ export default function SettingsPage() {
 
   const weatherFormDisabled = loadingWeatherSettings || savingWeatherSettings;
 
+  const isSpotifyDirty = useMemo(
+    () =>
+      spotifySettings.clientId !== savedSpotifySettings.clientId ||
+      spotifySettings.clientSecret !== savedSpotifySettings.clientSecret,
+    [spotifySettings, savedSpotifySettings]
+  );
+
+  const isSpotifyValid = useMemo(
+    () => spotifySettings.clientId.trim() !== "" && spotifySettings.clientSecret.trim() !== "",
+    [spotifySettings]
+  );
+
+  const spotifyFormDisabled = loadingSpotifySettings || savingSpotifySettings;
+
   const handleWeatherChange =
     (field: keyof WeatherSettings) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setWeatherSettings((prev) => ({
@@ -163,9 +291,23 @@ export default function SettingsPage() {
       setWeatherStatus(null);
     };
 
+  const handleSpotifyChange =
+    (field: keyof Omit<SpotifySettings, "isConnected">) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSpotifySettings((prev) => ({
+        ...prev,
+        [field]: event.target.value,
+      }));
+      setSpotifyStatus(null);
+    };
+
   const handleWeatherReset = () => {
     setWeatherSettings({ ...savedWeatherSettings });
     setWeatherStatus(null);
+  };
+
+  const handleSpotifyReset = () => {
+    setSpotifySettings({ ...savedSpotifySettings });
+    setSpotifyStatus(null);
   };
 
   const handleWeatherSave = async (event: FormEvent<HTMLFormElement>) => {
@@ -225,6 +367,93 @@ export default function SettingsPage() {
     }
   };
 
+  const handleSpotifySave = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!isSpotifyDirty || !isSpotifyValid) {
+      return;
+    }
+
+    setSavingSpotifySettings(true);
+    setSpotifyStatus(null);
+
+    try {
+      const response = await fetch("/api/spotify/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientId: spotifySettings.clientId.trim(),
+          clientSecret: spotifySettings.clientSecret.trim(),
+        }),
+      });
+
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const description =
+          payload?.errors && Array.isArray(payload.errors)
+            ? payload.errors.map((e: any) => `${e.field}: ${e.message}`).join(", ")
+            : payload?.description ?? "Bitte überprüfe deine Eingaben und versuche es erneut.";
+
+        setSpotifyStatus({
+          type: "error",
+          title: payload?.error ?? "Speichern nicht möglich.",
+          description,
+        });
+        return;
+      }
+
+      const updatedSettings = (payload?.settings as SpotifySettings) ?? createSpotifyDefaults();
+      setSpotifySettings(updatedSettings);
+      setSavedSpotifySettings(updatedSettings);
+      setSpotifyStatus({
+        type: "success",
+        title: "Spotify-Einstellungen gespeichert.",
+        description: "Du kannst jetzt dein Spotify-Konto verbinden.",
+      });
+    } catch (error) {
+      console.error("Spotify-Einstellungen konnten nicht gespeichert werden.", error);
+      setSpotifyStatus({
+        type: "error",
+        title: "Speichern nicht möglich.",
+        description: "Bitte prüfe deine Netzwerkverbindung und versuche es erneut.",
+      });
+    } finally {
+      setSavingSpotifySettings(false);
+    }
+  };
+
+  const handleSpotifyConnect = async () => {
+    setConnectingSpotify(true);
+    setSpotifyStatus(null);
+
+    try {
+      const response = await fetch("/api/spotify/auth");
+      const data = await response.json();
+
+      if (!response.ok || !data.authUrl) {
+        setSpotifyStatus({
+          type: "error",
+          title: "Verbindung nicht möglich.",
+          description: data.error ?? "Bitte konfiguriere zuerst deine Client-Credentials.",
+        });
+        setConnectingSpotify(false);
+        return;
+      }
+
+      // Leite zur Spotify-Autorisierungsseite weiter
+      window.location.href = data.authUrl;
+    } catch (error) {
+      console.error("Spotify-Verbindung konnte nicht gestartet werden.", error);
+      setSpotifyStatus({
+        type: "error",
+        title: "Verbindung nicht möglich.",
+        description: "Bitte versuche es später erneut.",
+      });
+      setConnectingSpotify(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="space-y-2">
@@ -241,6 +470,7 @@ export default function SettingsPage() {
           <TabsTrigger value="notifications">Benachrichtigungen</TabsTrigger>
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="weather">Wetter</TabsTrigger>
+          <TabsTrigger value="spotify">Spotify</TabsTrigger>
         </TabsList>
 
         <TabsContent value="general">
@@ -422,6 +652,155 @@ export default function SettingsPage() {
                       {savingWeatherSettings ? "Speichere..." : "Einstellungen speichern"}
                     </Button>
                   </div>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="spotify">
+          <Card className="rounded-2xl border bg-card shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg">Spotify</CardTitle>
+              <CardDescription>
+                Hinterlege deine Spotify App Client-Credentials, um dein Spotify-Konto zu verbinden. Erstelle eine App
+                im{" "}
+                <a
+                  href="https://developer.spotify.com/dashboard"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline hover:no-underline"
+                >
+                  Spotify Developer Dashboard
+                </a>
+                .
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {spotifyStatus ? (
+                <NotificationBanner
+                  className="mb-6"
+                  variant={spotifyStatus.type}
+                  title={spotifyStatus.title}
+                  description={spotifyStatus.description}
+                />
+              ) : null}
+
+              {spotifySettings.isConnected ? (
+                <div className="mb-6 rounded-2xl border border-success bg-success/10 p-4">
+                  <p className="text-sm font-semibold text-success">Spotify-Konto verbunden</p>
+                  <p className="text-xs text-muted-foreground">
+                    Du kannst jetzt die Spotify-Funktionen im Musik-Bereich nutzen.
+                  </p>
+                </div>
+              ) : null}
+
+              <form className="space-y-6" onSubmit={handleSpotifySave}>
+                <div className="space-y-2">
+                  <div className="space-y-1">
+                    <Label htmlFor="spotify-client-id">Client ID</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Die Client ID findest du in den Einstellungen deiner Spotify App.
+                    </p>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="spotify-client-id"
+                      name="clientId"
+                      type={showSpotifyClientId ? "text" : "password"}
+                      value={spotifySettings.clientId}
+                      onChange={handleSpotifyChange("clientId")}
+                      required
+                      disabled={spotifyFormDisabled}
+                      className="pr-12"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onClick={() => setShowSpotifyClientId((prev) => !prev)}
+                      aria-label={showSpotifyClientId ? "Client ID verbergen" : "Client ID anzeigen"}
+                      aria-pressed={showSpotifyClientId}
+                      disabled={spotifyFormDisabled}
+                    >
+                      {showSpotifyClientId ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="space-y-1">
+                    <Label htmlFor="spotify-client-secret">Client Secret</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Das Client Secret findest du ebenfalls in den App-Einstellungen.
+                    </p>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="spotify-client-secret"
+                      name="clientSecret"
+                      type={showSpotifyClientSecret ? "text" : "password"}
+                      value={spotifySettings.clientSecret}
+                      onChange={handleSpotifyChange("clientSecret")}
+                      required
+                      disabled={spotifyFormDisabled}
+                      className="pr-12"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      onClick={() => setShowSpotifyClientSecret((prev) => !prev)}
+                      aria-label={showSpotifyClientSecret ? "Client Secret verbergen" : "Client Secret anzeigen"}
+                      aria-pressed={showSpotifyClientSecret}
+                      disabled={spotifyFormDisabled}
+                    >
+                      {showSpotifyClientSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Vergiss nicht, in deiner Spotify App die Redirect URI{" "}
+                    <code className="rounded bg-muted px-1 py-0.5 text-xs">
+                      {process.env.NEXT_PUBLIC_APP_URL}/api/spotify/callback
+                    </code>{" "}
+                    hinzuzufügen.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 border-t pt-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-sm text-muted-foreground">
+                      Die Credentials werden sicher in der Datenbank gespeichert.
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleSpotifyReset}
+                        disabled={!isSpotifyDirty || spotifyFormDisabled}
+                      >
+                        Zurücksetzen
+                      </Button>
+                      <Button type="submit" disabled={!isSpotifyDirty || !isSpotifyValid || spotifyFormDisabled}>
+                        {savingSpotifySettings ? "Speichere..." : "Einstellungen speichern"}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {!spotifySettings.isConnected && isSpotifyValid && !isSpotifyDirty ? (
+                    <div className="flex flex-col gap-3 border-t pt-4">
+                      <p className="text-sm text-muted-foreground">
+                        Nachdem du deine Credentials gespeichert hast, verbinde dein Spotify-Konto:
+                      </p>
+                      <Button
+                        type="button"
+                        variant="default"
+                        onClick={handleSpotifyConnect}
+                        disabled={connectingSpotify || spotifyFormDisabled}
+                        className="w-full sm:w-auto"
+                      >
+                        {connectingSpotify ? "Verbinde..." : "Mit Spotify verbinden"}
+                      </Button>
+                    </div>
+                  ) : null}
                 </div>
               </form>
             </CardContent>

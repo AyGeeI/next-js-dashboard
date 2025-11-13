@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Cloud, DollarSign, Home, LayoutDashboard } from "lucide-react";
+import { Calendar, Cloud, DollarSign, Home, LayoutDashboard, Music } from "lucide-react";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,7 @@ const navigation = [
   { name: "Wetter", href: "/dashboard/wetter", icon: Cloud },
   { name: "Finanzen", href: "/dashboard/finanzen", icon: DollarSign },
   { name: "Kalender", href: "/dashboard/kalender", icon: Calendar },
+  { name: "Musik", href: "/dashboard/musik", icon: Music },
 ];
 
 export function Sidebar() {
