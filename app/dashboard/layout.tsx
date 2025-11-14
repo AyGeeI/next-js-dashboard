@@ -1,16 +1,23 @@
+import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { SidebarProvider } from "@/components/layout/sidebar-context";
-import { AutoLogout } from "@/components/auth/auto-logout";
+import { auth } from "@/lib/auth/config";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+
+  // Serverseitiger Auth-Schutz - verhindert Flash of Unauthenticated Content
+  if (!session?.user) {
+    redirect("/sign-in");
+  }
+
   return (
     <SidebarProvider>
-      <AutoLogout />
       <div className="flex min-h-screen flex-col bg-background lg:flex-row">
         <Sidebar />
         <div className="flex flex-1 flex-col">

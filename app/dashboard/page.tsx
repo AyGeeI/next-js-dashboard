@@ -1,4 +1,5 @@
-﻿import { CardMetric } from "@/components/widgets/card-metric";
+﻿import Link from "next/link";
+import { CardMetric } from "@/components/widgets/card-metric";
 import { ChartMini } from "@/components/widgets/chart-mini";
 import { mockDashboardMetrics, mockChartData } from "@/lib/mocks";
 import { Target, TrendingUp, Calendar, CheckCircle2 } from "lucide-react";
@@ -37,26 +38,30 @@ export default function DashboardPage() {
             {
               title: "Wetter-Widget",
               description: "Aktuelle Vorhersagen für deinen Standort",
+              href: "/dashboard/wetter",
             },
             {
               title: "Finanz-Übersicht",
               description: "Einnahmen, Ausgaben und Sparziele auf einen Blick",
+              href: "/dashboard/finanzen",
             },
             {
               title: "Kalender",
               description: "Bevorstehende Termine und Events im Überblick",
+              href: "/dashboard/kalender",
             },
           ].map((item) => (
-            <article
+            <Link
               key={item.title}
+              href={item.href}
               className="group rounded-2xl border p-4 transition-all duration-300 hover:border-primary/40 hover:bg-accent motion-reduce:transition-none"
             >
               <h4 className="font-medium">{item.title}</h4>
               <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
               <span className="mt-3 inline-flex items-center text-xs font-semibold text-primary">
-                Öffnen
+                Öffnen →
               </span>
-            </article>
+            </Link>
           ))}
         </div>
       </section>
