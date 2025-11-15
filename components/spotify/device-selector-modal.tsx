@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { NotificationBanner } from "@/components/ui/notification-banner";
+import { useToast } from "@/components/ui/use-toast";
 
 type SpotifyDevice = {
   id: string;
@@ -33,21 +34,29 @@ export function DeviceSelectorModal({ open, onOpenChange }: DeviceSelectorModalP
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [transferring, setTransferring] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const fetchDevices = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch("/api/spotify/devices");
+      const response = await fetch("/api/spotify/devices", { cache: "no-store" });
       if (!response.ok) {
-        throw new Error("Fehler beim Laden der Geräte.");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Fehler beim Laden der Geräte.");
       }
 
       const data = await response.json();
       setDevices(data.devices || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unbekannter Fehler");
+      const errorMsg = err instanceof Error ? err.message : "Unbekannter Fehler";
+      setError(errorMsg);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: errorMsg,
+      });
     } finally {
       setLoading(false);
     }
@@ -59,7 +68,7 @@ export function DeviceSelectorModal({ open, onOpenChange }: DeviceSelectorModalP
     }
   }, [open]);
 
-  const handleTransfer = async (deviceId: string) => {
+  const handleTransfer = async (deviceId: string, deviceName: string) => {
     setTransferring(deviceId);
     setError(null);
 
@@ -74,15 +83,27 @@ export function DeviceSelectorModal({ open, onOpenChange }: DeviceSelectorModalP
       });
 
       if (!response.ok) {
-        throw new Error("Fehler beim Wechseln des Geräts.");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Fehler beim Wechseln des Geräts.");
       }
+
+      toast({
+        title: "Gerät gewechselt",
+        description: `Wiedergabe wurde zu "${deviceName}" übertragen.`,
+      });
 
       // Refresh devices to show updated active state
       setTimeout(() => {
         fetchDevices();
       }, 500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unbekannter Fehler");
+      const errorMsg = err instanceof Error ? err.message : "Unbekannter Fehler";
+      setError(errorMsg);
+      toast({
+        variant: "destructive",
+        title: "Fehler beim Wechseln des Geräts",
+        description: errorMsg,
+      });
     } finally {
       setTransferring(null);
     }
@@ -158,7 +179,7 @@ export function DeviceSelectorModal({ open, onOpenChange }: DeviceSelectorModalP
               {devices.map((device) => (
                 <button
                   key={device.id}
-                  onClick={() => !device.is_active && handleTransfer(device.id)}
+                  onClick={() => !device.is_active && handleTransfer(device.id, device.name)}
                   disabled={device.is_active || transferring === device.id}
                   className={`w-full rounded-2xl border p-4 text-left transition-colors ${
                     device.is_active

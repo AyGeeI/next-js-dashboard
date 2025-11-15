@@ -180,37 +180,39 @@ export function StatisticsTab() {
         </Card>
       </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* Charts Row 1 - Horizontal Bars for better readability */}
+      <div className="grid gap-6">
         {/* Top Tracks Chart */}
         <Card className="rounded-2xl border bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg">Top 10 Tracks</CardTitle>
-            <CardDescription>Deine meistgehörten Songs</CardDescription>
+            <CardDescription>Deine meistgehörten Songs • Sortiert nach Hörzeit</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="flex h-80 items-center justify-center">
+              <div className="flex h-96 items-center justify-center">
                 <RefreshCcw className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             ) : topTracksChartData.length === 0 ? (
-              <div className="flex h-80 items-center justify-center">
+              <div className="flex h-96 items-center justify-center">
                 <p className="text-sm text-muted-foreground">Keine Daten verfügbar</p>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={320}>
-                <BarChart data={topTracksChartData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={topTracksChartData} layout="vertical" margin={{ left: 10, right: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" opacity={0.3} />
                   <XAxis type="number" className="text-xs" />
-                  <YAxis type="category" dataKey="name" className="text-xs" width={150} />
+                  <YAxis type="category" dataKey="name" className="text-xs" width={180} />
                   <Tooltip
+                    cursor={{ fill: "hsl(var(--accent))" }}
                     contentStyle={{
                       backgroundColor: "hsl(var(--card))",
                       border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
+                      borderRadius: "12px",
+                      padding: "12px",
                     }}
                   />
-                  <Bar dataKey="rank" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="rank" fill="#8b5cf6" radius={[0, 8, 8, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -221,31 +223,33 @@ export function StatisticsTab() {
         <Card className="rounded-2xl border bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg">Top 10 Artists</CardTitle>
-            <CardDescription>Deine meistgehörten Künstler</CardDescription>
+            <CardDescription>Deine meistgehörten Künstler • Sortiert nach Hörzeit</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="flex h-80 items-center justify-center">
+              <div className="flex h-96 items-center justify-center">
                 <RefreshCcw className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             ) : topArtistsChartData.length === 0 ? (
-              <div className="flex h-80 items-center justify-center">
+              <div className="flex h-96 items-center justify-center">
                 <p className="text-sm text-muted-foreground">Keine Daten verfügbar</p>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={320}>
-                <BarChart data={topArtistsChartData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={topArtistsChartData} layout="vertical" margin={{ left: 10, right: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" opacity={0.3} />
                   <XAxis type="number" className="text-xs" />
-                  <YAxis type="category" dataKey="name" className="text-xs" width={120} />
+                  <YAxis type="category" dataKey="name" className="text-xs" width={140} />
                   <Tooltip
+                    cursor={{ fill: "hsl(var(--accent))" }}
                     contentStyle={{
                       backgroundColor: "hsl(var(--card))",
                       border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
+                      borderRadius: "12px",
+                      padding: "12px",
                     }}
                   />
-                  <Bar dataKey="rank" fill="#06b6d4" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="rank" fill="#06b6d4" radius={[0, 8, 8, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -257,7 +261,7 @@ export function StatisticsTab() {
       <Card className="rounded-2xl border bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg">Genre-Verteilung</CardTitle>
-          <CardDescription>Deine Top-Genres basierend auf Artists</CardDescription>
+          <CardDescription>Deine Top 6 Genres basierend auf gehörten Artists</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -269,32 +273,54 @@ export function StatisticsTab() {
               <p className="text-sm text-muted-foreground">Keine Genre-Daten verfügbar</p>
             </div>
           ) : (
-            <ResponsiveContainer width="100%" height={400}>
-              <PieChart>
-                <Pie
-                  data={genreData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
-                  outerRadius={130}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {genreData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "8px",
-                  }}
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="flex flex-col items-center lg:flex-row lg:justify-center lg:gap-12">
+              <ResponsiveContainer width="100%" height={450} className="lg:w-1/2">
+                <PieChart>
+                  <Pie
+                    data={genreData}
+                    cx="50%"
+                    cy="45%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name}\n${((percent || 0) * 100).toFixed(0)}%`}
+                    outerRadius={140}
+                    fill="#8884d8"
+                    dataKey="value"
+                    paddingAngle={2}
+                  >
+                    {genreData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "12px",
+                      padding: "12px",
+                    }}
+                  />
+                  <Legend
+                    verticalAlign="bottom"
+                    height={36}
+                    iconType="circle"
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="mt-6 space-y-3 lg:mt-0 lg:w-1/3">
+                {genreData.map((genre, index) => (
+                  <div key={index} className="flex items-center gap-3 rounded-lg border bg-card p-3">
+                    <div
+                      className="h-4 w-4 rounded-full"
+                      style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                    />
+                    <div className="flex-1">
+                      <p className="font-semibold">{genre.name}</p>
+                      <p className="text-sm text-muted-foreground">{genre.value} Artists</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>

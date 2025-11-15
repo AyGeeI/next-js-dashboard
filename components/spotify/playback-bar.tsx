@@ -5,6 +5,7 @@ import { Play, Pause, SkipBack, SkipForward, Repeat, Shuffle, Volume2, Monitor }
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { useToast } from "@/components/ui/use-toast";
 
 type SpotifyTrack = {
   id: string;
@@ -39,12 +40,13 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
+  const { toast } = useToast();
 
-  // Fetch currently playing track
+  // Fetch currently playing track (every second)
   useEffect(() => {
     const fetchCurrentlyPlaying = async () => {
       try {
-        const response = await fetch("/api/spotify/currently-playing");
+        const response = await fetch("/api/spotify/currently-playing", { cache: "no-store" });
         if (response.ok) {
           const data = await response.json();
           setCurrentlyPlaying(data);
@@ -60,7 +62,7 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
     };
 
     fetchCurrentlyPlaying();
-    const intervalId = setInterval(fetchCurrentlyPlaying, 5000);
+    const intervalId = setInterval(fetchCurrentlyPlaying, 1000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -87,9 +89,16 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
 
       if (response.ok) {
         setIsPlaying(!isPlaying);
+      } else {
+        throw new Error("Fehler beim Abspielen/Pausieren");
       }
     } catch (error) {
       console.error("Play/Pause failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Wiedergabe konnte nicht gesteuert werden.",
+      });
     }
   };
 
@@ -99,13 +108,20 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
       if (response.ok) {
         // Refresh currently playing after a short delay
         setTimeout(() => {
-          fetch("/api/spotify/currently-playing")
+          fetch("/api/spotify/currently-playing", { cache: "no-store" })
             .then((res) => res.json())
             .then(setCurrentlyPlaying);
         }, 500);
+      } else {
+        throw new Error("Fehler beim Überspringen");
       }
     } catch (error) {
       console.error("Next track failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Nächster Track konnte nicht abgespielt werden.",
+      });
     }
   };
 
@@ -114,13 +130,20 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
       const response = await fetch("/api/spotify/player/previous", { method: "POST" });
       if (response.ok) {
         setTimeout(() => {
-          fetch("/api/spotify/currently-playing")
+          fetch("/api/spotify/currently-playing", { cache: "no-store" })
             .then((res) => res.json())
             .then(setCurrentlyPlaying);
         }, 500);
+      } else {
+        throw new Error("Fehler beim Zurückspringen");
       }
     } catch (error) {
       console.error("Previous track failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Vorheriger Track konnte nicht abgespielt werden.",
+      });
     }
   };
 
@@ -130,9 +153,16 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
       const response = await fetch(`/api/spotify/player/shuffle?state=${newState}`, { method: "PUT" });
       if (response.ok) {
         setShuffleState(newState);
+      } else {
+        throw new Error("Fehler beim Ändern des Shuffle-Modus");
       }
     } catch (error) {
       console.error("Shuffle failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Shuffle-Modus konnte nicht geändert werden.",
+      });
     }
   };
 
@@ -145,9 +175,16 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
       const response = await fetch(`/api/spotify/player/repeat?state=${newState}`, { method: "PUT" });
       if (response.ok) {
         setRepeatState(newState);
+      } else {
+        throw new Error("Fehler beim Ändern des Wiederholungs-Modus");
       }
     } catch (error) {
       console.error("Repeat failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Wiederholungs-Modus konnte nicht geändert werden.",
+      });
     }
   };
 
