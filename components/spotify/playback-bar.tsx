@@ -42,7 +42,7 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
   const [isSeeking, setIsSeeking] = useState(false);
   const { toast } = useToast();
 
-  // Fetch currently playing track (every 3 seconds)
+  // Fetch currently playing track (every second)
   useEffect(() => {
     const fetchCurrentlyPlaying = async () => {
       try {
@@ -62,7 +62,7 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
     };
 
     fetchCurrentlyPlaying();
-    const intervalId = setInterval(fetchCurrentlyPlaying, 3000);
+    const intervalId = setInterval(fetchCurrentlyPlaying, 1000);
 
     return () => clearInterval(intervalId);
   }, []);

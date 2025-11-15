@@ -44,7 +44,7 @@ export function OverviewTab() {
   const [progress, setProgress] = useState(0);
   const [fetchingCurrentlyPlaying, setFetchingCurrentlyPlaying] = useState(false);
 
-  // Fetch currently playing track (auto-refresh alle 5 Sekunden)
+  // Fetch currently playing track (auto-refresh every second)
   useEffect(() => {
     const fetchCurrentlyPlaying = async (isBackground = false) => {
       if (!isBackground) {
@@ -70,7 +70,7 @@ export function OverviewTab() {
     };
 
     fetchCurrentlyPlaying();
-    const intervalId = setInterval(() => fetchCurrentlyPlaying(true), 5000);
+    const intervalId = setInterval(() => fetchCurrentlyPlaying(true), 1000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -109,7 +109,6 @@ export function OverviewTab() {
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <div>
             <CardTitle className="text-lg">Wird gerade abgespielt</CardTitle>
-            <CardDescription>Aktualisiert sich alle 5 Sekunden</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
@@ -121,7 +120,7 @@ export function OverviewTab() {
                 <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
               </div>
             </div>
-          ) : !currentlyPlaying?.track ? (
+          ) : !currentlyPlaying?.track || !currentlyPlaying?.track?.is_playing ? (
             <div className="rounded-2xl border border-dashed p-12 text-center">
               <Music className="mx-auto h-16 w-16 text-muted-foreground" />
               <p className="mt-4 text-lg font-medium text-muted-foreground">

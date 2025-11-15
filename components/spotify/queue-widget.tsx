@@ -1,18 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RefreshCcw, Music, Heart, Play, MoreVertical } from "lucide-react";
+import { RefreshCcw, Music, Heart, Play } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { NotificationBanner } from "@/components/ui/notification-banner";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 type SpotifyTrack = {
   id: string;
@@ -185,7 +179,7 @@ export function QueueWidget() {
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <div>
           <CardTitle className="text-lg">Warteschlange</CardTitle>
-          <CardDescription>Als Nächstes • Aktualisiert sich alle 15 Sekunden</CardDescription>
+          <CardDescription>Als Nächstes</CardDescription>
         </div>
         <Button
           variant="ghost"
@@ -261,35 +255,27 @@ export function QueueWidget() {
                     <span className="text-sm text-muted-foreground">
                       {formatDuration(track.duration_ms)}
                     </span>
-                    <div className="opacity-0 transition-opacity group-hover:opacity-100">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            disabled={isProcessing}
-                          >
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => handlePlayNow(trackUri, track.name)}
-                            disabled={isProcessing}
-                          >
-                            <Play className="mr-2 h-4 w-4" />
-                            Sofort abspielen
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleSaveTrack(track.id, track.name)}
-                            disabled={isSaved || isProcessing}
-                          >
-                            <Heart className={`mr-2 h-4 w-4 ${isSaved ? "fill-current" : ""}`} />
-                            {isSaved ? "Bereits gespeichert" : "Zu Lieblingssongs"}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                    <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => handlePlayNow(trackUri, track.name)}
+                        disabled={isProcessing}
+                        title="Sofort abspielen"
+                      >
+                        <Play className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => handleSaveTrack(track.id, track.name)}
+                        disabled={isSaved || isProcessing}
+                        title={isSaved ? "Bereits gespeichert" : "Zu Lieblingssongs"}
+                      >
+                        <Heart className={`h-4 w-4 ${isSaved ? "fill-current text-primary" : ""}`} />
+                      </Button>
                     </div>
                   </div>
                 </div>
