@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { NotificationBanner } from "@/components/ui/notification-banner";
+import { useToast } from "@/components/ui/use-toast";
 
 type SpotifyTrack = {
   id: string;
@@ -44,6 +45,7 @@ export function DiscoverTab() {
   const [topTracks, setTopTracks] = useState<SpotifyTrack[]>([]);
   const [topArtists, setTopArtists] = useState<SpotifyArtist[]>([]);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<SpotifyTrack | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchSourceData();
@@ -114,8 +116,14 @@ export function DiscoverTab() {
       }
 
       if (!seedTracks && !seedArtists) {
-        setError("Keine Seeds verfügbar. Bitte höre zuerst Musik auf Spotify.");
+        const errorMsg = "Keine Seeds verfügbar. Bitte höre zuerst Musik auf Spotify.";
+        setError(errorMsg);
         setRecommendations([]);
+        toast({
+          variant: "destructive",
+          title: "Keine Daten verfügbar",
+          description: errorMsg,
+        });
         return;
       }
 
@@ -127,13 +135,27 @@ export function DiscoverTab() {
       const response = await fetch(url, { cache: "no-store" });
 
       if (!response.ok) {
-        throw new Error("Fehler beim Laden der Empfehlungen.");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Fehler beim Laden der Empfehlungen.");
       }
 
       const data = await response.json();
       setRecommendations(data.tracks || []);
+
+      if (forceRefresh) {
+        toast({
+          title: "Aktualisiert",
+          description: `${data.tracks?.length || 0} neue Empfehlungen geladen.`,
+        });
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unbekannter Fehler");
+      const errorMsg = err instanceof Error ? err.message : "Unbekannter Fehler";
+      setError(errorMsg);
+      toast({
+        variant: "destructive",
+        title: "Fehler beim Laden der Empfehlungen",
+        description: errorMsg,
+      });
     } finally {
       setLoading(false);
     }
