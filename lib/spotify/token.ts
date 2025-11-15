@@ -82,12 +82,20 @@ export async function spotifyApiRequest<T>(
   }
 
   try {
+    // Prepare headers
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${token}`,
+      ...(options?.headers as Record<string, string>),
+    };
+
+    // Add Content-Type for requests with a body
+    if (options?.body && !headers["Content-Type"]) {
+      headers["Content-Type"] = "application/json";
+    }
+
     const response = await fetch(`https://api.spotify.com/v1${endpoint}`, {
       ...options,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        ...options?.headers,
-      },
+      headers,
     });
 
     if (!response.ok) {
@@ -101,7 +109,27 @@ export async function spotifyApiRequest<T>(
         // No Content - z.B. wenn nichts abgespielt wird
         return { data: null, error: null };
       }
-      throw new Error(`Spotify API error: ${response.status}`);
+
+      // Try to get error details from Spotify API
+      let errorMessage = `Spotify API error: ${response.status}`;
+      try {
+        const errorData = await response.json();
+        if (errorData.error?.message) {
+          errorMessage = errorData.error.message;
+        }
+        console.error("Spotify API error details:", errorData);
+      } catch {
+        const errorText = await response.text();
+        console.error("Spotify API error:", response.status, errorText);
+      }
+
+      return { data: null, error: errorMessage };
+    }
+
+    // Handle empty responses (e.g., for some PUT/POST requests)
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      return { data: null, error: null };
     }
 
     const data = await response.json();
