@@ -32,11 +32,11 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               // Note: 'unsafe-inline' für Next.js HMR und React Hydration erforderlich
               // Für Produktion sollte ein nonce-basierter Ansatz erwogen werden
-              "script-src 'self' 'unsafe-inline'",
+              "script-src 'self' 'unsafe-inline' https://vercel.live",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https://i.scdn.co https://mosaic.scdn.co https://lineup-images.scdn.co https://image-cdn-ak.spotifycdn.com https://image-cdn-fa.spotifycdn.com",
               "font-src 'self' data:",
-              "connect-src 'self' https://api.openweathermap.org https://api.spotify.com https://accounts.spotify.com",
+              "connect-src 'self' https://api.openweathermap.org https://api.spotify.com https://accounts.spotify.com https://vercel.live",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

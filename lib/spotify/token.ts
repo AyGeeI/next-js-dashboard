@@ -114,13 +114,31 @@ export async function spotifyApiRequest<T>(
       let errorMessage = `Spotify API error: ${response.status}`;
       try {
         const errorData = await response.json();
+        console.error("Spotify API error details:", {
+          status: response.status,
+          endpoint,
+          error: errorData,
+        });
+
         if (errorData.error?.message) {
           errorMessage = errorData.error.message;
         }
-        console.error("Spotify API error details:", errorData);
+
+        // Handle common Spotify errors with user-friendly messages
+        if (errorData.error?.reason === "NO_ACTIVE_DEVICE") {
+          errorMessage = "Kein aktives Spotify-Gerät gefunden. Bitte öffne Spotify auf einem Gerät und starte die Wiedergabe.";
+        } else if (errorData.error?.reason === "PREMIUM_REQUIRED") {
+          errorMessage = "Diese Funktion erfordert Spotify Premium.";
+        } else if (response.status === 403) {
+          errorMessage = "Zugriff verweigert. Möglicherweise fehlen Berechtigungen. Bitte verbinde dich erneut mit Spotify.";
+        }
       } catch {
         const errorText = await response.text();
-        console.error("Spotify API error:", response.status, errorText);
+        console.error("Spotify API error:", {
+          status: response.status,
+          endpoint,
+          text: errorText,
+        });
       }
 
       return { data: null, error: errorMessage };
