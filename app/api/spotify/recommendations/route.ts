@@ -47,10 +47,29 @@ export async function GET(request: NextRequest) {
     }
 
     // URL mit Parametern erstellen
-    let url = `/recommendations?limit=${limit}`;
-    if (seedArtists) url += `&seed_artists=${seedArtists}`;
-    if (seedTracks) url += `&seed_tracks=${seedTracks}`;
-    if (seedGenres) url += `&seed_genres=${seedGenres}`;
+    // Spotify erlaubt maximal 5 Seeds insgesamt
+    const seedParts = [];
+    if (seedArtists) seedParts.push({ type: 'artists', value: seedArtists });
+    if (seedTracks) seedParts.push({ type: 'tracks', value: seedTracks });
+    if (seedGenres) seedParts.push({ type: 'genres', value: seedGenres });
+
+    // Limitiere auf maximal 5 Seeds insgesamt
+    let totalSeeds = 0;
+    const params: string[] = [`limit=${limit}`];
+
+    for (const seed of seedParts) {
+      const ids = seed.value.split(',');
+      const remaining = 5 - totalSeeds;
+      if (remaining <= 0) break;
+
+      const limitedIds = ids.slice(0, remaining);
+      params.push(`seed_${seed.type}=${limitedIds.join(',')}`);
+      totalSeeds += limitedIds.length;
+    }
+
+    const url = `/recommendations?${params.join('&')}`;
+
+    console.log("Recommendations request:", { url, totalSeeds, params });
 
     const { data, error } = await spotifyApiRequest<any>(
       session.user.id,
@@ -58,7 +77,14 @@ export async function GET(request: NextRequest) {
     );
 
     if (error) {
-      console.error("Recommendations API error:", { error, url, seedArtists, seedTracks, seedGenres });
+      console.error("Recommendations API error:", {
+        error,
+        url,
+        seedArtists,
+        seedTracks,
+        seedGenres,
+        totalSeeds
+      });
       return NextResponse.json({ error }, { status: 400 });
     }
 
