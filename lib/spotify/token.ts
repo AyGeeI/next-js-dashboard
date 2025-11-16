@@ -113,7 +113,23 @@ export async function spotifyApiRequest<T>(
       // Try to get error details from Spotify API
       let errorMessage = `Spotify API error: ${response.status}`;
       try {
-        const errorData = await response.json();
+        // Clone response to read body multiple times if needed
+        const responseClone = response.clone();
+        const contentType = response.headers.get("content-type");
+
+        let errorData;
+        if (contentType && contentType.includes("application/json")) {
+          errorData = await response.json();
+        } else {
+          const errorText = await response.text();
+          console.error("Spotify API error (non-JSON):", {
+            status: response.status,
+            endpoint,
+            text: errorText,
+          });
+          return { data: null, error: errorMessage };
+        }
+
         console.error("Spotify API error details:", {
           status: response.status,
           endpoint,
@@ -132,12 +148,11 @@ export async function spotifyApiRequest<T>(
         } else if (response.status === 403) {
           errorMessage = "Zugriff verweigert. Möglicherweise fehlen Berechtigungen. Bitte verbinde dich erneut mit Spotify.";
         }
-      } catch {
-        const errorText = await response.text();
-        console.error("Spotify API error:", {
+      } catch (parseError) {
+        console.error("Failed to parse Spotify API error:", {
           status: response.status,
           endpoint,
-          text: errorText,
+          parseError,
         });
       }
 
