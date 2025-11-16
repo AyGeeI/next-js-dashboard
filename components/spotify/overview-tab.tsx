@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Music } from "lucide-react";
+import { Music, Play, Pause, SkipBack, SkipForward, Heart } from "lucide-react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 import { QueueWidget } from "./queue-widget";
 
 type SpotifyTrack = {
@@ -43,6 +45,9 @@ export function OverviewTab() {
   const [currentlyPlaying, setCurrentlyPlaying] = useState<CurrentlyPlaying | null>(null);
   const [progress, setProgress] = useState(0);
   const [fetchingCurrentlyPlaying, setFetchingCurrentlyPlaying] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [checkingLiked, setCheckingLiked] = useState(false);
+  const { toast } = useToast();
 
   // Fetch currently playing track (auto-refresh every second)
   useEffect(() => {
@@ -102,6 +107,116 @@ export function OverviewTab() {
     return Math.min(100, Math.max(0, prog)).toFixed(0);
   };
 
+  // Check if current track is liked
+  useEffect(() => {
+    const checkIfLiked = async () => {
+      if (!currentlyPlaying?.track?.id) return;
+
+      setCheckingLiked(true);
+      try {
+        const response = await fetch(`/api/spotify/tracks/check-saved?ids=${currentlyPlaying.track.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setIsLiked(data.saved?.[0] || false);
+        }
+      } catch (error) {
+        console.error("Failed to check if track is liked:", error);
+      } finally {
+        setCheckingLiked(false);
+      }
+    };
+
+    checkIfLiked();
+  }, [currentlyPlaying?.track?.id]);
+
+  const handlePlayPause = async () => {
+    try {
+      const endpoint = currentlyPlaying?.track?.is_playing
+        ? "/api/spotify/player/pause"
+        : "/api/spotify/player/play";
+      const response = await fetch(endpoint, { method: "PUT" });
+
+      if (!response.ok) {
+        throw new Error("Fehler beim Abspielen/Pausieren");
+      }
+    } catch (error) {
+      console.error("Play/Pause failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Wiedergabe konnte nicht gesteuert werden.",
+      });
+    }
+  };
+
+  const handleNext = async () => {
+    try {
+      const response = await fetch("/api/spotify/player/next", { method: "POST" });
+      if (!response.ok) {
+        throw new Error("Fehler beim Überspringen");
+      }
+    } catch (error) {
+      console.error("Next track failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Nächster Track konnte nicht abgespielt werden.",
+      });
+    }
+  };
+
+  const handlePrevious = async () => {
+    try {
+      const response = await fetch("/api/spotify/player/previous", { method: "POST" });
+      if (!response.ok) {
+        throw new Error("Fehler beim Zurückspringen");
+      }
+    } catch (error) {
+      console.error("Previous track failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Vorheriger Track konnte nicht abgespielt werden.",
+      });
+    }
+  };
+
+  const handleToggleLike = async () => {
+    if (!currentlyPlaying?.track?.id) return;
+
+    const newLikedState = !isLiked;
+    setIsLiked(newLikedState); // Optimistic update
+
+    try {
+      const endpoint = newLikedState
+        ? "/api/spotify/tracks/save"
+        : "/api/spotify/tracks/remove";
+      const response = await fetch(endpoint, {
+        method: newLikedState ? "PUT" : "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [currentlyPlaying.track.id] }),
+      });
+
+      if (!response.ok) {
+        // Revert on error
+        setIsLiked(!newLikedState);
+        throw new Error("Fehler beim Speichern");
+      }
+
+      toast({
+        title: newLikedState ? "Zu Lieblingssongs hinzugefügt" : "Aus Lieblingssongs entfernt",
+        description: currentlyPlaying.track.name,
+      });
+    } catch (error) {
+      console.error("Toggle like failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Song konnte nicht gespeichert werden.",
+      });
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Currently Playing */}
@@ -131,43 +246,91 @@ export function OverviewTab() {
               </p>
             </div>
           ) : (
-            <div className="flex items-center gap-6">
-              {currentlyPlaying.track.album.images[0] && (
-                <img
-                  src={currentlyPlaying.track.album.images[0].url}
-                  alt={currentlyPlaying.track.album.name}
-                  className="h-32 w-32 rounded-2xl object-cover shadow-lg"
-                />
-              )}
-              <div className="flex-1">
-                <a
-                  href={getSpotifyUri(currentlyPlaying.track.external_urls.spotify)}
-                  className="text-2xl font-bold hover:underline"
-                >
-                  {currentlyPlaying.track.name}
-                </a>
-                <p className="mt-1 text-base text-muted-foreground">
-                  {currentlyPlaying.track.artists.map((artist) => artist.name).join(", ")}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {currentlyPlaying.track.album.name}
-                </p>
-                <div className="mt-4 flex items-center gap-3">
-                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full bg-primary transition-all duration-500"
-                      style={{
-                        width: `${formatProgress(
-                          progress,
-                          currentlyPlaying.track.duration_ms
-                        )}%`,
-                      }}
-                    />
+            <div className="space-y-4">
+              <div className="flex items-center gap-6">
+                {currentlyPlaying.track.album.images[0] && (
+                  <img
+                    src={currentlyPlaying.track.album.images[0].url}
+                    alt={currentlyPlaying.track.album.name}
+                    className="h-32 w-32 rounded-2xl object-cover shadow-lg"
+                  />
+                )}
+                <div className="flex-1">
+                  <a
+                    href={getSpotifyUri(currentlyPlaying.track.external_urls.spotify)}
+                    className="text-2xl font-bold hover:underline"
+                  >
+                    {currentlyPlaying.track.name}
+                  </a>
+                  <p className="mt-1 text-base text-muted-foreground">
+                    {currentlyPlaying.track.artists.map((artist) => artist.name).join(", ")}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {currentlyPlaying.track.album.name}
+                  </p>
+                  <div className="mt-4 flex items-center gap-3">
+                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full bg-primary transition-all duration-500"
+                        style={{
+                          width: `${formatProgress(
+                            progress,
+                            currentlyPlaying.track.duration_ms
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {formatDuration(progress)} / {formatDuration(currentlyPlaying.track.duration_ms)}
+                    </span>
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground">
-                    {formatDuration(progress)} / {formatDuration(currentlyPlaying.track.duration_ms)}
-                  </span>
                 </div>
+              </div>
+
+              {/* Playback Controls */}
+              <div className="flex items-center justify-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handlePrevious}
+                  className="h-10 w-10"
+                >
+                  <SkipBack className="h-5 w-5" />
+                </Button>
+
+                <Button
+                  variant="default"
+                  size="icon"
+                  onClick={handlePlayPause}
+                  className="h-12 w-12 rounded-full"
+                >
+                  {currentlyPlaying.track.is_playing ? (
+                    <Pause className="h-6 w-6" />
+                  ) : (
+                    <Play className="h-6 w-6" />
+                  )}
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleNext}
+                  className="h-10 w-10"
+                >
+                  <SkipForward className="h-5 w-5" />
+                </Button>
+
+                <div className="mx-2 h-6 w-px bg-border" />
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleToggleLike}
+                  disabled={checkingLiked}
+                  className={`h-10 w-10 ${isLiked ? "text-red-500 hover:text-red-600" : ""}`}
+                >
+                  <Heart className={`h-5 w-5 ${isLiked ? "fill-current" : ""}`} />
+                </Button>
               </div>
             </div>
           )}

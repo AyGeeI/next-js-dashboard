@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Play, Pause, SkipBack, SkipForward, Repeat, Shuffle, Volume2, Monitor } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Repeat, Shuffle, Volume2, Monitor, Heart } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -40,6 +40,8 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isSeeking, setIsSeeking] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [checkingLiked, setCheckingLiked] = useState(false);
   const { toast } = useToast();
 
   // Fetch currently playing track (every second)
@@ -81,15 +83,39 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
     return () => clearInterval(intervalId);
   }, [isPlaying, duration, isSeeking]);
 
+  // Check if current track is liked
+  useEffect(() => {
+    const checkIfLiked = async () => {
+      if (!currentlyPlaying?.track?.id) return;
+
+      setCheckingLiked(true);
+      try {
+        const response = await fetch(`/api/spotify/tracks/check-saved?ids=${currentlyPlaying.track.id}`);
+        if (response.ok) {
+          const data = await response.json();
+          setIsLiked(data.saved?.[0] || false);
+        }
+      } catch (error) {
+        console.error("Failed to check if track is liked:", error);
+      } finally {
+        setCheckingLiked(false);
+      }
+    };
+
+    checkIfLiked();
+  }, [currentlyPlaying?.track?.id]);
+
   const handlePlayPause = async () => {
+    const newPlayingState = !isPlaying;
+    setIsPlaying(newPlayingState); // Optimistic update
+
     try {
-      const endpoint = isPlaying ? "/api/spotify/player/pause" : "/api/spotify/player/play";
+      const endpoint = !newPlayingState ? "/api/spotify/player/pause" : "/api/spotify/player/play";
       const method = "PUT";
       const response = await fetch(endpoint, { method });
 
-      if (response.ok) {
-        setIsPlaying(!isPlaying);
-      } else {
+      if (!response.ok) {
+        setIsPlaying(!newPlayingState); // Revert on error
         throw new Error("Fehler beim Abspielen/Pausieren");
       }
     } catch (error) {
@@ -222,6 +248,42 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const handleToggleLike = async () => {
+    if (!currentlyPlaying?.track?.id) return;
+
+    const newLikedState = !isLiked;
+    setIsLiked(newLikedState); // Optimistic update
+
+    try {
+      const endpoint = newLikedState
+        ? "/api/spotify/tracks/save"
+        : "/api/spotify/tracks/remove";
+      const response = await fetch(endpoint, {
+        method: newLikedState ? "PUT" : "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [currentlyPlaying.track.id] }),
+      });
+
+      if (!response.ok) {
+        // Revert on error
+        setIsLiked(!newLikedState);
+        throw new Error("Fehler beim Speichern");
+      }
+
+      toast({
+        title: newLikedState ? "Zu Lieblingssongs hinzugefügt" : "Aus Lieblingssongs entfernt",
+        description: currentlyPlaying.track.name,
+      });
+    } catch (error) {
+      console.error("Toggle like failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler",
+        description: "Song konnte nicht gespeichert werden.",
+      });
+    }
+  };
+
   const getSpotifyUri = (spotifyUrl: string): string => {
     try {
       const url = new URL(spotifyUrl);
@@ -267,6 +329,15 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
                 {track.artists.map((artist) => artist.name).join(", ")}
               </p>
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleToggleLike}
+              disabled={checkingLiked}
+              className={`h-8 w-8 ${isLiked ? "text-red-500 hover:text-red-600" : "text-muted-foreground"}`}
+            >
+              <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
+            </Button>
           </div>
 
           {/* Playback Controls */}

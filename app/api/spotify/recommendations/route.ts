@@ -58,6 +58,7 @@ export async function GET(request: NextRequest) {
     );
 
     if (error) {
+      console.error("Recommendations API error:", { error, url, seedArtists, seedTracks, seedGenres });
       return NextResponse.json({ error }, { status: 400 });
     }
 
