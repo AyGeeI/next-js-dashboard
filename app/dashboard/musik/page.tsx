@@ -9,7 +9,6 @@ import { OverviewTab } from "@/components/spotify/overview-tab";
 import { LibraryTab } from "@/components/spotify/library-tab";
 import { TopChartsTab } from "@/components/spotify/top-charts-tab";
 import { StatisticsTab } from "@/components/spotify/statistics-tab";
-import { DiscoverTab } from "@/components/spotify/discover-tab";
 import { PlaybackBar } from "@/components/spotify/playback-bar";
 import { DeviceSelectorModal } from "@/components/spotify/device-selector-modal";
 import { Toaster } from "@/components/ui/toaster";
@@ -47,12 +46,11 @@ export default function MusikPage() {
         )}
 
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full max-w-3xl grid-cols-5">
+          <TabsList className="grid w-full max-w-3xl grid-cols-4">
             <TabsTrigger value="overview">Übersicht</TabsTrigger>
             <TabsTrigger value="library">Bibliothek</TabsTrigger>
             <TabsTrigger value="charts">Top Charts</TabsTrigger>
             <TabsTrigger value="statistics">Statistiken</TabsTrigger>
-            <TabsTrigger value="discover">Entdecken</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="mt-6">
@@ -69,10 +67,6 @@ export default function MusikPage() {
 
           <TabsContent value="statistics" className="mt-6">
             <StatisticsTab />
-          </TabsContent>
-
-          <TabsContent value="discover" className="mt-6">
-            <DiscoverTab />
           </TabsContent>
         </Tabs>
       </div>
