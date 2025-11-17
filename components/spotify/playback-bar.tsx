@@ -315,7 +315,7 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
               <img
                 src={track.album.images[0].url}
                 alt={track.album.name}
-                className="h-14 w-14 rounded-lg object-cover"
+                className="h-14 w-14 rounded-md object-cover"
               />
             )}
             <div className="min-w-0 flex-1">

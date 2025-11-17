@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const variants = cva(
-  "flex w-full flex-col gap-4 rounded-2xl border px-4 py-3 text-sm shadow-sm transition-colors duration-300 backdrop-blur motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-top-1 sm:flex-row sm:items-start",
+  "flex w-full flex-col gap-4 rounded-md border px-4 py-3 text-sm shadow-sm transition-colors duration-300 backdrop-blur motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-top-1 sm:flex-row sm:items-start",
   {
     variants: {
       variant: {
@@ -70,7 +70,7 @@ export function NotificationBanner({
       <div className="flex w-full items-start gap-3 sm:flex-1 sm:items-center">
         <span
           className={cn(
-            "flex h-10 w-10 items-center justify-center rounded-xl border border-current/20 bg-background/80 text-base",
+            "flex h-10 w-10 items-center justify-center rounded-md border border-current/20 bg-background/80 text-base",
             accent
           )}
           aria-hidden="true"

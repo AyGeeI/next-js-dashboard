@@ -18,7 +18,7 @@ export function ThemeToggle() {
   const isDark = mounted ? resolvedTheme === "dark" : false;
 
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card/80 px-3 py-2 shadow-sm">
+    <div className="flex items-center gap-3 rounded-md border border-border/70 bg-card/80 px-3 py-2 shadow-sm">
       <Sun
         className={cn(
           "h-4 w-4 transition-colors",

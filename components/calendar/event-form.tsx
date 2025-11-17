@@ -137,7 +137,7 @@ export function EventForm({ onSuccess, onCancel, defaultDate, editEvent }: Event
                   {...field}
                   placeholder="Team-Meeting"
                   disabled={isSubmitting}
-                  className="rounded-xl"
+                  className="rounded-md"
                 />
               </FormControl>
               <FormMessage />
@@ -157,7 +157,7 @@ export function EventForm({ onSuccess, onCancel, defaultDate, editEvent }: Event
                   {...field}
                   placeholder="Details zum Event"
                   disabled={isSubmitting}
-                  className="min-h-[100px] rounded-xl"
+                  className="min-h-[100px] rounded-md"
                 />
               </FormControl>
               <FormMessage />
@@ -178,7 +178,7 @@ export function EventForm({ onSuccess, onCancel, defaultDate, editEvent }: Event
                     {...field}
                     type="date"
                     disabled={isSubmitting}
-                    className="rounded-xl"
+                    className="rounded-md"
                   />
                 </FormControl>
                 <FormMessage />
@@ -197,7 +197,7 @@ export function EventForm({ onSuccess, onCancel, defaultDate, editEvent }: Event
                     {...field}
                     type="time"
                     disabled={isSubmitting}
-                    className="rounded-xl"
+                    className="rounded-md"
                   />
                 </FormControl>
                 <FormMessage />
@@ -219,7 +219,7 @@ export function EventForm({ onSuccess, onCancel, defaultDate, editEvent }: Event
                     {...field}
                     placeholder="60 Min"
                     disabled={isSubmitting}
-                    className="rounded-xl"
+                    className="rounded-md"
                   />
                 </FormControl>
                 <FormDescription>z. B. 60 Min oder 2 Std</FormDescription>
@@ -240,7 +240,7 @@ export function EventForm({ onSuccess, onCancel, defaultDate, editEvent }: Event
                   disabled={isSubmitting}
                 >
                   <FormControl>
-                    <SelectTrigger className="rounded-xl">
+                    <SelectTrigger className="rounded-md">
                       <SelectValue placeholder="Wähle einen Typ" />
                     </SelectTrigger>
                   </FormControl>
@@ -270,7 +270,7 @@ export function EventForm({ onSuccess, onCancel, defaultDate, editEvent }: Event
                   {...field}
                   placeholder="Konferenzraum A"
                   disabled={isSubmitting}
-                  className="rounded-xl"
+                  className="rounded-md"
                 />
               </FormControl>
               <FormMessage />
@@ -286,7 +286,7 @@ export function EventForm({ onSuccess, onCancel, defaultDate, editEvent }: Event
               variant="outline"
               onClick={onCancel}
               disabled={isSubmitting}
-              className="rounded-xl"
+              className="rounded-md"
             >
               Abbrechen
             </Button>
@@ -294,7 +294,7 @@ export function EventForm({ onSuccess, onCancel, defaultDate, editEvent }: Event
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-xl"
+            className="rounded-md"
           >
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isSubmitting

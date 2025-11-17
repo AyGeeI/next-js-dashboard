@@ -144,7 +144,7 @@ export function StatisticsTab() {
 
       {/* Stats Cards */}
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="rounded-2xl border bg-card shadow-sm">
+        <Card className="rounded-md border bg-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Top Songs</CardTitle>
             <Music className="h-4 w-4 text-muted-foreground" />
@@ -155,7 +155,7 @@ export function StatisticsTab() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border bg-card shadow-sm">
+        <Card className="rounded-md border bg-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Top Artists</CardTitle>
             <User className="h-4 w-4 text-muted-foreground" />
@@ -166,7 +166,7 @@ export function StatisticsTab() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border bg-card shadow-sm">
+        <Card className="rounded-md border bg-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Hörzeit (Top 20)</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
@@ -183,7 +183,7 @@ export function StatisticsTab() {
       {/* Charts Row 1 - Horizontal Bars for better readability */}
       <div className="grid gap-6">
         {/* Top Tracks Chart */}
-        <Card className="rounded-2xl border bg-card shadow-sm">
+        <Card className="rounded-md border bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg">Top 10 Tracks</CardTitle>
             <CardDescription>Deine meistgehörten Songs • Sortiert nach Hörzeit</CardDescription>
@@ -220,7 +220,7 @@ export function StatisticsTab() {
         </Card>
 
         {/* Top Artists Chart */}
-        <Card className="rounded-2xl border bg-card shadow-sm">
+        <Card className="rounded-md border bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg">Top 10 Artists</CardTitle>
             <CardDescription>Deine meistgehörten Künstler • Sortiert nach Hörzeit</CardDescription>
@@ -258,7 +258,7 @@ export function StatisticsTab() {
       </div>
 
       {/* Genre Distribution */}
-      <Card className="rounded-2xl border bg-card shadow-sm">
+      <Card className="rounded-md border bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg">Genre-Verteilung</CardTitle>
           <CardDescription>Deine Top 6 Genres basierend auf gehörten Artists</CardDescription>
@@ -308,7 +308,7 @@ export function StatisticsTab() {
               </ResponsiveContainer>
               <div className="mt-6 space-y-3 lg:mt-0 lg:w-1/3">
                 {genreData.map((genre, index) => (
-                  <div key={index} className="flex items-center gap-3 rounded-lg border bg-card p-3">
+                  <div key={index} className="flex items-center gap-3 rounded-md border bg-card p-3">
                     <div
                       className="h-4 w-4 rounded-full"
                       style={{ backgroundColor: COLORS[index % COLORS.length] }}

@@ -148,60 +148,56 @@ export function ProfileForm({ initialName, initialUsername, email }: ProfileForm
 
   return (
     <TooltipProvider delayDuration={120}>
-      <form onSubmit={handleSubmit} className="rounded-2xl border bg-card p-6 shadow-sm">
+      <form onSubmit={handleSubmit} className="rounded-md border bg-card p-6 shadow-sm">
         <div className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="fullName">Vollständiger Name</Label>
-                <p className="text-xs text-muted-foreground">
-                  So sprichst du Nutzer:innen in Einladungen und E-Mails an.
-                </p>
-              </div>
+              <Label htmlFor="fullName" className="text-xs font-medium">Vollständiger Name</Label>
               <Input
                 id="fullName"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 autoComplete="name"
                 disabled={submitting}
-                className="h-11"
               />
-              {fieldErrors.name && <p className="text-sm text-destructive">{fieldErrors.name}</p>}
+              <p className="text-xs text-muted-foreground">
+                So sprichst du Nutzer:innen in Einladungen und E-Mails an.
+              </p>
+              {fieldErrors.name && <p className="text-xs text-destructive">{fieldErrors.name}</p>}
             </div>
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="username">Benutzername</Label>
+              <div className="flex items-center gap-1.5">
+                <Label htmlFor="username" className="text-xs font-medium">Benutzername</Label>
                 <Tooltip>
                   <TooltipTrigger
                     type="button"
-                    className="rounded-full p-1 text-muted-foreground transition hover:text-foreground"
+                    className="rounded-full p-0.5 text-muted-foreground transition hover:text-foreground"
                     aria-label="Hinweise zum Benutzernamen anzeigen"
                   >
-                    <Info className="h-4 w-4" aria-hidden="true" />
+                    <Info className="h-3.5 w-3.5" aria-hidden="true" />
                   </TooltipTrigger>
-                  <TooltipContent align="start">
-                    <p className="max-w-[220px] text-xs">
+                  <TooltipContent align="start" className="text-xs">
+                    <p className="max-w-[220px]">
                       Benutzername muss eindeutig sein und kann nur Buchstaben, Zahlen sowie . _ - enthalten.
                     </p>
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <p className="text-xs text-muted-foreground">Wird für dein öffentliches Profil verwendet.</p>
               <Input
                 id="username"
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
                 autoComplete="username"
                 disabled={submitting}
-                className="h-11"
               />
-              {fieldErrors.username && <p className="text-sm text-destructive">{fieldErrors.username}</p>}
+              <p className="text-xs text-muted-foreground">Wird für dein öffentliches Profil verwendet.</p>
+              {fieldErrors.username && <p className="text-xs text-destructive">{fieldErrors.username}</p>}
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">E-Mail-Adresse</Label>
-            <Input id="email" type="email" value={email} readOnly disabled className="h-11" />
+            <Label htmlFor="email" className="text-xs font-medium">E-Mail-Adresse</Label>
+            <Input id="email" type="email" value={email} readOnly disabled />
             <p className="text-xs text-muted-foreground">
               E-Mail-Adressen können aus Sicherheitsgründen nicht geändert werden.
             </p>
@@ -217,10 +213,10 @@ export function ProfileForm({ initialName, initialUsername, email }: ProfileForm
         </div>
 
         <div className="mt-6 flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Änderungen werden sofort gespeichert und gelten für alle verbundenen Dienste.
           </p>
-          <Button type="submit" disabled={submitting || !isDirty}>
+          <Button type="submit" disabled={submitting || !isDirty} size="sm">
             {submitting ? "Speichere ..." : "Änderungen speichern"}
           </Button>
         </div>
@@ -316,25 +312,20 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
 
   return (
     <TooltipProvider delayDuration={120}>
-      <form onSubmit={handleSubmit} className="rounded-2xl border bg-card p-6 shadow-sm">
+      <form onSubmit={handleSubmit} className="rounded-md border bg-card p-6 shadow-sm">
         <h3 className="text-lg font-semibold">Sicherheit</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-xs text-muted-foreground">
           Aktualisiere dein Passwort regelmäßig. Es muss dieselben Anforderungen wie bei der Registrierung erfüllen.
         </p>
         <div className="mt-4 space-y-4">
-          <div className="rounded-xl border border-dashed px-4 py-3 text-sm">
-            <p className="font-medium">Passwort zuletzt geändert</p>
-            <p className="text-muted-foreground">{lastChangedLabel}</p>
+          <div className="rounded-md border border-dashed px-4 py-3 text-sm">
+            <p className="text-xs font-medium">Passwort zuletzt geändert</p>
+            <p className="text-xs text-muted-foreground">{lastChangedLabel}</p>
           </div>
 
           <div className="grid gap-4">
             <div className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="currentPassword">Aktuelles Passwort</Label>
-                <p className="text-xs text-muted-foreground">
-                  Wir benötigen dein bestehendes Passwort, um Änderungen zu bestätigen.
-                </p>
-              </div>
+              <Label htmlFor="currentPassword" className="text-xs font-medium">Aktuelles Passwort</Label>
               <div className="relative">
                 <Input
                   id="currentPassword"
@@ -344,11 +335,11 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
                   autoComplete="current-password"
                   minLength={12}
                   disabled={submitting}
-                  className="h-11 pr-10"
+                  className="pr-10"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   onClick={() => setShowCurrentPassword((prev) => !prev)}
                   aria-label={showCurrentPassword ? "Passwort verbergen" : "Passwort anzeigen"}
                   aria-pressed={showCurrentPassword}
@@ -356,24 +347,27 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
                   {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              <p className="text-xs text-muted-foreground">
+                Wir benötigen dein bestehendes Passwort, um Änderungen zu bestätigen.
+              </p>
               {fieldErrors.currentPassword && (
-                <p className="text-sm text-destructive">{fieldErrors.currentPassword}</p>
+                <p className="text-xs text-destructive">{fieldErrors.currentPassword}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="newPassword">Neues Passwort</Label>
+              <div className="flex items-center gap-1.5">
+                <Label htmlFor="newPassword" className="text-xs font-medium">Neues Passwort</Label>
                 <Tooltip>
                   <TooltipTrigger
                     type="button"
-                    className="rounded-full p-1 text-muted-foreground transition hover:text-foreground"
+                    className="rounded-full p-0.5 text-muted-foreground transition hover:text-foreground"
                     aria-label="Passwortanforderungen anzeigen"
                   >
-                    <Info className="h-4 w-4" aria-hidden="true" />
+                    <Info className="h-3.5 w-3.5" aria-hidden="true" />
                   </TooltipTrigger>
-                  <TooltipContent align="start">
-                    <ul className="space-y-1 text-xs">
+                  <TooltipContent align="start" className="text-xs">
+                    <ul className="space-y-1">
                       {passwordRequirements.map((req) => (
                         <li key={req}>{req}</li>
                       ))}
@@ -381,9 +375,6 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Mindestens 12 Zeichen sowie Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen.
-              </p>
               <div className="relative">
                 <Input
                   id="newPassword"
@@ -393,11 +384,11 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
                   autoComplete="new-password"
                   minLength={12}
                   disabled={submitting}
-                  className="h-11 pr-10"
+                  className="pr-10"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   onClick={() => setShowNewPassword((prev) => !prev)}
                   aria-label={showNewPassword ? "Passwort verbergen" : "Passwort anzeigen"}
                   aria-pressed={showNewPassword}
@@ -405,9 +396,12 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
                   {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              {fieldErrors.newPassword && <p className="text-sm text-destructive">{fieldErrors.newPassword}</p>}
+              <p className="text-xs text-muted-foreground">
+                Mindestens 12 Zeichen sowie Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen.
+              </p>
+              {fieldErrors.newPassword && <p className="text-xs text-destructive">{fieldErrors.newPassword}</p>}
 
-              <div className="space-y-1 rounded-lg border border-dashed px-3 py-2">
+              <div className="space-y-1.5 rounded-md border border-dashed px-3 py-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">Passwortstärke</span>
                   <span className={cn("font-medium", newPassword ? passwordStrength.text : "text-muted-foreground")}>
@@ -419,7 +413,7 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
                     <span
                       key={`strength-${index}`}
                       className={cn(
-                        "h-1.5 rounded-full bg-muted transition-colors",
+                        "h-1.5 rounded-sm bg-muted transition-colors",
                         passwordStrength.score > index ? passwordStrength.bar : ""
                       )}
                     />
@@ -429,12 +423,7 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
             </div>
 
             <div className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="confirmPassword">Neues Passwort bestätigen</Label>
-                <p className="text-xs text-muted-foreground">
-                  Bitte wiederhole dein neues Passwort exakt, um Tippfehler zu vermeiden.
-                </p>
-              </div>
+              <Label htmlFor="confirmPassword" className="text-xs font-medium">Neues Passwort bestätigen</Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
@@ -444,11 +433,11 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
                   autoComplete="new-password"
                   minLength={12}
                   disabled={submitting}
-                  className="h-11 pr-10"
+                  className="pr-10"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="absolute inset-y-0 right-0 flex items-center rounded-md px-3 text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   onClick={() => setShowConfirmPassword((prev) => !prev)}
                   aria-label={showConfirmPassword ? "Passwort verbergen" : "Passwort anzeigen"}
                   aria-pressed={showConfirmPassword}
@@ -456,8 +445,11 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              <p className="text-xs text-muted-foreground">
+                Bitte wiederhole dein neues Passwort exakt, um Tippfehler zu vermeiden.
+              </p>
               {fieldErrors.confirmPassword && (
-                <p className="text-sm text-destructive">{fieldErrors.confirmPassword}</p>
+                <p className="text-xs text-destructive">{fieldErrors.confirmPassword}</p>
               )}
             </div>
           </div>
@@ -470,7 +462,7 @@ export function PasswordForm({ lastChangedLabel }: PasswordFormProps) {
             />
           )}
 
-          <Button type="submit" className="w-full" disabled={submitting || !canSubmit}>
+          <Button type="submit" className="w-full" size="sm" disabled={submitting || !canSubmit}>
             {submitting ? "Aktualisiere ..." : "Passwort aktualisieren"}
           </Button>
         </div>

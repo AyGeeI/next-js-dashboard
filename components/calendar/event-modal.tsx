@@ -94,7 +94,7 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl rounded-2xl">
+      <DialogContent className="max-w-2xl rounded-md">
         {isEditing ? (
           <>
             <DialogHeader>
@@ -116,7 +116,7 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
                 <div className="flex-1 space-y-2">
                   <DialogTitle className="text-2xl">{event.title}</DialogTitle>
                   <div
-                    className={`inline-flex items-center gap-2 rounded-xl border px-3 py-1 text-sm font-medium ${
+                    className={`inline-flex items-center gap-2 rounded-md border px-3 py-1 text-sm font-medium ${
                       EVENT_TYPE_COLORS[event.type]
                     }`}
                   >
@@ -129,7 +129,7 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
                     variant="outline"
                     size="icon"
                     onClick={() => setIsEditing(true)}
-                    className="h-9 w-9 rounded-xl"
+                    className="h-9 w-9 rounded-md"
                     aria-label="Event bearbeiten"
                   >
                     <Pencil className="h-4 w-4" />
@@ -139,7 +139,7 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
                     size="icon"
                     onClick={handleDelete}
                     disabled={isDeleting}
-                    className="h-9 w-9 rounded-xl text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    className="h-9 w-9 rounded-md text-destructive hover:bg-destructive/10 hover:text-destructive"
                     aria-label="Event löschen"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -156,9 +156,9 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
 
             <div className="space-y-4">
               {/* Date and Time */}
-              <div className="flex flex-col gap-3 rounded-2xl border bg-card p-4 shadow-sm">
+              <div className="flex flex-col gap-3 rounded-md border bg-card p-4 shadow-sm">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
                     <Calendar className="h-5 w-5 text-primary" />
                   </div>
                   <div>
@@ -168,7 +168,7 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
                     <Clock className="h-5 w-5 text-primary" />
                   </div>
                   <div>
@@ -182,7 +182,7 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
 
               {/* Description */}
               {event.description && (
-                <div className="rounded-2xl border bg-card p-4 shadow-sm">
+                <div className="rounded-md border bg-card p-4 shadow-sm">
                   <h3 className="mb-2 font-semibold">Beschreibung</h3>
                   <p className="text-muted-foreground">{event.description}</p>
                 </div>
@@ -190,8 +190,8 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
 
               {/* Location */}
               {event.location && (
-                <div className="flex items-center gap-3 rounded-2xl border bg-card p-4 shadow-sm">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                <div className="flex items-center gap-3 rounded-md border bg-card p-4 shadow-sm">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
                     <MapPin className="h-5 w-5 text-primary" />
                   </div>
                   <div>
@@ -203,9 +203,9 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
 
               {/* Attendees */}
               {event.attendees && event.attendees.length > 0 && (
-                <div className="rounded-2xl border bg-card p-4 shadow-sm">
+                <div className="rounded-md border bg-card p-4 shadow-sm">
                   <div className="mb-3 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10">
                       <Users className="h-5 w-5 text-primary" />
                     </div>
                     <h3 className="font-semibold">Teilnehmer</h3>
@@ -222,7 +222,7 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
 
               {/* Reminder */}
               {event.reminder !== null && event.reminder !== undefined && (
-                <div className="rounded-2xl border bg-[hsl(221,83%,53%)]/10 p-4 text-[hsl(221,83%,53%)]">
+                <div className="rounded-md border bg-[hsl(221,83%,53%)]/10 p-4 text-[hsl(221,83%,53%)]">
                   <p className="text-sm font-medium">
                     Erinnerung: {event.reminder} Minuten vor dem Event
                   </p>

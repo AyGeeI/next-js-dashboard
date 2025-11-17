@@ -10,18 +10,18 @@ export default function KalenderLoading() {
           <Skeleton className="h-9 w-48" />
           <Skeleton className="h-5 w-64" />
         </div>
-        <Skeleton className="h-10 w-36 rounded-xl" />
+        <Skeleton className="h-10 w-36 rounded-md" />
       </div>
 
       {/* Metrics */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="rounded-2xl shadow-sm">
+          <Card key={i} className="rounded-md shadow-sm">
             <CardContent className="p-6">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Skeleton className="h-4 w-32" />
-                  <Skeleton className="h-10 w-10 rounded-xl" />
+                  <Skeleton className="h-10 w-10 rounded-md" />
                 </div>
                 <Skeleton className="h-8 w-16" />
                 <Skeleton className="h-3 w-full" />
@@ -32,21 +32,21 @@ export default function KalenderLoading() {
       </div>
 
       {/* Calendar Grid */}
-      <Card className="rounded-2xl shadow-sm">
+      <Card className="rounded-md shadow-sm">
         <CardContent className="p-6">
           <div className="space-y-4">
             {/* Calendar Header */}
             <div className="flex items-center justify-between">
               <Skeleton className="h-8 w-48" />
               <div className="flex items-center gap-2">
-                <Skeleton className="h-9 w-20 rounded-xl" />
-                <Skeleton className="h-9 w-9 rounded-xl" />
-                <Skeleton className="h-9 w-9 rounded-xl" />
+                <Skeleton className="h-9 w-20 rounded-md" />
+                <Skeleton className="h-9 w-9 rounded-md" />
+                <Skeleton className="h-9 w-9 rounded-md" />
               </div>
             </div>
 
             {/* Calendar Grid Skeleton */}
-            <div className="overflow-hidden rounded-2xl border">
+            <div className="overflow-hidden rounded-md border">
               {/* Weekday headers */}
               <div className="grid grid-cols-7 border-b bg-muted/30">
                 {[...Array(7)].map((_, i) => (
@@ -66,10 +66,10 @@ export default function KalenderLoading() {
                     <Skeleton className="mb-2 h-7 w-7 rounded-full" />
                     <div className="space-y-1">
                       {Math.random() > 0.7 && (
-                        <Skeleton className="h-6 w-full rounded-lg" />
+                        <Skeleton className="h-6 w-full rounded-md" />
                       )}
                       {Math.random() > 0.8 && (
-                        <Skeleton className="h-6 w-full rounded-lg" />
+                        <Skeleton className="h-6 w-full rounded-md" />
                       )}
                     </div>
                   </div>
@@ -78,7 +78,7 @@ export default function KalenderLoading() {
             </div>
 
             {/* Legend */}
-            <div className="flex flex-wrap items-center gap-4 rounded-2xl border bg-card p-4">
+            <div className="flex flex-wrap items-center gap-4 rounded-md border bg-card p-4">
               <Skeleton className="h-4 w-16" />
               {[...Array(4)].map((_, i) => (
                 <div key={i} className="flex items-center gap-2">
@@ -92,7 +92,7 @@ export default function KalenderLoading() {
       </Card>
 
       {/* Upcoming Events List */}
-      <Card className="rounded-2xl shadow-sm">
+      <Card className="rounded-md shadow-sm">
         <CardHeader>
           <Skeleton className="h-6 w-64" />
         </CardHeader>
@@ -101,12 +101,12 @@ export default function KalenderLoading() {
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="rounded-2xl border bg-card p-4 shadow-sm"
+                className="rounded-md border bg-card p-4 shadow-sm"
               >
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Skeleton className="h-6 w-48" />
-                    <Skeleton className="h-5 w-20 rounded-lg" />
+                    <Skeleton className="h-5 w-20 rounded-md" />
                   </div>
                   <Skeleton className="h-4 w-full" />
                   <div className="flex gap-4">

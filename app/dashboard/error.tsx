@@ -34,7 +34,7 @@ export default function DashboardError({
           </p>
 
           {process.env.NODE_ENV === "development" && (
-            <div className="rounded-lg bg-muted p-3">
+            <div className="rounded-md bg-muted p-3">
               <p className="text-xs font-mono text-muted-foreground">
                 {error.message}
               </p>

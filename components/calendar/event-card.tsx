@@ -45,7 +45,7 @@ export function EventCard({ event, onClick }: EventCardProps) {
     <button
       onClick={() => onClick?.(event)}
       className={cn(
-        "group w-full rounded-2xl border bg-card p-4 text-left shadow-sm transition-all hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 motion-safe:duration-200",
+        "group w-full rounded-md border bg-card p-4 text-left shadow-sm transition-all hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 motion-safe:duration-200",
         onClick && "cursor-pointer"
       )}
     >
@@ -53,12 +53,12 @@ export function EventCard({ event, onClick }: EventCardProps) {
         <div className="flex-1 space-y-3">
           {/* Header with type badge */}
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-semibold text-foreground group-hover:text-primary motion-safe:transition-colors motion-safe:duration-200">
+            <h3 className="text-sm font-semibold text-foreground group-hover:text-primary motion-safe:transition-colors motion-safe:duration-200">
               {event.title}
             </h3>
             <span
               className={cn(
-                "inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-xs font-medium",
+                "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium",
                 EVENT_TYPE_COLORS[event.type]
               )}
             >
@@ -69,19 +69,19 @@ export function EventCard({ event, onClick }: EventCardProps) {
 
           {/* Description */}
           {event.description && (
-            <p className="line-clamp-2 text-sm text-muted-foreground">
+            <p className="line-clamp-2 text-xs text-muted-foreground">
               {event.description}
             </p>
           )}
 
           {/* Date, Time, Duration */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
             <div className="flex items-center gap-1.5">
-              <Calendar className="h-4 w-4" />
+              <Calendar className="h-3.5 w-3.5" />
               <span>{formattedDate}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Clock className="h-4 w-4" />
+              <Clock className="h-3.5 w-3.5" />
               <span>
                 {event.time} {event.duration && `(${event.duration})`}
               </span>
@@ -90,8 +90,8 @@ export function EventCard({ event, onClick }: EventCardProps) {
 
           {/* Location */}
           {event.location && (
-            <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <MapPin className="h-4 w-4" />
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <MapPin className="h-3.5 w-3.5" />
               <span>{event.location}</span>
             </div>
           )}
