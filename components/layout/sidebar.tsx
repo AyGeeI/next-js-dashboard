@@ -32,7 +32,7 @@ export function Sidebar() {
         <Link
           href="/dashboard"
           className={cn(
-            "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-base font-semibold tracking-tight text-foreground transition",
+            "flex w-full items-center gap-3 rounded-md px-3 py-2 text-base font-semibold tracking-tight text-foreground transition",
             isCollapsed && "lg:justify-center lg:px-2"
           )}
           aria-label="vyrnix.net Dashboard"
@@ -49,10 +49,10 @@ export function Sidebar() {
             const isActive = pathname === item.href;
 
             const linkClasses = cn(
-              "group flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               isCollapsed && "lg:justify-center lg:px-2",
               isActive
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-primary text-primary-foreground shadow-sm border-l-2 border-l-primary"
                 : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
             );
 

@@ -150,9 +150,12 @@ export default function WetterPage() {
   const windDirection = formatWindDirection(weather?.wind?.deg);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       <div className="space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Wetter</h2>
+        <h2 className="text-2xl font-semibold">Wetter</h2>
+        <p className="text-sm text-muted-foreground">
+          Aktuelle Wetterdaten und Vorhersagen für deinen Standort
+        </p>
       </div>
 
       {settingsMissing ? (
@@ -185,23 +188,23 @@ export default function WetterPage() {
         <CardMetric title="Standort" value={location.value} icon={MapPin} description={location.description} />
       </div>
 
-      <Card className="rounded-2xl border bg-card shadow-sm">
+      <Card className="rounded-md border bg-card shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between gap-4">
           <div>
-            <CardTitle>Aktuelle Messwerte</CardTitle>
-            <p className="text-sm text-muted-foreground">
+            <CardTitle className="text-lg font-semibold">Aktuelle Messwerte</CardTitle>
+            <p className="text-xs text-muted-foreground">
               Echtzeitdaten basierend auf deinen gespeicherten OpenWeatherMap Angaben.
             </p>
           </div>
           {isFetching ? (
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            <span className="inline-flex items-center gap-2 rounded-md bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
               <RefreshCcw className="h-4 w-4 animate-spin" aria-hidden="true" />
               Aktualisiere...
             </span>
           ) : null}
         </CardHeader>
         <CardContent>
-          <dl className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <DetailItem label="Gefühlt wie" value={formatTemperature(feelsLike)} />
             <DetailItem label="Luftdruck" value={pressure} />
             <DetailItem label="Bewölkung" value={clouds} />
@@ -209,7 +212,7 @@ export default function WetterPage() {
             <DetailItem label="Windrichtung" value={windDirection} />
             <DetailItem label="Windgeschwindigkeit" value={windSpeed} />
           </dl>
-          <p className="mt-4 text-xs text-muted-foreground">
+          <p className="mt-6 text-xs text-muted-foreground">
             Zuletzt aktualisiert {formatRelativeUpdate(lastUpdated)} · automatische Aktualisierung jede Minute.
           </p>
         </CardContent>
@@ -337,9 +340,9 @@ function formatRelativeUpdate(date: Date | null) {
 
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="space-y-1 rounded-2xl border bg-muted/30 p-4">
-      <dt className="text-sm font-medium text-muted-foreground">{label}</dt>
-      <dd className="text-lg font-semibold text-foreground">{value}</dd>
+    <div className="space-y-1 rounded-md border bg-muted/30 p-4">
+      <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</dt>
+      <dd className="text-base font-semibold text-foreground">{value}</dd>
     </div>
   );
 }
