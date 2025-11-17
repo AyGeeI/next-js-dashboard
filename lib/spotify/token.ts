@@ -113,14 +113,47 @@ export async function spotifyApiRequest<T>(
       // Try to get error details from Spotify API
       let errorMessage = `Spotify API error: ${response.status}`;
       try {
-        const errorData = await response.json();
+        // Clone response to read body multiple times if needed
+        const responseClone = response.clone();
+        const contentType = response.headers.get("content-type");
+
+        let errorData;
+        if (contentType && contentType.includes("application/json")) {
+          errorData = await response.json();
+        } else {
+          const errorText = await response.text();
+          console.error("Spotify API error (non-JSON):", {
+            status: response.status,
+            endpoint,
+            text: errorText,
+          });
+          return { data: null, error: errorMessage };
+        }
+
+        console.error("Spotify API error details:", {
+          status: response.status,
+          endpoint,
+          error: errorData,
+        });
+
         if (errorData.error?.message) {
           errorMessage = errorData.error.message;
         }
-        console.error("Spotify API error details:", errorData);
-      } catch {
-        const errorText = await response.text();
-        console.error("Spotify API error:", response.status, errorText);
+
+        // Handle common Spotify errors with user-friendly messages
+        if (errorData.error?.reason === "NO_ACTIVE_DEVICE") {
+          errorMessage = "Kein aktives Spotify-Gerät gefunden. Bitte öffne Spotify auf einem Gerät und starte die Wiedergabe.";
+        } else if (errorData.error?.reason === "PREMIUM_REQUIRED") {
+          errorMessage = "Diese Funktion erfordert Spotify Premium.";
+        } else if (response.status === 403) {
+          errorMessage = "Zugriff verweigert. Möglicherweise fehlen Berechtigungen. Bitte verbinde dich erneut mit Spotify.";
+        }
+      } catch (parseError) {
+        console.error("Failed to parse Spotify API error:", {
+          status: response.status,
+          endpoint,
+          parseError,
+        });
       }
 
       return { data: null, error: errorMessage };

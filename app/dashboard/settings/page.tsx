@@ -112,6 +112,7 @@ export default function SettingsPage() {
   const [loadingSpotifySettings, setLoadingSpotifySettings] = useState(true);
   const [savingSpotifySettings, setSavingSpotifySettings] = useState(false);
   const [connectingSpotify, setConnectingSpotify] = useState(false);
+  const [disconnectingSpotify, setDisconnectingSpotify] = useState(false);
   const [showSpotifyClientId, setShowSpotifyClientId] = useState(false);
   const [showSpotifyClientSecret, setShowSpotifyClientSecret] = useState(false);
 
@@ -451,6 +452,46 @@ export default function SettingsPage() {
         description: "Bitte versuche es später erneut.",
       });
       setConnectingSpotify(false);
+    }
+  };
+
+  const handleSpotifyDisconnect = async () => {
+    setDisconnectingSpotify(true);
+    setSpotifyStatus(null);
+
+    try {
+      const response = await fetch("/api/spotify/disconnect", {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setSpotifyStatus({
+          type: "error",
+          title: "Trennen nicht möglich.",
+          description: data.error ?? "Bitte versuche es später erneut.",
+        });
+        setDisconnectingSpotify(false);
+        return;
+      }
+
+      // Update den lokalen Status
+      setSpotifySettings((prev) => ({ ...prev, isConnected: false }));
+      setSavedSpotifySettings((prev) => ({ ...prev, isConnected: false }));
+      setSpotifyStatus({
+        type: "info",
+        title: "Spotify-Verbindung getrennt",
+        description: "Du kannst dein Konto jetzt neu verbinden, um die aktualisierten Berechtigungen zu erhalten.",
+      });
+    } catch (error) {
+      console.error("Spotify-Verbindung konnte nicht getrennt werden.", error);
+      setSpotifyStatus({
+        type: "error",
+        title: "Trennen nicht möglich.",
+        description: "Bitte versuche es später erneut.",
+      });
+    } finally {
+      setDisconnectingSpotify(false);
     }
   };
 
@@ -799,6 +840,34 @@ export default function SettingsPage() {
                       >
                         {connectingSpotify ? "Verbinde..." : "Mit Spotify verbinden"}
                       </Button>
+                    </div>
+                  ) : null}
+
+                  {spotifySettings.isConnected ? (
+                    <div className="flex flex-col gap-3 border-t pt-4">
+                      <p className="text-sm text-muted-foreground">
+                        Dein Spotify-Konto ist verbunden. Du kannst die Verbindung trennen und neu verbinden, um aktualisierte Berechtigungen zu erhalten.
+                      </p>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={handleSpotifyDisconnect}
+                          disabled={disconnectingSpotify || spotifyFormDisabled}
+                          className="w-full sm:w-auto"
+                        >
+                          {disconnectingSpotify ? "Trenne..." : "Verbindung trennen"}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="default"
+                          onClick={handleSpotifyConnect}
+                          disabled={connectingSpotify || spotifyFormDisabled}
+                          className="w-full sm:w-auto"
+                        >
+                          {connectingSpotify ? "Verbinde..." : "Neu verbinden"}
+                        </Button>
+                      </div>
                     </div>
                   ) : null}
                 </div>
