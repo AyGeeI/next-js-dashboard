@@ -141,7 +141,7 @@ function ResetPasswordContent() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
-      <Card className="w-full max-w-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
+      <Card className="w-full max-w-md rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
         <CardHeader>
           <CardTitle>Passwort zurücksetzen</CardTitle>
           <CardDescription>
@@ -168,7 +168,7 @@ function ResetPasswordContent() {
 
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label htmlFor="password">Neues Passwort</Label>
+                <Label htmlFor="password" className="text-xs font-medium">Neues Passwort</Label>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger
@@ -205,7 +205,7 @@ function ResetPasswordContent() {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              {fieldErrors.password && <p className="text-sm text-destructive">{fieldErrors.password}</p>}
+              {fieldErrors.password && <p className="text-xs text-destructive">{fieldErrors.password}</p>}
               <div aria-live="polite" className="space-y-1">
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>Passwortstärke</span>
@@ -215,7 +215,7 @@ function ResetPasswordContent() {
                   {[0, 1, 2].map((index) => (
                     <span
                       key={index}
-                      className={`h-1 rounded-full bg-muted transition-colors ${
+                      className={`h-1.5 rounded-sm bg-muted transition-colors ${
                         strength.score > index ? strength.bar : ""
                       }`}
                     />
@@ -225,7 +225,7 @@ function ResetPasswordContent() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Neues Passwort bestätigen</Label>
+              <Label htmlFor="confirmPassword" className="text-xs font-medium">Neues Passwort bestätigen</Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
@@ -248,7 +248,7 @@ function ResetPasswordContent() {
                 </button>
               </div>
               {fieldErrors.confirmPassword && (
-                <p className="text-sm text-destructive">{fieldErrors.confirmPassword}</p>
+                <p className="text-xs text-destructive">{fieldErrors.confirmPassword}</p>
               )}
             </div>
 
@@ -273,7 +273,7 @@ export default function ResetPasswordPage() {
     <Suspense
       fallback={(
         <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
-          <Card className="w-full max-w-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
+          <Card className="w-full max-w-md rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
             <CardHeader>
               <CardTitle>Passwort zurücksetzen</CardTitle>
               <CardDescription>Bitte warten...</CardDescription>

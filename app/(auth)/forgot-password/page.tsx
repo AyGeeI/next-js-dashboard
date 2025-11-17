@@ -78,7 +78,7 @@ function ForgotPasswordContent() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
-      <Card className="w-full max-w-lg border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
+      <Card className="w-full max-w-lg rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
         <CardHeader>
           <CardTitle>Passwort vergessen</CardTitle>
           <CardDescription>
@@ -89,7 +89,7 @@ function ForgotPasswordContent() {
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <div className="space-y-1">
-                <Label htmlFor="identifier">E-Mail oder Benutzername</Label>
+                <Label htmlFor="identifier" className="text-xs font-medium">E-Mail oder Benutzername</Label>
                 <p className="text-xs text-muted-foreground">
                   Wir akzeptieren deine Login-E-Mail oder deinen eindeutigen Nutzernamen.
                 </p>
@@ -132,7 +132,7 @@ export default function ForgotPasswordPage() {
     <Suspense
       fallback={(
         <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
-          <Card className="w-full max-w-lg border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
+          <Card className="w-full max-w-lg rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
             <CardHeader>
               <CardTitle>Passwort vergessen</CardTitle>
               <CardDescription>Bitte warten...</CardDescription>

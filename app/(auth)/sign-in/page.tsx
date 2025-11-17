@@ -100,7 +100,7 @@ function SignInContent() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
-      <Card className="w-full max-w-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
+      <Card className="w-full max-w-md rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
         <CardHeader>
           <CardTitle>Anmelden</CardTitle>
           <CardDescription>Melde dich mit E-Mail oder Benutzername an.</CardDescription>
@@ -135,7 +135,7 @@ function SignInContent() {
               </NotificationBanner>
             )}
             <div className="space-y-2">
-              <Label htmlFor="identifier">E-Mail oder Benutzername</Label>
+              <Label htmlFor="identifier" className="text-xs font-medium">E-Mail oder Benutzername</Label>
               <Input
                 id="identifier"
                 type="text"
@@ -147,7 +147,7 @@ function SignInContent() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Passwort</Label>
+              <Label htmlFor="password" className="text-xs font-medium">Passwort</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -178,7 +178,7 @@ function SignInContent() {
                   onCheckedChange={(checked) => setRememberMe(Boolean(checked))}
                   disabled={loading}
                 />
-                <Label htmlFor="rememberMe" className="cursor-pointer text-base font-medium">
+                <Label htmlFor="rememberMe" className="cursor-pointer text-xs font-medium">
                   Angemeldet bleiben
                 </Label>
               </div>
@@ -219,7 +219,7 @@ export default function SignInPage() {
     <Suspense
       fallback={(
         <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
-          <Card className="w-full max-w-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
+          <Card className="w-full max-w-md rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
             <CardHeader>
               <CardTitle>Anmelden</CardTitle>
               <CardDescription>Bitte warten...</CardDescription>

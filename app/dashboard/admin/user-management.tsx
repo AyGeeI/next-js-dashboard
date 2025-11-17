@@ -835,5 +835,5 @@ function HelperText({ children }: { children: ReactNode }) {
 }
 
 function ErrorText({ children }: { children: ReactNode }) {
-  return <p className="text-sm text-destructive">{children}</p>;
+  return <p className="text-xs text-destructive">{children}</p>;
 }

@@ -69,7 +69,7 @@ function VerifyEmailContent() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md text-center">
+      <Card className="w-full max-w-md rounded-md text-center">
         <CardHeader>
           <CardTitle>E-Mail bestätigen</CardTitle>
           <CardDescription>Wir müssen deine Adresse verifizieren, bevor du dich anmelden kannst.</CardDescription>
@@ -100,7 +100,7 @@ export default function VerifyEmailPage() {
     <Suspense
       fallback={(
         <div className="flex min-h-screen items-center justify-center p-4">
-          <Card className="w-full max-w-md text-center">
+          <Card className="w-full max-w-md rounded-md text-center">
             <CardHeader>
               <CardTitle>E-Mail wird geprüft</CardTitle>
               <CardDescription>Bitte warten...</CardDescription>
