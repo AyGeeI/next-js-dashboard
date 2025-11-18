@@ -56,7 +56,7 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
         type="button"
         variant="ghost"
         size="icon"
-        className="h-12 w-12 rounded-2xl bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring"
+        className="h-12 w-12 rounded-md bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring"
         aria-haspopup="menu"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
@@ -68,11 +68,11 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
       {isOpen ? (
         <div
           role="menu"
-          className="absolute left-1/2 top-full z-50 mt-3 w-[calc(100vw-2rem)] max-w-sm -translate-x-1/2 overflow-hidden rounded-2xl border border-border bg-popover text-sm shadow-2xl ring-1 ring-black/5 sm:left-auto sm:right-0 sm:w-72 sm:max-w-none sm:translate-x-0"
+          className="absolute left-1/2 top-full z-50 mt-3 w-[calc(100vw-2rem)] max-w-sm -translate-x-1/2 overflow-hidden rounded-md border border-border bg-popover text-sm shadow-2xl ring-1 ring-black/5 sm:left-auto sm:right-0 sm:w-72 sm:max-w-none sm:translate-x-0"
         >
           <div className="bg-primary/5 px-4 py-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-base font-semibold text-primary-foreground">
+              <div className="flex h-12 w-12 items-center justify-center rounded-md bg-primary text-base font-semibold text-primary-foreground">
                 {initials}
               </div>
               <div className="space-y-0.5">
@@ -85,7 +85,7 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
           </div>
 
           <div className="px-4 py-3">
-            <div className="rounded-xl border border-dashed border-border bg-background px-3 py-2">
+            <div className="rounded-md border border-dashed border-border bg-background px-3 py-2">
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Rolle
               </p>
@@ -130,9 +130,9 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
           >
             <button
               type="submit"
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-destructive hover:bg-destructive/10"
+              className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-medium text-destructive hover:bg-destructive/10"
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
+              <span className="flex h-9 w-9 items-center justify-center rounded-md bg-destructive/10 text-destructive">
                 <LogOut className="h-4 w-4" aria-hidden="true" />
               </span>
               <span>
@@ -162,10 +162,10 @@ function MenuLink({ href, title, description, icon: Icon, onNavigate }: MenuLink
     <Link
       href={href}
       role="menuitem"
-      className="group flex items-center gap-3 rounded-xl px-4 py-2.5 transition-colors hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="group flex items-center gap-3 rounded-md px-4 py-2.5 transition-colors hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       onClick={onNavigate}
     >
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors group-hover:bg-primary/15 group-hover:text-primary">
+      <span className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/15 text-primary transition-colors group-hover:bg-primary/15 group-hover:text-primary">
         <Icon className="h-4 w-4" aria-hidden="true" />
       </span>
       <span>

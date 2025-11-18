@@ -175,7 +175,7 @@ export function QueueWidget() {
   };
 
   return (
-    <Card className="rounded-2xl border bg-card shadow-sm">
+    <Card className="rounded-md border bg-card shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <div>
           <CardTitle className="text-lg">Warteschlange</CardTitle>
@@ -205,7 +205,7 @@ export function QueueWidget() {
                 key={i}
                 className="flex items-center gap-3"
               >
-                <div className="h-12 w-12 animate-pulse rounded-lg bg-muted" />
+                <div className="h-12 w-12 animate-pulse rounded-md bg-muted" />
                 <div className="flex-1 space-y-2">
                   <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
                   <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
@@ -214,7 +214,7 @@ export function QueueWidget() {
             ))}
           </div>
         ) : !queueData?.queue || queueData.queue.length === 0 ? (
-          <div className="rounded-2xl border border-dashed p-8 text-center">
+          <div className="rounded-md border border-dashed p-8 text-center">
             <Music className="mx-auto h-8 w-8 text-muted-foreground" />
             <p className="mt-2 text-sm font-medium">Warteschlange leer</p>
             <p className="text-sm text-muted-foreground">
@@ -231,13 +231,13 @@ export function QueueWidget() {
               return (
                 <div
                   key={`${track.id}-${index}`}
-                  className="group flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent"
+                  className="group flex items-center gap-3 rounded-md p-2 transition-colors hover:bg-accent"
                 >
                   {track.album.images[0] && (
                     <img
                       src={track.album.images[0].url}
                       alt={track.album.name}
-                      className="h-12 w-12 rounded-lg object-cover"
+                      className="h-12 w-12 rounded-md object-cover"
                     />
                   )}
                   <div className="min-w-0 flex-1">

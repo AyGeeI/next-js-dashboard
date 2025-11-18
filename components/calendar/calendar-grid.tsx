@@ -123,7 +123,7 @@ export function CalendarGrid({ events, onDateClick, onEventClick }: CalendarGrid
             variant="outline"
             size="sm"
             onClick={goToToday}
-            className="rounded-xl"
+            className="rounded-md"
           >
             Heute
           </Button>
@@ -131,7 +131,7 @@ export function CalendarGrid({ events, onDateClick, onEventClick }: CalendarGrid
             variant="outline"
             size="icon"
             onClick={goToPreviousMonth}
-            className="h-9 w-9 rounded-xl"
+            className="h-9 w-9 rounded-md"
             aria-label="Vorheriger Monat"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -140,7 +140,7 @@ export function CalendarGrid({ events, onDateClick, onEventClick }: CalendarGrid
             variant="outline"
             size="icon"
             onClick={goToNextMonth}
-            className="h-9 w-9 rounded-xl"
+            className="h-9 w-9 rounded-md"
             aria-label="Nächster Monat"
           >
             <ChevronRight className="h-4 w-4" />
@@ -149,7 +149,7 @@ export function CalendarGrid({ events, onDateClick, onEventClick }: CalendarGrid
       </div>
 
       {/* Calendar grid */}
-      <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
+      <div className="overflow-hidden rounded-md border bg-card shadow-sm">
         {/* Weekday headers */}
         <div className="grid grid-cols-7 border-b bg-muted/30">
           {WEEKDAYS.map((day) => (
@@ -208,7 +208,7 @@ export function CalendarGrid({ events, onDateClick, onEventClick }: CalendarGrid
                         onEventClick?.(event);
                       }}
                       className={cn(
-                        "w-full truncate rounded-lg border px-2 py-1 text-xs font-medium transition-all hover:scale-105 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 motion-safe:duration-200",
+                        "w-full truncate rounded-md border px-2 py-1 text-xs font-medium transition-all hover:scale-105 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 motion-safe:duration-200",
                         EVENT_TYPE_COLORS[event.type]
                       )}
                       aria-label={`${event.title} um ${event.time}`}
@@ -217,7 +217,7 @@ export function CalendarGrid({ events, onDateClick, onEventClick }: CalendarGrid
                     </button>
                   ))}
                   {dayEvents.length > 2 && (
-                    <div className="rounded-lg bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+                    <div className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
                       +{dayEvents.length - 2} weitere
                     </div>
                   )}
@@ -239,7 +239,7 @@ export function CalendarGrid({ events, onDateClick, onEventClick }: CalendarGrid
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center gap-4 rounded-2xl border bg-card p-4 text-sm shadow-sm">
+      <div className="flex flex-wrap items-center gap-4 rounded-md border bg-card p-4 text-sm shadow-sm">
         <span className="font-medium text-muted-foreground">Legende:</span>
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-full bg-primary" />

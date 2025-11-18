@@ -8,21 +8,31 @@ const icons = [Target, TrendingUp, Calendar, CheckCircle2];
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div className="space-y-2 motion-safe:animate-in motion-safe:fade-in-50">
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard Übersicht</h2>
-        <p className="max-w-2xl text-muted-foreground">
+        <h2 className="text-2xl font-semibold">Dashboard Übersicht</h2>
+        <p className="text-sm text-muted-foreground">
           Ihr persönliches Cockpit mit den wichtigsten Kennzahlen und schnellen Aktionen.
         </p>
       </div>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {mockDashboardMetrics.map((metric, index) => (
-          <CardMetric key={metric.title} title={metric.title} value={metric.value} icon={icons[index]} />
+          <CardMetric
+            key={metric.title}
+            title={metric.title}
+            value={metric.value}
+            icon={icons[index]}
+            delta={{
+              value: "+12.5%",
+              trend: "up",
+              label: "vs. letzter Monat"
+            }}
+          />
         ))}
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-2">
+      <section className="grid gap-6 lg:grid-cols-2">
         <ChartMini title="Aktivität der letzten 6 Monate" data={mockChartData} />
         <ChartMini
           title="Monatliche Entwicklung"
@@ -30,10 +40,10 @@ export default function DashboardPage() {
         />
       </section>
 
-      <section className="rounded-2xl border bg-card/95 p-6 shadow-sm">
+      <section className="rounded-md border bg-card p-6 shadow-sm">
         <h3 className="text-lg font-semibold">Schnellzugriff</h3>
-        <p className="text-sm text-muted-foreground">Öffne häufig genutzte Bereiche ohne Umwege.</p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <p className="text-xs text-muted-foreground">Öffne häufig genutzte Bereiche ohne Umwege.</p>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[
             {
               title: "Wetter-Widget",
@@ -54,10 +64,10 @@ export default function DashboardPage() {
             <Link
               key={item.title}
               href={item.href}
-              className="group rounded-2xl border p-4 transition-all duration-300 hover:border-primary/40 hover:bg-accent motion-reduce:transition-none"
+              className="group rounded-md border p-4 transition-all duration-200 hover:border-primary/40 hover:bg-accent motion-reduce:transition-none"
             >
-              <h4 className="font-medium">{item.title}</h4>
-              <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+              <h4 className="text-sm font-medium">{item.title}</h4>
+              <p className="mt-1 text-xs text-muted-foreground">{item.description}</p>
               <span className="mt-3 inline-flex items-center text-xs font-semibold text-primary">
                 Öffnen →
               </span>

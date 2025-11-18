@@ -43,13 +43,13 @@ export default async function AccountPage() {
   const passwordLabel = formatDate(user.passwordChangedAt);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div className="space-y-2">
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">
+        <p className="text-xs font-medium uppercase tracking-wide text-primary">
           Konto
         </p>
-        <h2 className="text-3xl font-bold tracking-tight">Persönliche Daten verwalten</h2>
-        <p className="max-w-2xl text-muted-foreground">
+        <h2 className="text-2xl font-semibold">Persönliche Daten verwalten</h2>
+        <p className="text-sm text-muted-foreground">
           Aktualisiere deine Stammdaten, um Teammitgliedern und Workflows die richtigen Informationen zur Verfügung zu
           stellen.
         </p>
@@ -65,23 +65,23 @@ export default async function AccountPage() {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-2xl border bg-card p-6 shadow-sm">
+          <div className="rounded-md border bg-card p-6 shadow-sm">
             <h3 className="text-lg font-semibold">Profilstatus</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1 text-xs text-muted-foreground">
               Verwalte, wie dein Profil innerhalb des Dashboards dargestellt wird.
             </p>
             <dl className="mt-4 space-y-3 text-sm">
-              <div className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2">
-                <dt className="text-muted-foreground">Rolle</dt>
-                <dd className="font-medium">{roleLabel}</dd>
+              <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+                <dt className="text-xs text-muted-foreground">Rolle</dt>
+                <dd className="text-sm font-medium">{roleLabel}</dd>
               </div>
-              <div className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2">
-                <dt className="text-muted-foreground">Status</dt>
-                <dd className="font-medium text-success">Aktiv</dd>
+              <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+                <dt className="text-xs text-muted-foreground">Status</dt>
+                <dd className="text-sm font-medium text-success">Aktiv</dd>
               </div>
-              <div className="flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2">
-                <dt className="text-muted-foreground">Registriert am</dt>
-                <dd className="font-medium">{registrationLabel}</dd>
+              <div className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2">
+                <dt className="text-xs text-muted-foreground">Registriert am</dt>
+                <dd className="text-sm font-medium">{registrationLabel}</dd>
               </div>
             </dl>
           </div>

@@ -100,26 +100,26 @@ export default function KalenderPage() {
     .slice(0, 5);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Kalender</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-2xl font-semibold">Kalender</h2>
+          <p className="text-sm text-muted-foreground">
             Verwalte deine Termine und Events
           </p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="rounded-xl">
+            <Button>
               <Plus className="mr-2 h-4 w-4" />
               Neues Event
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl rounded-2xl">
+          <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Neues Event erstellen</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-xl font-semibold">Neues Event erstellen</DialogTitle>
+              <DialogDescription className="text-xs">
                 Erstelle ein neues Event in deinem Kalender.
               </DialogDescription>
             </DialogHeader>
@@ -139,7 +139,7 @@ export default function KalenderPage() {
       {isLoading ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <Card key={i} className="rounded-2xl">
+            <Card key={i} className="rounded-md">
               <CardContent className="p-6">
                 <Skeleton className="h-20 w-full" />
               </CardContent>
@@ -177,7 +177,7 @@ export default function KalenderPage() {
 
       {/* Calendar Grid */}
       {isLoading ? (
-        <Card className="rounded-2xl">
+        <Card className="rounded-md">
           <CardContent className="p-6">
             <Skeleton className="h-[600px] w-full" />
           </CardContent>
@@ -191,15 +191,15 @@ export default function KalenderPage() {
       )}
 
       {/* Upcoming Events List */}
-      <Card className="rounded-2xl shadow-sm">
+      <Card className="rounded-md shadow-sm">
         <CardHeader>
-          <CardTitle>Kommende Events (nächste 7 Tage)</CardTitle>
+          <CardTitle className="text-lg font-semibold">Kommende Events (nächste 7 Tage)</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
             <div className="space-y-3">
               {[...Array(3)].map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+                <Skeleton key={i} className="h-24 w-full rounded-md" />
               ))}
             </div>
           ) : upcomingEvents.length > 0 ? (
@@ -213,12 +213,12 @@ export default function KalenderPage() {
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed p-8 text-center">
+            <div className="rounded-md border border-dashed p-8 text-center">
               <Calendar className="mx-auto h-12 w-12 text-muted-foreground/50" />
               <p className="mt-4 text-sm font-medium text-muted-foreground">
                 Keine anstehenden Events in den nächsten 7 Tagen
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Erstelle dein erstes Event mit dem Button oben.
               </p>
             </div>

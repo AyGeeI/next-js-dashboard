@@ -292,7 +292,7 @@ export function OverviewTab() {
   return (
     <div className="space-y-8">
       {/* Currently Playing */}
-      <Card className="rounded-2xl border bg-card shadow-sm">
+      <Card className="rounded-md border bg-card shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <div>
             <CardTitle className="text-lg">Wird gerade abgespielt</CardTitle>
@@ -301,14 +301,14 @@ export function OverviewTab() {
         <CardContent>
           {fetchingCurrentlyPlaying && !currentlyPlaying ? (
             <div className="flex items-center gap-4">
-              <div className="h-32 w-32 animate-pulse rounded-2xl bg-muted" />
+              <div className="h-32 w-32 animate-pulse rounded-md bg-muted" />
               <div className="flex-1 space-y-2">
                 <div className="h-6 w-3/4 animate-pulse rounded bg-muted" />
                 <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
               </div>
             </div>
           ) : !currentlyPlaying?.track || !currentlyPlaying?.track?.is_playing ? (
-            <div className="rounded-2xl border border-dashed p-12 text-center">
+            <div className="rounded-md border border-dashed p-12 text-center">
               <Music className="mx-auto h-16 w-16 text-muted-foreground" />
               <p className="mt-4 text-lg font-medium text-muted-foreground">
                 Aktuell wird nichts abgespielt
@@ -324,7 +324,7 @@ export function OverviewTab() {
                   <img
                     src={currentlyPlaying.track.album.images[0].url}
                     alt={currentlyPlaying.track.album.name}
-                    className="h-40 w-40 rounded-2xl object-cover shadow-lg"
+                    className="h-40 w-40 rounded-md object-cover shadow-lg"
                   />
                 )}
                 <div className="flex-1 space-y-4">

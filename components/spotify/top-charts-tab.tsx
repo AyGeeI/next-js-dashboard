@@ -109,7 +109,7 @@ export function TopChartsTab() {
       </div>
 
       {/* Top Tracks */}
-      <Card className="rounded-2xl border bg-card shadow-sm">
+      <Card className="rounded-md border bg-card shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-lg">Top Tracks</CardTitle>
           <Button
@@ -126,7 +126,7 @@ export function TopChartsTab() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3, 4, 5, 6].map((i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="h-16 w-16 animate-pulse rounded-lg bg-muted" />
+                  <div className="h-16 w-16 animate-pulse rounded-md bg-muted" />
                   <div className="flex-1 space-y-2">
                     <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
                     <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
@@ -138,14 +138,14 @@ export function TopChartsTab() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {topTracks.slice(0, 20).map((track, index) => (
                 <div key={track.id} className="flex items-center gap-3">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 text-lg font-bold text-primary">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-md bg-gradient-to-br from-primary/20 to-primary/5 text-lg font-bold text-primary">
                     {index + 1}
                   </div>
                   {track.album.images[0] && (
                     <img
                       src={track.album.images[0].url}
                       alt={track.album.name}
-                      className="h-16 w-16 rounded-lg object-cover"
+                      className="h-16 w-16 rounded-md object-cover"
                     />
                   )}
                   <div className="min-w-0 flex-1">
@@ -167,7 +167,7 @@ export function TopChartsTab() {
       </Card>
 
       {/* Top Artists */}
-      <Card className="rounded-2xl border bg-card shadow-sm">
+      <Card className="rounded-md border bg-card shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-lg">Top Artists</CardTitle>
           <Button
@@ -184,7 +184,7 @@ export function TopChartsTab() {
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {[1, 2, 3, 4, 5].map((i) => (
                 <div key={i} className="space-y-2">
-                  <div className="aspect-square w-full animate-pulse rounded-2xl bg-muted" />
+                  <div className="aspect-square w-full animate-pulse rounded-md bg-muted" />
                   <div className="h-4 animate-pulse rounded bg-muted" />
                 </div>
               ))}
@@ -204,10 +204,10 @@ export function TopChartsTab() {
                     <img
                       src={artist.images[0].url}
                       alt={artist.name}
-                      className="aspect-square w-full rounded-2xl object-cover transition-transform group-hover:scale-105"
+                      className="aspect-square w-full rounded-md object-cover transition-transform group-hover:scale-105"
                     />
                   ) : (
-                    <div className="aspect-square w-full rounded-2xl bg-muted" />
+                    <div className="aspect-square w-full rounded-md bg-muted" />
                   )}
                   <p className="truncate text-center font-semibold group-hover:underline">
                     {artist.name}

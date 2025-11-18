@@ -154,7 +154,7 @@ export default function SignUpPage() {
   return (
     <TooltipProvider delayDuration={120}>
       <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
-        <Card className="w-full max-w-lg border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
+        <Card className="w-full max-w-lg rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
           <CardHeader className="space-y-1">
             <CardTitle>Registrieren</CardTitle>
             <CardDescription>Erstelle dein Konto in wenigen Schritten.</CardDescription>
@@ -194,7 +194,7 @@ export default function SignUpPage() {
               )}
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="username">Benutzername</Label>
+                  <Label htmlFor="username" className="text-xs font-medium">Benutzername</Label>
                   <Input
                     id="username"
                     autoComplete="username"
@@ -206,7 +206,7 @@ export default function SignUpPage() {
                   {fieldErrors.username && <p className="text-xs text-destructive">{fieldErrors.username}</p>}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name" className="text-xs font-medium">Name</Label>
                   <Input
                     id="name"
                     value={name}
@@ -217,7 +217,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">E-Mail-Adresse</Label>
+                <Label htmlFor="email" className="text-xs font-medium">E-Mail-Adresse</Label>
                 <Input
                   id="email"
                   type="email"
@@ -232,7 +232,7 @@ export default function SignUpPage() {
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Label htmlFor="password" className="flex items-center gap-1">
+                  <Label htmlFor="password" className="flex items-center gap-1 text-xs font-medium">
                     Passwort
                     <Tooltip>
                       <TooltipTrigger type="button" className="rounded-full p-1 text-muted-foreground">
@@ -284,7 +284,7 @@ export default function SignUpPage() {
                       <span
                         key={index}
                         className={cn(
-                          "h-1.5 rounded-full bg-muted transition-colors",
+                          "h-1.5 rounded-sm bg-muted transition-colors",
                           passwordStrength.score > index ? passwordStrength.bar : ""
                         )}
                       />
@@ -294,7 +294,7 @@ export default function SignUpPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
+                <Label htmlFor="confirmPassword" className="text-xs font-medium">Passwort bestätigen</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"

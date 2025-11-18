@@ -379,7 +379,7 @@ export function UserManagement({ initialUsers }: UserManagementProps) {
 
   return (
     <div className="space-y-6">
-      <Card className="rounded-2xl border shadow-sm">
+      <Card className="rounded-md border shadow-sm">
         <CardHeader className="space-y-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -403,7 +403,7 @@ export function UserManagement({ initialUsers }: UserManagementProps) {
         </CardHeader>
         <CardContent className="pt-0">
           {userCount === 0 ? (
-            <div className="rounded-2xl border border-dashed border-muted-foreground/40 bg-muted/30 px-6 py-12 text-center">
+            <div className="rounded-md border border-dashed border-muted-foreground/40 bg-muted/30 px-6 py-12 text-center">
               <p className="text-sm font-semibold text-muted-foreground">Noch keine Benutzer vorhanden.</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Klicke oben auf &quot;Neuer Benutzer&quot;, um einen Benutzer anzulegen.
@@ -412,7 +412,7 @@ export function UserManagement({ initialUsers }: UserManagementProps) {
           ) : (
             <>
               {/* Desktop Table View */}
-              <div className="hidden overflow-x-auto rounded-2xl border md:block">
+              <div className="hidden overflow-x-auto rounded-md border md:block">
                 <table className="min-w-full divide-y divide-border text-sm">
                   <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
                     <tr>
@@ -486,7 +486,7 @@ export function UserManagement({ initialUsers }: UserManagementProps) {
               {/* Mobile Card View */}
               <div className="space-y-3 md:hidden">
                 {users.map((user) => (
-                  <Card key={user.id} className="rounded-2xl shadow-sm">
+                  <Card key={user.id} className="rounded-md shadow-sm">
                     <CardContent className="p-4">
                       <div className="space-y-3">
                         <div className="flex items-start justify-between gap-2">
@@ -715,7 +715,7 @@ export function UserManagement({ initialUsers }: UserManagementProps) {
             </Field>
 
             {/* Password Change Section */}
-            <div className="space-y-4 rounded-2xl border p-4">
+            <div className="space-y-4 rounded-md border p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <Label htmlFor="change-password-toggle" className="cursor-pointer">
@@ -819,7 +819,7 @@ interface StatBoxProps {
 
 function StatBox({ label, value, accent }: StatBoxProps) {
   return (
-    <div className="rounded-2xl border bg-muted/40 px-3 py-2">
+    <div className="rounded-md border bg-muted/40 px-3 py-2">
       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
       <p className={cn("text-lg font-semibold", accent && "text-primary")}>{value}</p>
     </div>
@@ -835,5 +835,5 @@ function HelperText({ children }: { children: ReactNode }) {
 }
 
 function ErrorText({ children }: { children: ReactNode }) {
-  return <p className="text-sm text-destructive">{children}</p>;
+  return <p className="text-xs text-destructive">{children}</p>;
 }

@@ -496,16 +496,16 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div className="space-y-2">
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">Einstellungen</p>
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard & Kommunikation steuern</h2>
-        <p className="max-w-2xl text-muted-foreground">
+        <p className="text-xs font-medium uppercase tracking-wide text-primary">Einstellungen</p>
+        <h2 className="text-2xl font-semibold">Dashboard & Kommunikation steuern</h2>
+        <p className="text-sm text-muted-foreground">
           Lege fest, wie dein Dashboard aussehen soll und welche Informationen dich erreichen.
         </p>
       </div>
 
-      <Tabs defaultValue="general" className="space-y-6">
+      <Tabs defaultValue="general" className="space-y-8">
         <TabsList aria-label="Einstellungsbereiche">
           <TabsTrigger value="general">Allgemeines</TabsTrigger>
           <TabsTrigger value="notifications">Benachrichtigungen</TabsTrigger>
@@ -515,10 +515,10 @@ export default function SettingsPage() {
         </TabsList>
 
         <TabsContent value="general">
-          <Card className="rounded-2xl border bg-card shadow-sm">
+          <Card className="rounded-md border bg-card shadow-sm">
             <CardHeader>
-              <CardTitle className="text-lg">Allgemeines</CardTitle>
-              <CardDescription>Weitere Optionen für Sprache, Datenfreigabe und Integrationen.</CardDescription>
+              <CardTitle className="text-lg font-semibold">Allgemeines</CardTitle>
+              <CardDescription className="text-xs">Weitere Optionen für Sprache, Datenfreigabe und Integrationen.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
               <SelectField
@@ -558,10 +558,10 @@ export default function SettingsPage() {
         </TabsContent>
 
         <TabsContent value="notifications">
-          <Card className="rounded-2xl border bg-card shadow-sm">
+          <Card className="rounded-md border bg-card shadow-sm">
             <CardHeader>
-              <CardTitle className="text-lg">Benachrichtigungen</CardTitle>
-              <CardDescription>Entscheide, wann dich das Dashboard informiert.</CardDescription>
+              <CardTitle className="text-lg font-semibold">Benachrichtigungen</CardTitle>
+              <CardDescription className="text-xs">Entscheide, wann dich das Dashboard informiert.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {notificationSettings.map((item) => (
@@ -572,10 +572,10 @@ export default function SettingsPage() {
         </TabsContent>
 
         <TabsContent value="dashboard">
-          <Card className="rounded-2xl border bg-card shadow-sm">
+          <Card className="rounded-md border bg-card shadow-sm">
             <CardHeader>
-              <CardTitle className="text-lg">Dashboard</CardTitle>
-              <CardDescription>Passe Layout und Darstellung deiner Widgets individuell an.</CardDescription>
+              <CardTitle className="text-lg font-semibold">Dashboard</CardTitle>
+              <CardDescription className="text-xs">Passe Layout und Darstellung deiner Widgets individuell an.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {dashboardPreferences.map((item) => (
@@ -586,10 +586,10 @@ export default function SettingsPage() {
         </TabsContent>
 
         <TabsContent value="weather">
-          <Card className="rounded-2xl border bg-card shadow-sm">
+          <Card className="rounded-md border bg-card shadow-sm">
             <CardHeader>
-              <CardTitle className="text-lg">Wetter</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-lg font-semibold">Wetter</CardTitle>
+              <CardDescription className="text-xs">
                 Hinterlege Postleitzahl, Ländercode und deinen OpenWeatherMap API-Key. Wir speichern die Angaben sicher
                 in deinem Konto.
               </CardDescription>
@@ -700,10 +700,10 @@ export default function SettingsPage() {
         </TabsContent>
 
         <TabsContent value="spotify">
-          <Card className="rounded-2xl border bg-card shadow-sm">
+          <Card className="rounded-md border bg-card shadow-sm">
             <CardHeader>
-              <CardTitle className="text-lg">Spotify</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-lg font-semibold">Spotify</CardTitle>
+              <CardDescription className="text-xs">
                 Hinterlege deine Spotify App Client-Credentials, um dein Spotify-Konto zu verbinden. Erstelle eine App
                 im{" "}
                 <a
@@ -728,7 +728,7 @@ export default function SettingsPage() {
               ) : null}
 
               {spotifySettings.isConnected ? (
-                <div className="mb-6 rounded-2xl border border-success bg-success/10 p-4">
+                <div className="mb-6 rounded-md border border-success bg-success/10 p-4">
                   <p className="text-sm font-semibold text-success">Spotify-Konto verbunden</p>
                   <p className="text-xs text-muted-foreground">
                     Du kannst jetzt die Spotify-Funktionen im Musik-Bereich nutzen.
@@ -889,9 +889,9 @@ interface PreferenceToggleProps {
 
 function PreferenceToggle({ id, title, description, defaultEnabled }: PreferenceToggleProps) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-2xl border px-4 py-3">
+    <div className="flex items-center justify-between gap-4 rounded-md border px-4 py-3">
       <div>
-        <p className="text-sm font-semibold leading-tight">{title}</p>
+        <p className="text-sm font-medium leading-tight">{title}</p>
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
       <Switch id={id} defaultChecked={defaultEnabled} />

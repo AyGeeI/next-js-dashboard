@@ -113,7 +113,7 @@ export function LibraryTab() {
   return (
     <div className="space-y-8">
       {/* Playlists */}
-      <Card className="rounded-2xl border bg-card shadow-sm">
+      <Card className="rounded-md border bg-card shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-lg">Playlists</CardTitle>
           <Button
@@ -130,7 +130,7 @@ export function LibraryTab() {
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="h-16 w-16 animate-pulse rounded-lg bg-muted" />
+                  <div className="h-16 w-16 animate-pulse rounded-md bg-muted" />
                   <div className="flex-1 space-y-2">
                     <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
                     <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
@@ -144,16 +144,16 @@ export function LibraryTab() {
                 <a
                   key={playlist.id}
                   href={getSpotifyUri(playlist.external_urls.spotify)}
-                  className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent"
+                  className="flex items-center gap-3 rounded-md p-2 transition-colors hover:bg-accent"
                 >
                   {playlist.images[0] ? (
                     <img
                       src={playlist.images[0].url}
                       alt={playlist.name}
-                      className="h-16 w-16 rounded-lg object-cover"
+                      className="h-16 w-16 rounded-md object-cover"
                     />
                   ) : (
-                    <div className="h-16 w-16 rounded-lg bg-muted" />
+                    <div className="h-16 w-16 rounded-md bg-muted" />
                   )}
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold hover:underline">{playlist.name}</p>
@@ -170,7 +170,7 @@ export function LibraryTab() {
       </Card>
 
       {/* Recently Played */}
-      <Card className="rounded-2xl border bg-card shadow-sm">
+      <Card className="rounded-md border bg-card shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle className="text-lg">Kürzlich gehört</CardTitle>
           <Button
@@ -189,7 +189,7 @@ export function LibraryTab() {
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="h-12 w-12 animate-pulse rounded-lg bg-muted" />
+                  <div className="h-12 w-12 animate-pulse rounded-md bg-muted" />
                   <div className="flex-1 space-y-2">
                     <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
                     <div className="h-3 w-1/2 animate-pulse rounded bg-muted" />
@@ -202,13 +202,13 @@ export function LibraryTab() {
               {recentlyPlayed.slice(0, 20).map((item, index) => (
                 <div
                   key={`${item.track.id}-${index}`}
-                  className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent"
+                  className="flex items-center gap-3 rounded-md p-2 transition-colors hover:bg-accent"
                 >
                   {item.track.album.images[0] && (
                     <img
                       src={item.track.album.images[0].url}
                       alt={item.track.album.name}
-                      className="h-12 w-12 rounded-lg object-cover"
+                      className="h-12 w-12 rounded-md object-cover"
                     />
                   )}
                   <div className="min-w-0 flex-1">

@@ -12,10 +12,10 @@ export default function FinanzenPage() {
   const { balance, income, expenses, transactions, savingsGoal } = mockFinanceData;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       <div className="space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Finanzen</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-2xl font-semibold">Finanzen</h2>
+        <p className="text-sm text-muted-foreground">
           Ihre finanzielle Übersicht und Transaktionen (Dummy-Daten)
         </p>
       </div>
@@ -26,21 +26,31 @@ export default function FinanzenPage() {
           value={currency.format(balance)}
           icon={Wallet}
           description="Aktueller Kontostand"
-          valueClassName={balance >= 0 ? "text-emerald-500" : "text-red-500"}
+          valueClassName={balance >= 0 ? "text-emerald-600" : "text-red-600"}
         />
         <CardMetric
           title="Einnahmen"
           value={currency.format(income)}
           icon={TrendingUp}
           description="Diesen Monat"
-          valueClassName="text-emerald-500"
+          valueClassName="text-emerald-600"
+          delta={{
+            value: "+8.2%",
+            trend: "up",
+            label: "vs. Vormonat"
+          }}
         />
         <CardMetric
           title="Ausgaben"
           value={currency.format(expenses)}
           icon={TrendingDown}
           description="Diesen Monat"
-          valueClassName="text-red-500"
+          valueClassName="text-red-600"
+          delta={{
+            value: "-3.1%",
+            trend: "down",
+            label: "vs. Vormonat"
+          }}
         />
         <CardMetric
           title="Sparziel"
@@ -50,9 +60,9 @@ export default function FinanzenPage() {
         />
       </div>
 
-      <Card>
+      <Card className="rounded-md">
         <CardHeader>
-          <CardTitle>Letzte Transaktionen</CardTitle>
+          <CardTitle className="text-lg font-semibold">Letzte Transaktionen</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -62,15 +72,15 @@ export default function FinanzenPage() {
               return (
                 <div
                   key={transaction.id}
-                  className="flex flex-col gap-2 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-2 rounded-md border p-4 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div>
-                    <p className="font-medium">{transaction.description}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm font-medium">{transaction.description}</p>
+                    <p className="text-xs text-muted-foreground">
                       {new Date(transaction.date).toLocaleDateString("de-DE")}
                     </p>
                   </div>
-                  <p className={`text-lg font-semibold ${isIncome ? "text-emerald-500" : "text-red-500"}`}>
+                  <p className={`text-base font-semibold ${isIncome ? "text-emerald-600" : "text-red-600"}`}>
                     {isIncome ? "+" : "-"}
                     {formattedAmount}
                   </p>
@@ -81,21 +91,21 @@ export default function FinanzenPage() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="rounded-md">
         <CardHeader>
-          <CardTitle>Sparziel-Fortschritt</CardTitle>
+          <CardTitle className="text-lg font-semibold">Sparziel-Fortschritt</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <div className="flex flex-col gap-1 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-1 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
               <span>
                 {currency.format(savingsGoal.current)} von {currency.format(savingsGoal.target)}
               </span>
-              <span className="font-medium text-foreground">{savingsGoal.percentage}%</span>
+              <span className="text-sm font-medium text-foreground">{savingsGoal.percentage}%</span>
             </div>
-            <div className="h-4 w-full rounded-full bg-muted">
+            <div className="h-4 w-full rounded-md bg-muted">
               <div
-                className="h-full rounded-full bg-primary transition-all"
+                className="h-full rounded-md bg-primary transition-all"
                 style={{ width: `${savingsGoal.percentage}%` }}
               />
             </div>
@@ -103,12 +113,12 @@ export default function FinanzenPage() {
         </CardContent>
       </Card>
 
-      <Card className="bg-primary/5">
+      <Card className="rounded-md bg-muted/30">
         <CardHeader>
-          <CardTitle className="text-base">Hinweis</CardTitle>
+          <CardTitle className="text-base font-semibold">Hinweis</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Dies sind Dummy-Daten. In einer produktiven Umgebung würden hier echte Finanzdaten aus einer Datenbank
             oder einer Banking-API dargestellt.
           </p>

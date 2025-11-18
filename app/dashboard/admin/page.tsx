@@ -36,16 +36,16 @@ export default async function AdminPage() {
   }));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div className="space-y-2">
-        <p className="text-sm font-semibold uppercase tracking-wide text-primary">Administration</p>
-        <h1 className="text-3xl font-bold tracking-tight">Zugriff auf Benutzerkonten steuern</h1>
-        <p className="max-w-2xl text-muted-foreground">
+        <p className="text-xs font-medium uppercase tracking-wide text-primary">Administration</p>
+        <h1 className="text-2xl font-semibold">Zugriff auf Benutzerkonten steuern</h1>
+        <p className="text-sm text-muted-foreground">
           Behalte Rollen und Kontaktdaten im Blick, lege neue Konten an und halte Benutzerprofile zentral gepflegt.
         </p>
       </div>
 
-      <Tabs defaultValue="users" className="space-y-6">
+      <Tabs defaultValue="users" className="space-y-8">
         <TabsList aria-label="Admin-Bereiche">
           <TabsTrigger value="users">Benutzer</TabsTrigger>
         </TabsList>

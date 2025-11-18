@@ -19,10 +19,10 @@ export default function MusikPage() {
 
   return (
     <>
-      <div className="space-y-6 pb-24">
+      <div className="space-y-10 pb-24">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Musik</h1>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-semibold">Musik</h1>
             <p className="text-sm text-muted-foreground">
               Deine Spotify-Statistiken und Musik-Verwaltung
             </p>
@@ -53,19 +53,19 @@ export default function MusikPage() {
             <TabsTrigger value="statistics">Statistiken</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="overview" className="mt-6">
+          <TabsContent value="overview" className="mt-8">
             <OverviewTab />
           </TabsContent>
 
-          <TabsContent value="library" className="mt-6">
+          <TabsContent value="library" className="mt-8">
             <LibraryTab />
           </TabsContent>
 
-          <TabsContent value="charts" className="mt-6">
+          <TabsContent value="charts" className="mt-8">
             <TopChartsTab />
           </TabsContent>
 
-          <TabsContent value="statistics" className="mt-6">
+          <TabsContent value="statistics" className="mt-8">
             <StatisticsTab />
           </TabsContent>
         </Tabs>

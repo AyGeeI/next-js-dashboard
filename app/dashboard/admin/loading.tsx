@@ -5,35 +5,35 @@ export default function AdminLoading() {
     <div className="space-y-8">
       <div className="space-y-3">
         <Skeleton className="h-4 w-24 rounded-full" />
-        <Skeleton className="h-10 w-1/3 rounded-2xl" />
-        <Skeleton className="h-5 w-2/3 rounded-2xl" />
+        <Skeleton className="h-10 w-1/3 rounded-md" />
+        <Skeleton className="h-5 w-2/3 rounded-md" />
       </div>
-      <div className="space-y-4 rounded-2xl border bg-card p-6 shadow-sm">
-        <Skeleton className="h-9 w-40 rounded-2xl" />
+      <div className="space-y-4 rounded-md border bg-card p-6 shadow-sm">
+        <Skeleton className="h-9 w-40 rounded-md" />
         <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, index) => (
             <div key={index} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <Skeleton className="h-5 w-48 rounded-xl" />
-              <Skeleton className="h-9 w-28 rounded-2xl" />
+              <Skeleton className="h-5 w-48 rounded-md" />
+              <Skeleton className="h-9 w-28 rounded-md" />
             </div>
           ))}
         </div>
       </div>
       <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
-        <div className="space-y-4 rounded-2xl border bg-card p-6 shadow-sm">
-          <Skeleton className="h-6 w-32 rounded-xl" />
-          <Skeleton className="h-5 w-48 rounded-xl" />
+        <div className="space-y-4 rounded-md border bg-card p-6 shadow-sm">
+          <Skeleton className="h-6 w-32 rounded-md" />
+          <Skeleton className="h-5 w-48 rounded-md" />
           {Array.from({ length: 5 }).map((_, index) => (
             <div key={index} className="flex gap-4">
-              <Skeleton className="h-16 w-1/6 rounded-xl" />
-              <Skeleton className="h-16 flex-1 rounded-xl" />
+              <Skeleton className="h-16 w-1/6 rounded-md" />
+              <Skeleton className="h-16 flex-1 rounded-md" />
             </div>
           ))}
         </div>
-        <div className="space-y-4 rounded-2xl border bg-card p-6 shadow-sm">
-          <Skeleton className="h-6 w-32 rounded-xl" />
+        <div className="space-y-4 rounded-md border bg-card p-6 shadow-sm">
+          <Skeleton className="h-6 w-32 rounded-md" />
           {Array.from({ length: 4 }).map((_, index) => (
-            <Skeleton key={index} className="h-12 rounded-2xl" />
+            <Skeleton key={index} className="h-12 rounded-md" />
           ))}
         </div>
       </div>

@@ -162,12 +162,12 @@ export function DeviceSelectorModal({ open, onOpenChange }: DeviceSelectorModalP
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="h-16 animate-pulse rounded-2xl border bg-muted"
+                  className="h-16 animate-pulse rounded-md border bg-muted"
                 />
               ))}
             </div>
           ) : devices.length === 0 ? (
-            <div className="rounded-2xl border border-dashed p-8 text-center">
+            <div className="rounded-md border border-dashed p-8 text-center">
               <Speaker className="mx-auto h-8 w-8 text-muted-foreground" />
               <p className="mt-2 text-sm font-medium">Keine Geräte gefunden</p>
               <p className="text-sm text-muted-foreground">
@@ -181,7 +181,7 @@ export function DeviceSelectorModal({ open, onOpenChange }: DeviceSelectorModalP
                   key={device.id}
                   onClick={() => !device.is_active && handleTransfer(device.id, device.name)}
                   disabled={device.is_active || transferring === device.id}
-                  className={`w-full rounded-2xl border p-4 text-left transition-colors ${
+                  className={`w-full rounded-md border p-4 text-left transition-colors ${
                     device.is_active
                       ? "border-primary bg-primary/10"
                       : "hover:bg-accent"
