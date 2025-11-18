@@ -37,9 +37,9 @@ const MONTHS = [
 
 const EVENT_TYPE_COLORS = {
   MEETING: "bg-primary/10 text-primary border-primary/20",
-  PERSONAL: "bg-[hsl(142,70%,36%)]/10 text-[hsl(142,70%,36%)] border-[hsl(142,70%,36%)]/20",
-  DEADLINE: "bg-[hsl(0,72%,51%)]/10 text-[hsl(0,72%,51%)] border-[hsl(0,72%,51%)]/20",
-  APPOINTMENT: "bg-[hsl(32,95%,44%)]/10 text-[hsl(32,95%,44%)] border-[hsl(32,95%,44%)]/20",
+  PERSONAL: "bg-success/10 text-success border-success/20",
+  DEADLINE: "bg-destructive/10 text-destructive border-destructive/20",
+  APPOINTMENT: "bg-warning/10 text-warning border-warning/20",
 };
 
 export function CalendarGrid({ events, onDateClick, onEventClick }: CalendarGridProps) {
@@ -246,15 +246,15 @@ export function CalendarGrid({ events, onDateClick, onEventClick }: CalendarGrid
           <span>Meeting</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-full bg-[hsl(142,70%,36%)]" />
+          <div className="h-3 w-3 rounded-full bg-success" />
           <span>Persönlich</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-full bg-[hsl(0,72%,51%)]" />
+          <div className="h-3 w-3 rounded-full bg-destructive" />
           <span>Deadline</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-full bg-[hsl(32,95%,44%)]" />
+          <div className="h-3 w-3 rounded-full bg-warning" />
           <span>Termin</span>
         </div>
       </div>

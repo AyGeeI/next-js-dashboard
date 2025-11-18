@@ -104,7 +104,7 @@ export default function KalenderPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
-          <h2 className="text-2xl font-semibold">Kalender</h2>
+          <h1 className="text-2xl font-semibold">Kalender</h1>
           <p className="text-sm text-muted-foreground">
             Verwalte deine Termine und Events
           </p>

@@ -310,12 +310,15 @@ export function OverviewTab() {
           ) : !currentlyPlaying?.track || !currentlyPlaying?.track?.is_playing ? (
             <div className="rounded-md border border-dashed p-12 text-center">
               <Music className="mx-auto h-16 w-16 text-muted-foreground" />
-              <p className="mt-4 text-lg font-medium text-muted-foreground">
-                Aktuell wird nichts abgespielt
+              <h3 className="mt-4 text-lg font-semibold">Aktuell wird nichts abgespielt</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Starte die Wiedergabe auf einem deiner Geräte, um den aktuellen Track hier zu sehen.
               </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Starte die Wiedergabe auf Spotify, um den aktuellen Track hier zu sehen.
-              </p>
+              <Button asChild className="mt-4">
+                <a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer">
+                  Spotify öffnen
+                </a>
+              </Button>
             </div>
           ) : (
             <div className="space-y-6">
@@ -351,6 +354,7 @@ export function OverviewTab() {
                       onClick={handleShuffle}
                       disabled={loadingAction === "shuffle"}
                       className={`h-9 w-9 ${shuffleState ? "text-primary" : "text-muted-foreground"}`}
+                      aria-label={shuffleState ? "Shuffle deaktivieren" : "Shuffle aktivieren"}
                     >
                       {loadingAction === "shuffle" ? (
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -365,6 +369,7 @@ export function OverviewTab() {
                       onClick={handlePrevious}
                       disabled={loadingAction === "previous"}
                       className="h-10 w-10"
+                      aria-label="Vorheriger Track"
                     >
                       {loadingAction === "previous" ? (
                         <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -379,6 +384,7 @@ export function OverviewTab() {
                       onClick={handlePlayPause}
                       disabled={loadingAction === "playpause"}
                       className="h-12 w-12 rounded-full"
+                      aria-label={currentlyPlaying.track.is_playing ? "Pausieren" : "Abspielen"}
                     >
                       {loadingAction === "playpause" ? (
                         <div className="h-6 w-6 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -395,6 +401,7 @@ export function OverviewTab() {
                       onClick={handleNext}
                       disabled={loadingAction === "next"}
                       className="h-10 w-10"
+                      aria-label="Nächster Track"
                     >
                       {loadingAction === "next" ? (
                         <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -409,6 +416,13 @@ export function OverviewTab() {
                       onClick={handleRepeat}
                       disabled={loadingAction === "repeat"}
                       className={`h-9 w-9 ${repeatState !== "off" ? "text-primary" : "text-muted-foreground"}`}
+                      aria-label={
+                        repeatState === "off"
+                          ? "Wiederholung aktivieren"
+                          : repeatState === "context"
+                          ? "Track wiederholen"
+                          : "Wiederholung deaktivieren"
+                      }
                     >
                       {loadingAction === "repeat" ? (
                         <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -430,6 +444,7 @@ export function OverviewTab() {
                       onClick={handleToggleLike}
                       disabled={checkingLiked}
                       className={`h-10 w-10 ${isLiked ? "text-red-500 hover:text-red-600" : ""}`}
+                      aria-label={isLiked ? "Aus Lieblingssongs entfernen" : "Zu Lieblingssongs hinzufügen"}
                     >
                       {checkingLiked ? (
                         <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />

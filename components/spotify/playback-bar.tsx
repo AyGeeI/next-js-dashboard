@@ -335,6 +335,7 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
               onClick={handleToggleLike}
               disabled={checkingLiked}
               className={`h-8 w-8 ${isLiked ? "text-red-500 hover:text-red-600" : "text-muted-foreground"}`}
+              aria-label={isLiked ? "Aus Lieblingssongs entfernen" : "Zu Lieblingssongs hinzufügen"}
             >
               <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
             </Button>
@@ -348,11 +349,12 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
                 size="icon"
                 onClick={handleShuffle}
                 className={shuffleState ? "text-primary" : "text-muted-foreground"}
+                aria-label={shuffleState ? "Shuffle deaktivieren" : "Shuffle aktivieren"}
               >
                 <Shuffle className="h-4 w-4" />
               </Button>
 
-              <Button variant="ghost" size="icon" onClick={handlePrevious}>
+              <Button variant="ghost" size="icon" onClick={handlePrevious} aria-label="Vorheriger Track">
                 <SkipBack className="h-5 w-5" />
               </Button>
 
@@ -361,11 +363,12 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
                 size="icon"
                 onClick={handlePlayPause}
                 className="h-10 w-10 rounded-full"
+                aria-label={isPlaying ? "Pausieren" : "Abspielen"}
               >
                 {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
               </Button>
 
-              <Button variant="ghost" size="icon" onClick={handleNext}>
+              <Button variant="ghost" size="icon" onClick={handleNext} aria-label="Nächster Track">
                 <SkipForward className="h-5 w-5" />
               </Button>
 
@@ -374,6 +377,13 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
                 size="icon"
                 onClick={handleRepeat}
                 className={repeatState !== "off" ? "text-primary" : "text-muted-foreground"}
+                aria-label={
+                  repeatState === "off"
+                    ? "Wiederholung aktivieren"
+                    : repeatState === "context"
+                    ? "Track wiederholen"
+                    : "Wiederholung deaktivieren"
+                }
               >
                 <Repeat className="h-4 w-4" />
                 {repeatState === "track" && (
@@ -411,7 +421,7 @@ export function PlaybackBar({ onDeviceSelect }: PlaybackBarProps) {
               />
             </div>
 
-            <Button variant="ghost" size="icon" onClick={onDeviceSelect}>
+            <Button variant="ghost" size="icon" onClick={onDeviceSelect} aria-label="Gerät auswählen">
               <Monitor className="h-4 w-4" />
             </Button>
           </div>

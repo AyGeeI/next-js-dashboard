@@ -48,7 +48,7 @@ export default async function AccountPage() {
         <p className="text-xs font-medium uppercase tracking-wide text-primary">
           Konto
         </p>
-        <h2 className="text-2xl font-semibold">Persönliche Daten verwalten</h2>
+        <h1 className="text-2xl font-semibold">Persönliche Daten verwalten</h1>
         <p className="text-sm text-muted-foreground">
           Aktualisiere deine Stammdaten, um Teammitgliedern und Workflows die richtigen Informationen zur Verfügung zu
           stellen.
