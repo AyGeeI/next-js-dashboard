@@ -499,7 +499,7 @@ export default function SettingsPage() {
     <div className="space-y-10">
       <div className="space-y-2">
         <p className="text-xs font-medium uppercase tracking-wide text-primary">Einstellungen</p>
-        <h2 className="text-2xl font-semibold">Dashboard & Kommunikation steuern</h2>
+        <h1 className="text-2xl font-semibold">Dashboard & Kommunikation steuern</h1>
         <p className="text-sm text-muted-foreground">
           Lege fest, wie dein Dashboard aussehen soll und welche Informationen dich erreichen.
         </p>
@@ -833,7 +833,7 @@ export default function SettingsPage() {
                       </p>
                       <Button
                         type="button"
-                        variant="default"
+                        variant="outline"
                         onClick={handleSpotifyConnect}
                         disabled={connectingSpotify || spotifyFormDisabled}
                         className="w-full sm:w-auto"
@@ -860,7 +860,7 @@ export default function SettingsPage() {
                         </Button>
                         <Button
                           type="button"
-                          variant="default"
+                          variant="outline"
                           onClick={handleSpotifyConnect}
                           disabled={connectingSpotify || spotifyFormDisabled}
                           className="w-full sm:w-auto"

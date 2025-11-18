@@ -121,6 +121,7 @@ export function LibraryTab() {
             size="icon"
             onClick={() => fetchPlaylists(true)}
             disabled={fetchingPlaylists}
+            aria-label="Playlists aktualisieren"
           >
             <RefreshCcw className={`h-4 w-4 ${fetchingPlaylists ? "animate-spin" : ""}`} />
           </Button>
@@ -178,6 +179,7 @@ export function LibraryTab() {
             size="icon"
             onClick={() => fetchRecentlyPlayed(true)}
             disabled={fetchingRecentlyPlayed}
+            aria-label="Kürzlich gehörte Titel aktualisieren"
           >
             <RefreshCcw
               className={`h-4 w-4 ${fetchingRecentlyPlayed ? "animate-spin" : ""}`}

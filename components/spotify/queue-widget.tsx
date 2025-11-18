@@ -186,6 +186,7 @@ export function QueueWidget() {
           size="icon"
           onClick={fetchQueue}
           disabled={loading}
+          aria-label="Warteschlange aktualisieren"
         >
           <RefreshCcw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
         </Button>
@@ -216,10 +217,15 @@ export function QueueWidget() {
         ) : !queueData?.queue || queueData.queue.length === 0 ? (
           <div className="rounded-md border border-dashed p-8 text-center">
             <Music className="mx-auto h-8 w-8 text-muted-foreground" />
-            <p className="mt-2 text-sm font-medium">Warteschlange leer</p>
-            <p className="text-sm text-muted-foreground">
-              Füge Songs zur Warteschlange hinzu.
+            <p className="mt-2 text-sm font-semibold">Warteschlange leer</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Füge Songs zur Warteschlange hinzu, um sie hier zu sehen.
             </p>
+            <Button asChild variant="outline" size="sm" className="mt-3">
+              <a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer">
+                Spotify öffnen
+              </a>
+            </Button>
           </div>
         ) : (
           <div className="space-y-1">
@@ -262,7 +268,7 @@ export function QueueWidget() {
                         className="h-8 w-8"
                         onClick={() => handlePlayNow(trackUri, track.name)}
                         disabled={isProcessing}
-                        title="Sofort abspielen"
+                        aria-label="Sofort abspielen"
                       >
                         <Play className="h-4 w-4" />
                       </Button>
@@ -272,7 +278,7 @@ export function QueueWidget() {
                         className="h-8 w-8"
                         onClick={() => handleSaveTrack(track.id, track.name)}
                         disabled={isSaved || isProcessing}
-                        title={isSaved ? "Bereits gespeichert" : "Zu Lieblingssongs"}
+                        aria-label={isSaved ? "Bereits gespeichert" : "Zu Lieblingssongs hinzufügen"}
                       >
                         <Heart className={`h-4 w-4 ${isSaved ? "fill-current text-primary" : ""}`} />
                       </Button>

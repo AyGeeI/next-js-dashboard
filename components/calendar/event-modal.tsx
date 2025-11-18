@@ -8,6 +8,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, Users, Trash2, Pencil, Info } from "lucide-react";
 import { deleteEvent } from "@/app/actions/calendar";
@@ -43,14 +53,15 @@ const EVENT_TYPE_LABELS = {
 
 const EVENT_TYPE_COLORS = {
   MEETING: "bg-primary/10 text-primary border-primary/20",
-  PERSONAL: "bg-[hsl(142,70%,36%)]/10 text-[hsl(142,70%,36%)] border-[hsl(142,70%,36%)]/20",
-  DEADLINE: "bg-[hsl(0,72%,51%)]/10 text-[hsl(0,72%,51%)] border-[hsl(0,72%,51%)]/20",
-  APPOINTMENT: "bg-[hsl(32,95%,44%)]/10 text-[hsl(32,95%,44%)] border-[hsl(32,95%,44%)]/20",
+  PERSONAL: "bg-success/10 text-success border-success/20",
+  DEADLINE: "bg-destructive/10 text-destructive border-destructive/20",
+  APPOINTMENT: "bg-warning/10 text-warning border-warning/20",
 };
 
 export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventModalProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   if (!event) return null;
@@ -62,11 +73,7 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
     day: "numeric",
   }).format(new Date(event.date));
 
-  const handleDelete = async () => {
-    if (!confirm("Möchtest du dieses Event wirklich löschen?")) {
-      return;
-    }
-
+  const handleDeleteConfirm = async () => {
     setIsDeleting(true);
     setError(null);
 
@@ -74,13 +81,16 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
       const result = await deleteEvent({ id: event.id });
 
       if (result.success) {
+        setDeleteDialogOpen(false);
         onOpenChange(false);
         onEventUpdated?.();
       } else {
         setError(result.error || "Fehler beim Löschen des Events.");
+        setDeleteDialogOpen(false);
       }
     } catch (err) {
       setError("Ein unerwarteter Fehler ist aufgetreten.");
+      setDeleteDialogOpen(false);
     } finally {
       setIsDeleting(false);
     }
@@ -137,7 +147,7 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={handleDelete}
+                    onClick={() => setDeleteDialogOpen(true)}
                     disabled={isDeleting}
                     className="h-9 w-9 rounded-md text-destructive hover:bg-destructive/10 hover:text-destructive"
                     aria-label="Event löschen"
@@ -222,7 +232,7 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
 
               {/* Reminder */}
               {event.reminder !== null && event.reminder !== undefined && (
-                <div className="rounded-md border bg-[hsl(221,83%,53%)]/10 p-4 text-[hsl(221,83%,53%)]">
+                <div className="rounded-md border bg-info/10 p-4 text-info">
                   <p className="text-sm font-medium">
                     Erinnerung: {event.reminder} Minuten vor dem Event
                   </p>
@@ -232,6 +242,29 @@ export function EventModal({ event, open, onOpenChange, onEventUpdated }: EventM
           </>
         )}
       </DialogContent>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Event wirklich löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Möchtest du das Event <strong>{event.title}</strong> wirklich löschen?
+              Diese Aktion kann nicht rückgängig gemacht werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Abbrechen</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Lösche..." : "Löschen"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }

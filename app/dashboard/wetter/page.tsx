@@ -152,7 +152,7 @@ export default function WetterPage() {
   return (
     <div className="space-y-10">
       <div className="space-y-2">
-        <h2 className="text-2xl font-semibold">Wetter</h2>
+        <h1 className="text-2xl font-semibold">Wetter</h1>
         <p className="text-sm text-muted-foreground">
           Aktuelle Wetterdaten und Vorhersagen für deinen Standort
         </p>

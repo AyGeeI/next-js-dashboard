@@ -14,7 +14,7 @@ export default function FinanzenPage() {
   return (
     <div className="space-y-10">
       <div className="space-y-2">
-        <h2 className="text-2xl font-semibold">Finanzen</h2>
+        <h1 className="text-2xl font-semibold">Finanzen</h1>
         <p className="text-sm text-muted-foreground">
           Ihre finanzielle Übersicht und Transaktionen (Dummy-Daten)
         </p>
