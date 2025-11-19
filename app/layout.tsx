@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "sonner";
 import "@/styles/globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -25,6 +26,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster position="bottom-right" />
           </ThemeProvider>
         </SessionProvider>
         <SpeedInsights />
