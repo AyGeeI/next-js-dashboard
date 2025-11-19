@@ -266,8 +266,8 @@ export default function SignUpPage() {
                   <Link href="/sign-in" className="text-primary hover:underline">
                     Anmelden
                   </Link>
-              
-            
+                </div>
+              </div>
             )}
           </FormWrapper>
         </CardContent>

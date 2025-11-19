@@ -171,7 +171,7 @@ function ResetPasswordContent() {
                     Anmelden
                   </Link>
                 </div>
-              </>
+              </div>
             )}
           </FormWrapper>
         </CardContent>

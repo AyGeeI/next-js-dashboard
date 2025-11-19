@@ -123,7 +123,7 @@ function ForgotPasswordContent() {
                     Anmelden
                   </Link>
                 </div>
-              </>
+              </div>
             )}
           </FormWrapper>
         </CardContent>
