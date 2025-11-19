@@ -122,8 +122,8 @@ function ForgotPasswordContent() {
                   <Link href="/sign-in" className="text-primary hover:underline">
                     Anmelden
                   </Link>
-              
-            
+                </div>
+              </>
             )}
           </FormWrapper>
         </CardContent>

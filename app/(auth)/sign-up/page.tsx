@@ -170,7 +170,7 @@ export default function SignUpPage() {
                         <Button type="button" variant="link" asChild>
                           <Link href="/sign-in">Zur Anmeldung</Link>
                         </Button>
-                    
+                      </div>
                     }
                   >
                     {pendingEmail && <>Wir haben an {pendingEmail} gesendet.</>}
