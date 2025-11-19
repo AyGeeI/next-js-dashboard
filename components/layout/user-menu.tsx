@@ -15,7 +15,7 @@ type UserInfo = {
 
 interface UserMenuProps {
   user?: UserInfo | null;
-  logoutAction: (formData: FormData) => Promise<void>;
+  logoutAction?: (formData: FormData) => Promise<void>;
 }
 
 export function UserMenu({ user, logoutAction }: UserMenuProps) {
@@ -123,26 +123,28 @@ export function UserMenu({ user, logoutAction }: UserMenuProps) {
 
           <Separator className="bg-border/60" />
 
-          <form
-            action={logoutAction}
-            className="px-2 py-2"
-            onSubmit={() => setIsOpen(false)}
-          >
-            <button
-              type="submit"
-              className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-medium text-destructive hover:bg-destructive/10"
+          {logoutAction && (
+            <form
+              action={logoutAction}
+              className="px-2 py-2"
+              onSubmit={() => setIsOpen(false)}
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-md bg-destructive/10 text-destructive">
-                <LogOut className="h-4 w-4" aria-hidden="true" />
-              </span>
-              <span>
-                <span className="block">Abmelden</span>
-                <span className="text-xs font-normal text-muted-foreground">
-                  Sitzung sicher beenden
+              <button
+                type="submit"
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-medium text-destructive hover:bg-destructive/10"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-destructive/10 text-destructive">
+                  <LogOut className="h-4 w-4" aria-hidden="true" />
                 </span>
-              </span>
-            </button>
-          </form>
+                <span>
+                  <span className="block">Abmelden</span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    Sitzung sicher beenden
+                  </span>
+                </span>
+              </button>
+            </form>
+          )}
         </div>
       ) : null}
     </div>
