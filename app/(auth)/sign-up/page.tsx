@@ -124,7 +124,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
+    
       <Card className="w-full max-w-lg rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
         <CardHeader className="space-y-1">
           <CardTitle>Registrieren</CardTitle>
@@ -170,7 +170,7 @@ export default function SignUpPage() {
                         <Button type="button" variant="link" asChild>
                           <Link href="/sign-in">Zur Anmeldung</Link>
                         </Button>
-                      </div>
+                    
                     }
                   >
                     {pendingEmail && <>Wir haben an {pendingEmail} gesendet.</>}
@@ -204,7 +204,7 @@ export default function SignUpPage() {
                       placeholder="Max Mustermann"
                     />
                   </FormField>
-                </div>
+              
 
                 <FormField
                   label="E-Mail-Adresse"
@@ -266,12 +266,12 @@ export default function SignUpPage() {
                   <Link href="/sign-in" className="text-primary hover:underline">
                     Anmelden
                   </Link>
-                </div>
-              </div>
+              
+            
             )}
           </FormWrapper>
         </CardContent>
-      </Card>
-    </div>
+    </Card>
+  
   );
 }

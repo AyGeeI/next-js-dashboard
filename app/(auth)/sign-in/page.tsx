@@ -115,12 +115,11 @@ function SignInContent() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
-      <Card className="w-full max-w-md rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
-        <CardHeader>
-          <CardTitle>Anmelden</CardTitle>
-          <CardDescription>Melde dich mit E-Mail oder Benutzername an.</CardDescription>
-        </CardHeader>
+    <Card className="w-full max-w-lg rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
+      <CardHeader>
+        <CardTitle>Anmelden</CardTitle>
+        <CardDescription>Melde dich mit E-Mail oder Benutzername an.</CardDescription>
+      </CardHeader>
         <CardContent>
           <FormWrapper
             schema={signInSchema}
@@ -229,7 +228,6 @@ function SignInContent() {
           </FormWrapper>
         </CardContent>
       </Card>
-    </div>
   );
 }
 
