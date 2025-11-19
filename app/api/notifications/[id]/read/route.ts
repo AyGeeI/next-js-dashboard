@@ -8,12 +8,13 @@ import { NextResponse } from "next/server";
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   // TODO: Auth-Check
   // TODO: In Datenbank aktualisieren
 
-  console.log(`Notification ${params.id} marked as read`);
+  const { id } = await params;
+  console.log(`Notification ${id} marked as read`);
 
   return NextResponse.json({ success: true });
 }

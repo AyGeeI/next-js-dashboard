@@ -8,12 +8,13 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   // TODO: Auth-Check
   // TODO: Aus Datenbank löschen
 
-  console.log(`Notification ${params.id} deleted`);
+  const { id } = await params;
+  console.log(`Notification ${id} deleted`);
 
   return NextResponse.json({ success: true });
 }
