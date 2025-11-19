@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NotificationBanner } from "@/components/ui/notification-banner";
@@ -12,16 +13,36 @@ import { StatisticsTab } from "@/components/spotify/statistics-tab";
 import { PlaybackBar } from "@/components/spotify/playback-bar";
 import { DeviceSelectorModal } from "@/components/spotify/device-selector-modal";
 import { Toaster } from "@/components/ui/toaster";
+import { Breadcrumbs } from "@/components/common/breadcrumbs";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
 
 export default function MusikPage() {
+  const router = useRouter();
   const [deviceModalOpen, setDeviceModalOpen] = useState(false);
   const [settingsMissing, setSettingsMissing] = useState(false);
 
   return (
     <>
       <div className="space-y-10 pb-24">
-        <div className="flex items-center justify-between">
+        {/* Breadcrumbs */}
+        <div className="hidden sm:block">
+          <Breadcrumbs />
+        </div>
+
+        {/* Page Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between motion-safe:animate-in motion-safe:fade-in-50">
           <div className="space-y-2">
+            {/* Mobile Back Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.back()}
+              className="mb-2 sm:hidden"
+            >
+              <ChevronLeft className="mr-1 h-4 w-4" />
+              Zurück
+            </Button>
             <h1 className="text-2xl font-semibold">Musik</h1>
             <p className="text-sm text-muted-foreground">
               Deine Spotify-Statistiken und Musik-Verwaltung

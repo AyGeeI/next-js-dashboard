@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { NotificationBanner } from "@/components/ui/notification-banner";
 import { CardMetric } from "@/components/widgets/card-metric";
-import { Cloud, Droplets, MapPin, RefreshCcw, Wind } from "lucide-react";
+import { Breadcrumbs } from "@/components/common/breadcrumbs";
+import { Cloud, Droplets, MapPin, RefreshCcw, Wind, ChevronLeft } from "lucide-react";
 
 type WeatherApiResponse = {
   name?: string;
@@ -45,6 +47,7 @@ const conditionTranslations: Record<string, string> = {
 };
 
 export default function WetterPage() {
+  const router = useRouter();
   const [weather, setWeather] = useState<WeatherApiResponse | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -151,11 +154,29 @@ export default function WetterPage() {
 
   return (
     <div className="space-y-10">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">Wetter</h1>
-        <p className="text-sm text-muted-foreground">
-          Aktuelle Wetterdaten und Vorhersagen für deinen Standort
-        </p>
+      {/* Breadcrumbs */}
+      <div className="hidden sm:block">
+        <Breadcrumbs />
+      </div>
+
+      {/* Page Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between motion-safe:animate-in motion-safe:fade-in-50">
+        <div className="space-y-2">
+          {/* Mobile Back Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.back()}
+            className="mb-2 sm:hidden"
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            Zurück
+          </Button>
+          <h1 className="text-2xl font-semibold">Wetter</h1>
+          <p className="text-sm text-muted-foreground">
+            Aktuelle Wetterdaten und Vorhersagen für deinen Standort
+          </p>
+        </div>
       </div>
 
       {settingsMissing ? (

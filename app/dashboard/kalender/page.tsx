@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { CardMetric } from "@/components/widgets/card-metric";
-import { Calendar, Clock, Users, AlertCircle, Plus } from "lucide-react";
+import { Breadcrumbs } from "@/components/common/breadcrumbs";
+import { Calendar, Clock, Users, AlertCircle, Plus, ChevronLeft } from "lucide-react";
 import { CalendarGrid } from "@/components/calendar/calendar-grid";
 import { EventCard } from "@/components/calendar/event-card";
 import { EventModal } from "@/components/calendar/event-modal";
@@ -34,6 +36,7 @@ interface CalendarEvent {
 }
 
 export default function KalenderPage() {
+  const router = useRouter();
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
@@ -101,9 +104,24 @@ export default function KalenderPage() {
 
   return (
     <div className="space-y-10">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      {/* Breadcrumbs */}
+      <div className="hidden sm:block">
+        <Breadcrumbs />
+      </div>
+
+      {/* Page Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between motion-safe:animate-in motion-safe:fade-in-50">
         <div className="space-y-2">
+          {/* Mobile Back Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.back()}
+            className="mb-2 sm:hidden"
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            Zurück
+          </Button>
           <h1 className="text-2xl font-semibold">Kalender</h1>
           <p className="text-sm text-muted-foreground">
             Verwalte deine Termine und Events
