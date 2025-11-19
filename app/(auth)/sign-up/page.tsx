@@ -204,7 +204,7 @@ export default function SignUpPage() {
                       placeholder="Max Mustermann"
                     />
                   </FormField>
-              
+                </div>
 
                 <FormField
                   label="E-Mail-Adresse"
