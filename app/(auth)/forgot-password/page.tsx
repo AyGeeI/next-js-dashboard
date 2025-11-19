@@ -1,43 +1,43 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { z } from "zod";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { NotificationBanner } from "@/components/ui/notification-banner";
 import { Button } from "@/components/ui/button";
+import { FormWrapper } from "@/components/common/form-wrapper";
+import { FormField } from "@/components/common/form-field";
+import { ValidatedInput } from "@/components/common/validated-input";
+import { LoadingScreen } from "@/components/common/loading-screen";
+import { toast } from "sonner";
+
+// ============================================================================
+// Validation Schema
+// ============================================================================
+
+const forgotPasswordSchema = z.object({
+  identifier: z.string().min(1, "Bitte gib deine E-Mail-Adresse oder deinen Benutzernamen ein"),
+});
+
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+
+// ============================================================================
+// Component
+// ============================================================================
 
 function ForgotPasswordContent() {
   const searchParams = useSearchParams();
-  const [identifier, setIdentifier] = useState("");
-  const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
-  const [fieldError, setFieldError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    const preset = searchParams?.get("identifier");
-    if (preset) {
-      setIdentifier(preset);
-    }
-  }, [searchParams]);
+  // Default values from search params
+  const defaultIdentifier = searchParams?.get("identifier") || "";
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (loading) {
-      return;
-    }
-
-    if (!identifier.trim()) {
-      setFieldError("Bitte gib deine E-Mail-Adresse oder deinen Benutzernamen ein.");
-      return;
-    }
-
-    setFieldError("");
-    setStatus(null);
-    setLoading(true);
+  const handleSubmit = async (data: ForgotPasswordFormData) => {
+    setError("");
+    setSuccess("");
 
     try {
       const response = await fetch("/api/auth/forgot-password", {
@@ -45,34 +45,21 @@ function ForgotPasswordContent() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ identifier }),
+        body: JSON.stringify({ identifier: data.identifier }),
       });
 
-      const data = await response.json();
+      const result = await response.json();
 
       if (!response.ok) {
-        if (Array.isArray(data.errors) && data.errors[0]?.message) {
-          setFieldError(data.errors[0].message);
-        }
-        setStatus({
-          type: "error",
-          message: data.error || "Deine Anfrage konnte nicht verarbeitet werden.",
-        });
+        setError(result.error || "Deine Anfrage konnte nicht verarbeitet werden.");
         return;
       }
 
-      setStatus({
-        type: "success",
-        message: data.message || "Falls ein Konto existiert, senden wir dir einen Link.",
-      });
-    } catch (error) {
-      console.error("[ForgotPassword] error:", error);
-      setStatus({
-        type: "error",
-        message: "Unerwarteter Fehler. Bitte versuche es später erneut.",
-      });
-    } finally {
-      setLoading(false);
+      setSuccess(result.message || "Falls ein Konto existiert, senden wir dir einen Link.");
+      toast.success("E-Mail unterwegs");
+    } catch (err) {
+      console.error("[ForgotPassword] error:", err);
+      setError("Unerwarteter Fehler. Bitte versuche es später erneut.");
     }
   };
 
@@ -86,64 +73,72 @@ function ForgotPasswordContent() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-5" onSubmit={handleSubmit}>
-            <div className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="identifier" className="text-xs font-medium">E-Mail oder Benutzername</Label>
-                <p className="text-xs text-muted-foreground">
-                  Wir akzeptieren deine Login-E-Mail oder deinen eindeutigen Nutzernamen.
-                </p>
+          <FormWrapper
+            schema={forgotPasswordSchema}
+            onSubmit={handleSubmit}
+            defaultValues={{ identifier: defaultIdentifier }}
+            enableBeforeUnload={false}
+          >
+            {({ register, formState: { errors, isSubmitting } }) => (
+              <div className="space-y-4">
+                {success && (
+                  <NotificationBanner
+                    variant="success"
+                    title="E-Mail unterwegs"
+                    description={success}
+                  />
+                )}
+
+                <FormField
+                  label="E-Mail oder Benutzername"
+                  error={errors.identifier?.message}
+                  required
+                  helperText="Wir akzeptieren deine Login-E-Mail oder deinen eindeutigen Nutzernamen."
+                >
+                  <ValidatedInput
+                    {...register("identifier")}
+                    type="text"
+                    autoComplete="username"
+                    disabled={isSubmitting}
+                    autoFocus
+                    placeholder="name@example.com"
+                  />
+                </FormField>
+
+                {error && (
+                  <NotificationBanner
+                    variant="error"
+                    title="Anfrage fehlgeschlagen"
+                    description={error}
+                  />
+                )}
+
+                <Button type="submit" className="w-full" disabled={isSubmitting}>
+                  {isSubmitting ? "Wird gesendet..." : "Link anfordern"}
+                </Button>
+
+                <div className="text-center text-sm text-muted-foreground">
+                  Zurück zum Login?{" "}
+                  <Link href="/sign-in" className="text-primary hover:underline">
+                    Anmelden
+                  </Link>
+                </div>
               </div>
-              <Input
-                id="identifier"
-                value={identifier}
-                onChange={(event) => setIdentifier(event.target.value)}
-                autoComplete="username"
-                disabled={loading}
-                required
-              />
-              {fieldError && <p className="text-xs text-destructive">{fieldError}</p>}
-            </div>
-            {status && (
-              <NotificationBanner
-                variant={status.type === "success" ? "success" : "error"}
-                title={status.type === "success" ? "E-Mail unterwegs" : "Anfrage fehlgeschlagen"}
-                description={status.message}
-              />
             )}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Wird gesendet ..." : "Link anfordern"}
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
-              Zurück zum Login?{" "}
-              <Link href="/sign-in" className="text-primary hover:underline">
-                Anmelden
-              </Link>
-            </p>
-          </form>
+          </FormWrapper>
         </CardContent>
       </Card>
     </div>
   );
 }
 
+// ============================================================================
+// Page with Suspense
+// ============================================================================
+
 export default function ForgotPasswordPage() {
   return (
-    <Suspense
-      fallback={(
-        <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-b from-background via-background to-accent/30 px-4 py-12">
-          <Card className="w-full max-w-lg rounded-md border border-border/80 bg-card/95 shadow-xl shadow-primary/5 backdrop-blur">
-            <CardHeader>
-              <CardTitle>Passwort vergessen</CardTitle>
-              <CardDescription>Bitte warten...</CardDescription>
-            </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              Wir bereiten das Formular vor.
-            </CardContent>
-          </Card>
-        </div>
-      )}
-    >
+    <Suspense fallback={<LoadingScreen message="Formular wird vorbereitet..." />}>
       <ForgotPasswordContent />
     </Suspense>
   );
