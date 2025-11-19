@@ -53,6 +53,7 @@ import { useMediaQuery } from "@/lib/hooks/use-media-query";
 export interface BreadcrumbItemType {
   label: string;
   href: string;
+  isEllipsis?: boolean;
 }
 
 export interface BreadcrumbsProps {
@@ -204,9 +205,9 @@ export function Breadcrumbs({
     const itemsToShow = effectiveMaxItems - 1;
     return [
       breadcrumbItems[0],
-      { label: "...", href: "#", isEllipsis: true },
+      { label: "...", href: "#", isEllipsis: true } as BreadcrumbItemType,
       ...breadcrumbItems.slice(-itemsToShow),
-    ] as (BreadcrumbItemType & { isEllipsis?: boolean })[];
+    ];
   }, [breadcrumbItems, effectiveMaxItems]);
 
   // Nur ein Item? Nicht anzeigen

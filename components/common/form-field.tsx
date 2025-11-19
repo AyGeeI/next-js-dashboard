@@ -82,8 +82,8 @@ export function FormField({
   // Extract id from child or use htmlFor
   const childId =
     htmlFor ||
-    (React.isValidElement(children) && children.props.id) ||
-    (React.isValidElement(children) && children.props.name) ||
+    (React.isValidElement(children) && (children.props as any).id) ||
+    (React.isValidElement(children) && (children.props as any).name) ||
     "field";
 
   const ariaIds = getFieldAriaIds(childId);

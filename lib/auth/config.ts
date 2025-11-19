@@ -3,7 +3,6 @@ import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validation/auth";
-import { AccessDenied } from "@auth/core/errors";
 import { findUserByIdentifier } from "@/lib/auth/user";
 
 // Dummy hash for timing attack protection when user doesn't exist
@@ -72,7 +71,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
 
         if (!user.emailVerified) {
-          throw new AccessDenied("E-Mail-Adresse wurde noch nicht bestätigt.");
+          // Return null to deny access - the error message will be handled in the login action
+          return null;
         }
 
         // Successful login - reset failed login counter

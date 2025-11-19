@@ -287,7 +287,7 @@ export function getChangedFields(
  * Throttled Auto-Save Helper
  */
 export function createAutoSave(
-  saveFn: (data: any) => Promise<void>,
+  saveFn: (data: any) => Promise<void> | void,
   delay: number = 2000
 ): {
   save: (data: any) => void;

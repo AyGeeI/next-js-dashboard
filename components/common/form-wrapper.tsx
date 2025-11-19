@@ -145,6 +145,7 @@ export function FormWrapper<T extends FieldValues>({
   id,
 }: FormWrapperProps<T>) {
   const methods = useForm<T>({
+    // @ts-ignore - zodResolver type incompatibility with generic T
     resolver: zodResolver(schema),
     defaultValues,
     mode: "onBlur", // Validierung beim Verlassen des Feldes
@@ -236,11 +237,11 @@ export function FormWrapper<T extends FieldValues>({
       <form
         ref={formRef}
         id={id}
-        onSubmit={handleSubmit(onSubmitHandler)}
+        onSubmit={handleSubmit(onSubmitHandler as any)}
         className={cn("space-y-6", className)}
         noValidate // Wir verwenden Zod für Validierung
       >
-        {children(methods)}
+        {children(methods as any)}
       </form>
     </FormProvider>
   );
