@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth/config";
 import { prisma } from "@/lib/prisma";
+import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
 import { PasswordForm, ProfileForm } from "./forms";
 
 const DATE_FORMATTER = new Intl.DateTimeFormat("de-DE", {
@@ -44,7 +45,11 @@ export default async function AccountPage() {
 
   return (
     <div className="space-y-10">
-      <div className="space-y-2">
+      {/* Breadcrumbs */}
+      <PageBreadcrumbs />
+
+      {/* Page Header */}
+      <div className="space-y-2 motion-safe:animate-in motion-safe:fade-in-50">
         <p className="text-xs font-medium uppercase tracking-wide text-primary">
           Konto
         </p>

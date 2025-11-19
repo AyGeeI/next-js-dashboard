@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth/config";
 import { prisma } from "@/lib/prisma";
+import { PageBreadcrumbs } from "@/components/common/page-breadcrumbs";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserManagement } from "./user-management";
 
@@ -37,7 +38,11 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-10">
-      <div className="space-y-2">
+      {/* Breadcrumbs */}
+      <PageBreadcrumbs />
+
+      {/* Page Header */}
+      <div className="space-y-2 motion-safe:animate-in motion-safe:fade-in-50">
         <p className="text-xs font-medium uppercase tracking-wide text-primary">Administration</p>
         <h1 className="text-2xl font-semibold">Zugriff auf Benutzerkonten steuern</h1>
         <p className="text-sm text-muted-foreground">
